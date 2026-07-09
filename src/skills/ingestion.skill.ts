@@ -93,11 +93,27 @@ class IngestLogisticsReport implements LuaTool {
     const sales = await source.getLogistics(await resolveFileId(input.fileId));
     await saveSnapshot(positionDate, { sales });
     const totalSmt = sales.reduce((s, x) => s + x.smt, 0);
+    // coverage report: surfaces export-format drift (missing difs, odd price
+    // units, no bookings) at upload time instead of silently thinner answers
+    const knownUnits = new Set(['USC/LB', 'USD/KG', 'USD/MT']);
+    const oddUnits = [...new Set(sales.map((s) => s.sPriceUnit).filter((u): u is string => !!u && !knownUnits.has(u.toUpperCase())))];
+    const withDif = sales.filter((s) => s.sDif != null).length;
     return {
       positionDate,
       saleCount: sales.length,
       totalSmt: Math.round(totalSmt * 100) / 100,
       months: [...new Set(sales.map((s) => s.month))].sort(),
+      coverage: {
+        pricedSales: withDif,
+        unpricedSales: sales.length - withDif,
+        bookedContracts: sales.filter((s) => s.booking?.preshipId != null).length,
+        vesselAssigned: sales.filter((s) => s.booking?.vessel != null).length,
+        ...(oddUnits.length ? { unknownPriceUnits: oddUnits } : {}),
+      },
+      warnings: [
+        ...(withDif < sales.length ? [`${sales.length - withDif} sale(s) have no differential — price analytics will exclude them.`] : []),
+        ...(oddUnits.length ? [`Unknown price unit(s) ${oddUnits.join(', ')} — flat-price averages will skip those sales.`] : []),
+      ],
       nextStep: 'Run assign-blends to allocate each sale to a blend recipe.',
     };
   }
