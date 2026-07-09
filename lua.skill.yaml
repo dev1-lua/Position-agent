@@ -18,7 +18,10 @@ skills:
     skillId: fc09a975-abae-414b-b24d-48f415e755e4
     version: 1.0.0
 webhooks: []
-jobs: []
+jobs:
+  - jobId: 30a59e32-b84f-4588-bf16-3ce426dd5439
+    name: morning-position-report
+    version: 1.0.0
 preprocessors: []
 postprocessors: []
 mcpServers: []

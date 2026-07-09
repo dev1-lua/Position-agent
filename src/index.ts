@@ -4,6 +4,7 @@ import { stockcounterSkill } from './skills/stockcounter.skill';
 import { forwardsalesSkill } from './skills/forwardsales.skill';
 import { positionSkill } from './skills/position.skill';
 import { querySkill } from './skills/query.skill';
+import { morningReportJob } from './jobs/morning-report.job';
 
 /**
  * Position Assistant
@@ -73,7 +74,7 @@ const agent = new LuaAgent({
   persona,
   model: 'anthropic/claude-sonnet-5',
   skills: [ingestionSkill, stockcounterSkill, forwardsalesSkill, positionSkill, querySkill],
-  // jobs: [morningReportJob],
+  jobs: [morningReportJob],
 });
 
 async function main() {

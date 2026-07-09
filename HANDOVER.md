@@ -73,13 +73,23 @@ What IS learnable: Ivo's assignments are consistent by **(client, sold-grade, st
 
 Remaining 7% wrong (LOO) = genuinely ambiguous keys (same key → 2 blends legitimately, e.g. 32CUP/NAT.SPECIALTY → #91 and #100). **Fix (task #8):** track globally-ambiguous keys (ever mapped to >1 blend in full history) and always flag them → wrong → ~0. Then elicit more historical assignments from Ivo to raise the auto-apply rate.
 
-## 6. What's LEFT (in order)
+## 6. Build status (2026-07-09): ALL CODE TASKS DONE
 
-1. **Task #2 — Longs engine** (`src/lib/stockcounter.ts`): port `new_stockcounter.html` (`processInventoryLocation`, `processWarehouseStatus`, `processMatrixData`, `calculateTheoreticalStock`, `POST_ORDER`/`PRE_IN_ORDER`, `consolidationMap`). Reconcile `assumptions.json` keying (§3). Validate vs `Stocks` sheet + raw XBS export when it arrives (currently only validated indirectly — golden theoretical stock is fed into net-position test).
-2. **Task #4 — Futs/Spread + certs** (`src/lib/futsspread.ts`): formulas in §3; parse `DailyNetPosition`; manual-input struct for futures pots + cert positions.
-3. **Task #8 — Blend matcher refinement** (globally-ambiguous flag) + request Ivo's historical assignments.
-4. **Task #6 — Lua wiring:** data-source adapter (`src/sources/{PositionSource,UploadedFileSource,AzureDbSource}.ts`; `UploadedFileSource` uses `CDN.get(fileId)`); skills `src/skills/{ingestion,stockcounter,forwardsales,position,query}.skill.ts`; seed Data-API collections (`config`, `assumptions`, `strategy_mappings`, `batch_mappings`, `blends`, `snapshots`, `pending_blends`, `manual_inputs`); persist snapshots; register skills in `src/index.ts`.
-5. **Task #7 — Morning report job + LuaPop + compile:** `src/jobs/morning-report.job.ts` (`LuaJob` cron ~06:00 `Africa/Nairobi` → `User.get(metadata.userId).send([...])`); configure LuaPop channel; `lua compile --ci`.
+All five build tasks are complete, committed task-wise on `main`, and the parity harness is **fully green (exit 0)**:
+
+1. ✅ **Longs engine** `src/lib/stockcounter.ts` — faithful port of the HTML counter (quirks kept, documented in the file header) + `deriveForecastPercentages` reconciling `assumptions.json` (`STRATEGY // GRADE` → output strategies) into forecast POST-grade percentages via `strategy_mapping` reverse lookup + item-name grade extraction + `DEFAULT_STRATEGY_TO_POST`. Ambiguous output splits (SPECIALTY, ABC, GRINDERS, MBUNIS, REJECTS) are **flagged, never guessed** — confirm the splits with Ivo. Validated on a hand-computed synthetic fixture (parity [4]/[5]); swap in the raw XBS export when it arrives.
+2. ✅ **Futs+Spread** `src/lib/futsspread.ts` + `src/lib/parse.ts` — all 34 golden mt/lots values exact (parity [6]). Excel SUMIFS is case-INSENSITIVE (`<>Kenyacof` must also exclude `KENYACOF`) — replicated. `futuresPotBySFixDte` computes the pots pivot live; **the golden workbook's own pivot was stale** (KCN/2026 cached −516.0 vs refreshed −544.77; KCK/2026 missing). SOL parsers validated on the real exports (parity [7]); known snapshot drift between the on-disk ReportLogistic and the workbook paste: SSKE-107893 SMT revised, SSKE-98454 extra, SSKE-103502 is a 2-row contract split (parser aggregates by contract+month).
+3. ✅ **Blend matcher** — `globallyAmbiguousKeys` registry; known-ambiguous keys always flagged. LOO: 42% auto-correct, 58% flagged, **0% wrong**.
+4. ✅ **Lua wiring** — `src/sources/*` adapter, 5 skills / 15 kebab-case tools in `src/skills/*`, `src/skills/store.ts` (Data-API helpers), `src/seed/index.ts` (bundled reference data incl. 60-sale assignment-history seed). Snapshots store compact summaries (status/location/matrix/postBags/forecast groups), never raw stock rows. `seed-reference-data` + `list-snapshots` verified in sandbox via `lua test`.
+5. ✅ **Morning report job** `src/jobs/morning-report.job.ts` — cron `0 6 * * 1-5` Africa/Nairobi; reports latest snapshot with staleness/pending warnings; recipient from job metadata `userId` or `MORNING_REPORT_USER_ID`/`MORNING_REPORT_EMAIL` env. Verified in sandbox (graceful skip with no data). `lua compile --ci` → 22 primitives.
+
+### Remaining manual/ops steps (need the user or Ivo)
+
+- **LuaPop channel:** `lua channels` is interactive-only — run `! lua channels` in a Claude Code prompt (or a terminal) and add the web-widget channel, then embed the snippet per docs `chat-widget/installation`.
+- **Morning-report recipient:** set `MORNING_REPORT_USER_ID` (or `MORNING_REPORT_EMAIL`) via `lua env`, or set the job metadata userId after Ivo's first chat.
+- **Deploy:** `lua push` + `/lua-deploy` (deploy is permission-gated by the hook).
+- **Verify the chat-upload → CDN fileId path** with a real upload in `lua chat` (docs gap; tools fall back to scanning chat history for the latest file part).
+- **End-to-end golden replay** through the skills (upload the three 2026-06-18 exports in chat, run the chain, compare to the workbook) — engine math is golden-exact; this validates the wiring with real uploads.
 
 ## 7. Lua API cheat-sheet (verified from `node_modules/lua-cli/dist/api-exports.d.ts` v3.18)
 
@@ -114,4 +124,4 @@ Remaining 7% wrong (LOO) = genuinely ambiguous keys (same key → 2 blends legit
 
 ### Resume prompt
 
-> Resume building the **Position Assistant** Lua agent. Read `HANDOVER.md` and `/Users/devashishthapliyal/.claude/plans/magical-leaping-quasar.md` in full first. Status: the pure position engine (`src/lib/*`) is built and validated to **exact parity** against the golden 2026-06-18 workbook (forward-sales matrix + net position both Δ0) via `npx tsx src/__tests__/parity.ts`; the agent is renamed and seed/fixtures extracted. Continue with the remaining tasks in `HANDOVER.md §6` in order: (1) longs stock-counter engine `src/lib/stockcounter.ts`, (2) `src/lib/futsspread.ts`, (3) blend-matcher globally-ambiguous refinement, (4) Lua wiring — data-source adapter + skills + Data-API seeding, (5) morning-report job + LuaPop channel + `lua compile --ci`. Keep every lib pure and extend the parity harness as you go. Don't re-derive the model — the formulas and the blend-matcher finding are in HANDOVER §3 and §5.
+> Resume the **Position Assistant** Lua agent. Read `HANDOVER.md` in full first. Status: ALL build tasks are done (see §6) — pure engine at exact golden parity (`npx tsx src/__tests__/parity.ts` exits 0, sections [1]–[7]), 5 skills + morning-report job wired and compiling (22 primitives), reference data seedable via the `seed-reference-data` tool. What's left is ops + verification: LuaPop channel (interactive `lua channels`), morning-report recipient env, push/deploy via `/lua-deploy`, the chat-upload→fileId verification, and an end-to-end golden replay through the skills — plus the Ivo dependencies in §9.
