@@ -10,6 +10,7 @@ import {
   BATCH_MAPPINGS_SEED,
   ASSIGNMENT_HISTORY_SEED,
 } from '../seed';
+import { DEMO_POSITION_DATE, DEMO_SALES, DEMO_DNP, DEMO_THEORETICAL, DEMO_MANUAL_INPUTS } from '../seed/demo';
 
 /**
  * Ingestion: turn the three uploaded exports into a compact snapshot for a
@@ -148,6 +149,32 @@ class SeedReferenceData implements LuaTool {
   }
 }
 
+class LoadDemoSnapshot implements LuaTool {
+  name = 'load-demo-snapshot';
+  description =
+    'Load the bundled demo/validation day (2026-06-18, the golden workbook day): 60 sales, the real DailyNetPosition, theoretical stock, and the manual pot figures. For demos and end-to-end verification — no uploads needed.';
+  inputSchema = z.object({});
+
+  async execute() {
+    await saveSnapshot(DEMO_POSITION_DATE, {
+      demo: true,
+      sales: DEMO_SALES,
+      dnp: DEMO_DNP,
+      theoretical: DEMO_THEORETICAL,
+    });
+    await upsert(COLLECTIONS.manualInputs, { positionDate: DEMO_POSITION_DATE }, {
+      positionDate: DEMO_POSITION_DATE,
+      ...DEMO_MANUAL_INPUTS,
+    });
+    return {
+      positionDate: DEMO_POSITION_DATE,
+      loaded: { sales: DEMO_SALES.length, dnpRows: DEMO_DNP.length, theoreticalTotalBags: DEMO_THEORETICAL.totals.total },
+      manualInputs: DEMO_MANUAL_INPUTS,
+      note: 'Demo day loaded (theoretical stock is pre-computed — no raw XBS export exists for this day). Next: assign-blends → compute-forward-sales → compute-net-position → compute-futs-spread. Expected net ≈ −4,850 bags.',
+    };
+  }
+}
+
 class ListSnapshots implements LuaTool {
   name = 'list-snapshots';
   description = 'List stored position snapshots (date + which inputs/results are present).';
@@ -184,6 +211,7 @@ export const ingestionSkill = new LuaSkill({
 - All three write into the snapshot for the position date (default: today, Nairobi). Pass positionDate when the trader says the export is for another day.
 - If the trader uploaded a file but no fileId is known, the tools automatically use the most recent upload in this chat.
 - seed-reference-data is one-time setup (safe to re-run) — run it if blend/assumption lookups appear empty.
+- load-demo-snapshot loads the bundled 2026-06-18 validation day (no uploads needed) — use it for demos or when someone wants to try the agent before real data exists. Always tell the user the data is the demo day, not live.
 - list-snapshots shows what data exists per date. The usual flow after uploads: compute-theoretical-stock → assign-blends → compute-forward-sales → compute-net-position → compute-futs-spread.`,
-  tools: [new IngestStockReport(), new IngestDailyNetPosition(), new IngestLogisticsReport(), new SeedReferenceData(), new ListSnapshots()],
+  tools: [new IngestStockReport(), new IngestDailyNetPosition(), new IngestLogisticsReport(), new SeedReferenceData(), new LoadDemoSnapshot(), new ListSnapshots()],
 });

@@ -315,6 +315,54 @@ else {
   );
 }
 
+// ---------- 8. Demo-files end-to-end (the exact flow a chat upload takes) ----------
+// demo-files/ holds the two real SOL exports plus a SYNTHESIZED XBS stock
+// report (no raw export exists for the golden day; the synthetic file encodes
+// Summary!C as fully-processed lots). Running all three through the real
+// parsers + engine must land on the golden Summary.
+console.log('\n[8] demo-files/ end-to-end through the real parsers');
+const { parseStockWorkbook } = await import('../sources/UploadedFileSource');
+const demoDir = join(here, '../../demo-files');
+const stockRows = parseStockWorkbook(readFileSync(join(demoDir, 'XBS_Stock_2026-06-18.xlsx')));
+const demoSc = runStockCounter(stockRows, {}, new Date('2026-06-18T00:00:00Z'));
+const demoTheo = theoreticalByGrade(demoSc.theoretical);
+check('demo XBS total theoretical bags', Math.round(demoSc.theoretical.totals.total * 100) / 100, 35568.29);
+
+const demoSales = aggregateSales(
+  parseLogisticsReport(decodeExportText(readFileSync(join(demoDir, 'ReportLogistic_2026-06-18.xls'))))
+);
+// blend numbers come from the learned memory (seeded from the golden BASE FILE)
+const demoMemory = buildAssignmentMemory(sales);
+const demoAmbiguous = globallyAmbiguousKeys(demoMemory);
+const demoFs = computeForwardSales(demoSales, blends, { useAssigned: false, memory: demoMemory, ambiguousKeys: demoAmbiguous });
+const demoHorizon = [...demoFs.months].sort().slice(1, 11);
+const demoNet = computeNetPosition(demoTheo, sumOverMonths(demoFs.matrix, demoHorizon));
+console.log(
+  `  demo net total ${demoNet.total.net.toFixed(2)} (golden −4850.21; drift = pending-blend sales ${demoFs.pending.length} + known snapshot revisions)`
+);
+// The invariant that matters: every AUTO-allocated sale matches Ivo's actual
+// blend choice (BASE FILE ground truth); everything else is honestly pending.
+const demoGt = Object.fromEntries(sales.map((s) => [s.saleCtr, s.blendNo]));
+const wrongAuto = demoFs.matches.filter(
+  (m) => !m.needsConfirmation && m.blend && demoGt[m.sale.saleCtr!] != null && m.blend.blendNo !== demoGt[m.sale.saleCtr!]
+);
+if (wrongAuto.length === 0)
+  ok(`${demoSales.length} sales → ${demoSales.length - demoFs.pending.length} auto-allocated (all match Ivo's choices), ${demoFs.pending.length} flagged for confirmation`);
+else fail(`${wrongAuto.length} demo sales auto-allocated to the WRONG blend: ${wrongAuto.map((m) => m.sale.saleCtr).join(', ')}`);
+const demoDnp = parseDailyNetPosition(decodeExportText(readFileSync(join(demoDir, 'DailyNetPosition_2026-06-18.xls'))));
+const demoFuts = computeFutsSpread({
+  theoreticalTotalBags: demoSc.theoretical.totals.total,
+  postNaturalBags: demoTheo['POST NATURAL'] || 0,
+  rejectsSBags: demoTheo['POST REJECTS S'] || 0,
+  rejectsPBags: demoTheo['POST REJECTS P'] || 0,
+  postNaturalForwardBags: [...demoFs.months].sort().slice(1).reduce((s, mo) => s + ((demoFs.matrix['POST NATURAL'] || {})[mo] || 0), 0),
+  dnp: demoDnp,
+  manual: { kenyacofFutsMt: -1717, deltaHedgeKenyArDynMt: -102 },
+});
+check('demo Stock mt', Math.round((demoFuts.lines['Stock'].mt ?? 0) * 10000) / 10000, 2134.0974);
+check('demo Direct Sales Stock mt', Math.round((demoFuts.lines['Direct Sales Stock'].mt ?? 0) * 100) / 100, -66.26);
+check('demo Sucafina mt', Math.round((demoFuts.lines['Sucafina'].mt ?? 0) * 100) / 100, -4.56);
+
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));
 
