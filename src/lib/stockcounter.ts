@@ -387,26 +387,24 @@ export interface ReconcileResult {
   unresolved: UnresolvedRow[];
 }
 
+/** A PRE/IN matrix row with the metadata the assumption lookup needs. */
+export interface ForecastGroup {
+  strategy: string;
+  batchPrefix: string;
+  /** Distinct physical grades recognised in the group's item names. */
+  grades: string[];
+  /** Standard strategy forced by a batch_mappings override. */
+  standardOverride?: string;
+}
+
 /**
- * Derive forecast percentages from saved assumptions for the PRE/IN rows —
- * the step Ivo does by hand in the counter UI. Works from raw rows (not the
- * matrix) because the assumption lookup needs each lot's physical grade.
- * Resolves what it can; anything ambiguous lands in `unresolved` instead of
- * being guessed.
+ * Group PRE/IN rows exactly like `processMatrixData`, additionally tracking
+ * each group's physical grades and batch overrides. The output is compact
+ * enough to persist, so percentages can be re-derived later without raw rows.
  */
-export function deriveForecastPercentages(rows: StockRow[], cfg: ReconcileConfig): ReconcileResult {
-  const strategyToPost = cfg.strategyToPost ?? DEFAULT_STRATEGY_TO_POST;
-  const batchMappings = cfg.batchMappings ?? {};
-
-  // Reverse strategy_mapping: normalized raw spelling → standard strategy.
-  const rawToStandard: Record<string, string> = {};
-  for (const [standard, raws] of Object.entries(cfg.strategyMapping)) {
-    for (const raw of raws) rawToStandard[raw.toUpperCase().trim()] = standard;
-  }
-
-  // Group like processMatrixData, tracking per-group grade candidates.
-  interface Group { strategy: string; batchPrefix: string; grades: Set<string>; standardOverride?: string }
-  const groups: Record<string, Group> = {};
+export function groupForecastRows(rows: StockRow[], batchMappings: Record<string, string> = {}): ForecastGroup[] {
+  interface Acc { strategy: string; batchPrefix: string; grades: Set<string>; standardOverride?: string }
+  const groups: Record<string, Acc> = {};
   for (const row of rows) {
     let strategy = String(row.strategy || '').trim();
     if (!(strategy.startsWith('PRE') || strategy.startsWith('IN'))) continue;
@@ -420,28 +418,52 @@ export function deriveForecastPercentages(rows: StockRow[], cfg: ReconcileConfig
     if (grade) g.grades.add(grade);
     if (batchMappings[batchId]) g.standardOverride = batchMappings[batchId];
   }
+  return Object.values(groups).map((g) => ({ ...g, grades: [...g.grades] }));
+}
+
+/**
+ * Derive forecast percentages from saved assumptions for the PRE/IN rows —
+ * the step Ivo does by hand in the counter UI. Works from raw rows (not the
+ * matrix) because the assumption lookup needs each lot's physical grade.
+ * Resolves what it can; anything ambiguous lands in `unresolved` instead of
+ * being guessed.
+ */
+export function deriveForecastPercentages(rows: StockRow[], cfg: ReconcileConfig): ReconcileResult {
+  return derivePercentagesFromGroups(groupForecastRows(rows, cfg.batchMappings ?? {}), cfg);
+}
+
+/** Same derivation, from persisted `ForecastGroup`s instead of raw rows. */
+export function derivePercentagesFromGroups(groups: ForecastGroup[], cfg: ReconcileConfig): ReconcileResult {
+  const strategyToPost = cfg.strategyToPost ?? DEFAULT_STRATEGY_TO_POST;
+
+  // Reverse strategy_mapping: normalized raw spelling → standard strategy.
+  const rawToStandard: Record<string, string> = {};
+  for (const [standard, raws] of Object.entries(cfg.strategyMapping)) {
+    for (const raw of raws) rawToStandard[raw.toUpperCase().trim()] = standard;
+  }
 
   const percentages: Percentages = {};
   const unresolved: UnresolvedRow[] = [];
 
-  for (const [rowKey, g] of Object.entries(groups)) {
+  for (const g of groups) {
+    const rowKey = `${g.strategy}|${g.batchPrefix}`;
     const raw = rawStrategyOf(g.strategy).toUpperCase();
     const standard = g.standardOverride ?? rawToStandard[raw];
     if (!standard) {
       unresolved.push({ rowKey, reason: 'no-standard-strategy', detail: `No standard strategy for "${raw}"` });
       continue;
     }
-    if (g.grades.size !== 1) {
+    if (g.grades.length !== 1) {
       unresolved.push({
         rowKey,
         reason: 'no-grade',
-        detail: g.grades.size === 0
+        detail: g.grades.length === 0
           ? 'No physical grade recognised in item names'
-          : `Mixed grades in one matrix row: ${[...g.grades].join(', ')}`,
+          : `Mixed grades in one matrix row: ${g.grades.join(', ')}`,
       });
       continue;
     }
-    const grade = [...g.grades][0];
+    const grade = g.grades[0];
     const assumption = cfg.assumptions[`${standard} // ${grade}`];
     if (!assumption) {
       unresolved.push({ rowKey, reason: 'no-assumption', detail: `No assumption for "${standard} // ${grade}"` });

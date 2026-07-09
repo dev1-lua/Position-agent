@@ -1,4 +1,9 @@
 import { LuaAgent } from 'lua-cli';
+import { ingestionSkill } from './skills/ingestion.skill';
+import { stockcounterSkill } from './skills/stockcounter.skill';
+import { forwardsalesSkill } from './skills/forwardsales.skill';
+import { positionSkill } from './skills/position.skill';
+import { querySkill } from './skills/query.skill';
 
 /**
  * Position Assistant
@@ -67,8 +72,7 @@ const agent = new LuaAgent({
   name: 'Position Assistant',
   persona,
   model: 'anthropic/claude-sonnet-5',
-  // Skills, jobs, and the morning-report job are registered here as they are built.
-  skills: [],
+  skills: [ingestionSkill, stockcounterSkill, forwardsalesSkill, positionSkill, querySkill],
   // jobs: [morningReportJob],
 });
 
