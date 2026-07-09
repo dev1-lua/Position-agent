@@ -1,0 +1,17 @@
+{
+    "SPECIALTY": ["SPECIALTY", "SPECIALTY - WASHED", "SPECIALTY - NATURAL", "NATURAL"],
+    "AA TOP": ["AA - TOP"],
+    "AB TOP": ["AB - TOP"],
+    "PB TOP": ["PB-TOP", "PB - TOP"],
+    "AA PLUS": ["AA - PLUS", "AA - Plus"],
+    "AB PLUS": ["AB - PLUS"],
+    "PB PLUS": ["PB - PLUS"],
+    "ABC PLUS": ["ABC - PLUS"],
+    "AA FAQ": ["AA - FAQ", "AA - FAQ MINUS"],
+    "AB FAQ": ["AB - FAQ", "AB - FAQ MINUS", "GRINDER BOLD"],
+    "PB FAQ": ["PB - FAQ"],
+    "ABC FAQ": ["ABC - FAQ"],
+    "GRINDERS": ["GRINDER", "GRINDERS", "GRINDERS "],
+    "MBUNIS": ["MBUNIS", "ML", "MH"],
+    "REJECTS": ["REJECTS L", "REJECT", "REJECTS B", "REJECTS", "TRIAGE", "LOW GRADE"]
+  }
