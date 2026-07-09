@@ -5,7 +5,7 @@
  */
 
 /** Blend recipes extracted from the workbook's Blends sheet. */
-export const BLENDS_SEED = {
+export const BLENDS_SEED: { gradeColumns?: string[]; blends: any[] } = {
   "gradeColumns": [
     "FINISHED",
     "POST NATURAL",
@@ -1063,10 +1063,10 @@ export const BLENDS_SEED = {
       "recipeSum": 0.0
     }
   ]
-} as const;
+};
 
 /** Processing-yield assumptions (STRATEGY // GRADE → output strategies). */
-export const ASSUMPTIONS_SEED = {
+export const ASSUMPTIONS_SEED: { STANDARD_STRATEGIES: string[]; ASSUMPTIONS: Record<string, { percentToProcess?: number; outputs: Record<string, number> }> } = {
   "STANDARD_STRATEGIES": [
     "SPECIALTY",
     "AA TOP",
@@ -1542,7 +1542,7 @@ export const ASSUMPTIONS_SEED = {
       }
     }
   }
-} as const;
+};
 
 /** Standard strategy → raw strategy-allocation spellings. */
 export const STRATEGY_MAPPING_SEED: Record<string, string[]> = {
@@ -1624,7 +1624,7 @@ export const BATCH_MAPPINGS_SEED: Record<string, string> = {
  * Historical sale-to-blend assignments (golden BASE FILE, 2026-06-18) — seeds
  * the learned assignment memory. Grows as the trader confirms new blends.
  */
-export const ASSIGNMENT_HISTORY_SEED = [
+export const ASSIGNMENT_HISTORY_SEED: Array<{ client: string | null; sGrade: string | null; sStrategy: string | null; blendNo: number }> = [
   {
     "client": "32CUP",
     "sGrade": "NAT.SPECIALTY",
@@ -1985,4 +1985,4 @@ export const ASSIGNMENT_HISTORY_SEED = [
     "sStrategy": null,
     "blendNo": 34
   }
-] as const;
+];

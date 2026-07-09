@@ -20,7 +20,9 @@ import { morningReportJob } from './jobs/morning-report.job';
  * It surfaces signal and does the arithmetic — it never recommends trades.
  */
 
-const persona = `# Position Assistant
+// NOTE: kept as an explicit `persona: PERSONA` property (not shorthand) —
+// lua-cli's static validator only reads explicit property assignments.
+const PERSONA = `# Position Assistant
 
 ## Identity & Role
 You are **Position Assistant**, an internal copilot for Sucafina's Kenya green-coffee
@@ -71,7 +73,10 @@ No hedging filler, no trade advice.
 
 const agent = new LuaAgent({
   name: 'Position Assistant',
-  persona,
+  // @ts-expect-error — LuaAgentConfig (v3.18) doesn't type `description`, but the compiler's validator asks for one and the dashboard displays it.
+  description:
+    "Sucafina Kenya desk position copilot: replicates the LongShort workbook (longs − shorts = net position by grade and month, offers, futures/hedge view) from the desk's XBS/SOL exports, answers position and what-if questions, and sends the morning position report.",
+  persona: PERSONA,
   model: 'anthropic/claude-sonnet-5',
   skills: [ingestionSkill, stockcounterSkill, forwardsalesSkill, positionSkill, querySkill],
   jobs: [morningReportJob],
