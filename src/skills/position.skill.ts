@@ -15,11 +15,24 @@ import { COLLECTIONS, getSnapshot, saveSnapshot, upsert, getAll } from './store'
 const dateField = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('Defaults to the latest snapshot');
 
 /**
- * Workbook horizon rule (Summary E:N): drop the oldest forward-sales month,
- * net over the next `count` months.
+ * Netting horizon as a rolling window anchored on the position date. The
+ * golden workbook nets Summary E:N = 2025/12..2026/09 against a 2026-06-18
+ * position — i.e. position month −6 through +3, ten consecutive calendar
+ * months. Anchoring on the position date (not on whatever months the sales
+ * happen to cover) keeps the horizon stable when the data has stray old
+ * ship months or gaps.
  */
-function defaultHorizon(months: string[], count = 10): string[] {
-  return [...months].sort().slice(1, 1 + count);
+function defaultHorizon(positionDate: string, count = 10, backMonths = 6): string[] {
+  let [y, m] = positionDate.slice(0, 7).split('-').map(Number);
+  m -= backMonths;
+  while (m < 1) { m += 12; y--; }
+  const out: string[] = [];
+  for (let i = 0; i < count; i++) {
+    out.push(`${y}/${String(m).padStart(2, '0')}`);
+    m++;
+    if (m > 12) { m = 1; y++; }
+  }
+  return out;
 }
 
 class ComputeNetPosition implements LuaTool {
@@ -37,8 +50,7 @@ class ComputeNetPosition implements LuaTool {
     if (!snap?.data?.theoretical?.byGrade) throw new Error('Theoretical stock missing — run compute-theoretical-stock first.');
     if (!snap?.data?.forwardSales?.matrix) throw new Error('Forward sales missing — run compute-forward-sales first.');
 
-    const months: string[] = snap.data.forwardSales.months ?? [];
-    const horizon = input.horizonMonths ?? defaultHorizon(months);
+    const horizon = input.horizonMonths ?? defaultHorizon(snap.data.positionDate);
     const fwdByGrade = sumOverMonths(snap.data.forwardSales.matrix, horizon);
     const net = computeNetPosition(snap.data.theoretical.byGrade, fwdByGrade);
     const offers = computeOffers(net);
