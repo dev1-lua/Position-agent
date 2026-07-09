@@ -177,12 +177,21 @@ class PriceAnalytics implements LuaTool {
     const blends = input.dimension === 'postGrade' ? await loadBlendRecipes() : undefined;
     const result = computePricing(sales, { dimension: input.dimension, blends });
 
-    let byBucket = result.byBucket;
-    if (byBucket && input.dimension === 'postGrade' && input.grade) {
-      const target = normGrade(input.grade);
-      byBucket = Object.fromEntries(Object.entries(byBucket).filter(([g]) => normGrade(g).includes(target)));
-      if (Object.keys(byBucket).length === 0)
-        return { positionDate: d.positionDate, note: `No POST grade matching "${input.grade}" carries priced shorts.` };
+    let byBucket: Record<string, any> | undefined = result.byBucket;
+    if (byBucket && input.dimension === 'postGrade') {
+      if (input.grade) {
+        const target = normGrade(input.grade);
+        byBucket = Object.fromEntries(Object.entries(byBucket).filter(([g]) => normGrade(g).includes(target)));
+        if (Object.keys(byBucket).length === 0)
+          return { positionDate: d.positionDate, note: `No POST grade matching "${input.grade}" carries priced shorts.` };
+      }
+      // postGrade buckets are weighted by blend-allocated BAGS, not MT — name the field accordingly
+      byBucket = Object.fromEntries(
+        Object.entries(byBucket).map(([g, b]: [string, any]) => [
+          g,
+          { contracts: b.contracts, allocatedBags: b.smt, contractDifUscLb: b.contractDifUscLb, fobDifUscLb: b.fobDifUscLb },
+        ])
+      );
     }
 
     return {
