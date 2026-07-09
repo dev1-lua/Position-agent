@@ -3,3 +3,5 @@ node_modules/
 dist-v2/
 .DS_Store
 .lua/
+Sucafina/
+sucafina/
