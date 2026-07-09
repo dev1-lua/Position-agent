@@ -37,6 +37,33 @@ export interface Sale {
   sFobDif?: number | null;
   /** Sale Incoterm, e.g. FOB / CIF / DAP — explains sDif vs sFobDif gaps. */
   sTerm?: string | null;
+  /** Destination city/port code (S.City), e.g. HKHKG. */
+  sCity?: string | null;
+  /** Destination country code (S.CodCountry), e.g. NETH. */
+  sCountry?: string | null;
+  /** Payment term, e.g. CAD / CODCR. */
+  paymentTerm?: string | null;
+  /** Desk trader initials (Trader column). */
+  trader?: string | null;
+  /** Certification flags on the sale (S.Cert), e.g. CP.EUDR. */
+  sCert?: string | null;
+  /** Booking-stage shipment data; null until the contract is booked. */
+  booking?: SaleBooking | null;
+}
+
+/** Pre-shipment booking detail from ReportLogistic (first transport leg). */
+export interface SaleBooking {
+  preshipId: string | null;
+  line: string | null;
+  vessel: string | null;
+  voyage: string | null;
+  bookingNum: string | null;
+  transType: string | null;
+  pol: string | null;
+  pod: string | null;
+  etd: string | null;
+  eta: string | null;
+  siDate: string | null;
 }
 
 /** A raw stock lot parsed from the XBS stock report (stock-counter input). */

@@ -1,4 +1,4 @@
-import { DnpRow, Sale } from './types';
+import { DnpRow, Sale, SaleBooking } from './types';
 
 /**
  * Parsers for the SOL exports. Despite their `.xls` extension these are
@@ -94,6 +94,29 @@ export function parseLogisticsReport(
     sDif: columnIndex(header, ['S.Dif']),
     sFobDif: columnIndex(header, ['S.Fob dif']),
     sTerm: columnIndex(header, ['S.Term']),
+    sCity: columnIndex(header, ['S.City']),
+    sCountry: columnIndex(header, ['S.CodCountry']),
+    paymentTerm: columnIndex(header, ['Payment term']),
+    trader: columnIndex(header, ['Trader']),
+    sCert: columnIndex(header, ['S.Cert']),
+    // booking leg — the header repeats Vessel/ETD/ETA/POD/TransType for the
+    // second transport leg (empty on this export); columnIndex takes the FIRST
+    preshipId: columnIndex(header, ['PreshipID']),
+    bookingLine: columnIndex(header, ['Booking Line']),
+    vessel: columnIndex(header, ['Vessel']),
+    voyage: columnIndex(header, ['Voy.Num']),
+    bookingNum: columnIndex(header, ['Booking num.']),
+    transType: columnIndex(header, ['TransType']),
+    pol: columnIndex(header, ['POL']),
+    pod: columnIndex(header, ['POD']),
+    etd: columnIndex(header, ['ETD']),
+    eta: columnIndex(header, ['ETA']),
+    siDate: columnIndex(header, ['SI.Date']),
+  };
+  // booking fields use '0' as their empty marker
+  const bookingVal = (r: string[], i: number): string | null => {
+    const v = (r[i] ?? '').trim();
+    return v === '' || v === '0' ? null : v;
   };
   const wanted = new Set(statuses);
   const sales: Sale[] = [];
@@ -116,6 +139,27 @@ export function parseLogisticsReport(
       sDif: r[col.sDif]?.trim() ? toNum(r[col.sDif]) : null,
       sFobDif: r[col.sFobDif]?.trim() ? toNum(r[col.sFobDif]) : null,
       sTerm: r[col.sTerm] || null,
+      sCity: r[col.sCity] || null,
+      sCountry: r[col.sCountry] || null,
+      paymentTerm: r[col.paymentTerm] || null,
+      trader: r[col.trader] || null,
+      sCert: r[col.sCert] || null,
+      booking: ((): SaleBooking | null => {
+        const b: SaleBooking = {
+          preshipId: bookingVal(r, col.preshipId),
+          line: bookingVal(r, col.bookingLine),
+          vessel: bookingVal(r, col.vessel),
+          voyage: bookingVal(r, col.voyage),
+          bookingNum: bookingVal(r, col.bookingNum),
+          transType: bookingVal(r, col.transType),
+          pol: bookingVal(r, col.pol),
+          pod: bookingVal(r, col.pod),
+          etd: bookingVal(r, col.etd),
+          eta: bookingVal(r, col.eta),
+          siDate: bookingVal(r, col.siDate),
+        };
+        return Object.values(b).some((v) => v != null) ? b : null;
+      })(),
     });
   }
   return sales;
@@ -142,8 +186,23 @@ export function aggregateSales(sales: Sale[]): Sale[] {
     } else {
       acc.sale.smt += s.smt;
       if (acc.sale.sbags != null || s.sbags != null) acc.sale.sbags = (acc.sale.sbags ?? 0) + (s.sbags ?? 0);
-      if ((acc.sale.sPriceUnit ?? null) !== (s.sPriceUnit ?? null)) acc.sale.sPriceUnit = null;
-      if ((acc.sale.sTerm ?? null) !== (s.sTerm ?? null)) acc.sale.sTerm = null;
+      const FLAT_STRINGS = ['sPriceUnit', 'sTerm', 'sCity', 'sCountry', 'paymentTerm', 'trader', 'sCert'] as const;
+      for (const f of FLAT_STRINGS) if ((acc.sale[f] ?? null) !== (s[f] ?? null)) acc.sale[f] = null;
+      // booking: a split contract can ride the same sailing on several
+      // bookings (e.g. SSKE-103502: two preship IDs, one vessel) — join
+      // differing IDs with ' / ', keep the earliest of differing dates
+      if (!acc.sale.booking) acc.sale.booking = s.booking;
+      else if (s.booking) {
+        const DATE_FIELDS: (keyof SaleBooking)[] = ['etd', 'eta', 'siDate'];
+        for (const k of Object.keys(acc.sale.booking) as (keyof SaleBooking)[]) {
+          const a = acc.sale.booking[k];
+          const b = s.booking[k];
+          if (a === b || b == null) continue;
+          if (a == null) acc.sale.booking[k] = b;
+          else if (DATE_FIELDS.includes(k)) acc.sale.booking[k] = a < b ? a : b;
+          else acc.sale.booking[k] = `${a} / ${b}`;
+        }
+      }
     }
     for (const f of PRICE_FIELDS) {
       const v = s[f];

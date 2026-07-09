@@ -426,6 +426,73 @@ if (grinderBold?.contractDifUscLb != null && grinderBold?.fobDifUscLb != null)
   ok(`postGrade dim: POST GRINDER BOLD dif ${grinderBold.contractDifUscLb} / FOB ${grinderBold.fobDifUscLb} (blend-weighted)`);
 else fail('postGrade dim: no differential computed for POST GRINDER BOLD');
 
+// ---------- 10. Client & shipment analytics ----------
+// Expected values hand-computed independently (python over the raw TSV) —
+// see the client-shipment-analytics spec. The export is pre-filtered to
+// '6-Sales Unallocated', so shipment status = booking state of the book.
+console.log('\n[10] Client & shipment analytics vs hand-computed constants');
+const { computeClientExposure, computeShipmentStatus } = await import('../lib/book');
+const exposure = computeClientExposure(parsedSales);
+const expTop: Array<[string, number, number, number]> = [
+  ['KONINKLUJKE', 8, -864.0, 29.7],
+  ['NESTRADE', 6, -784.8, 27.0],
+  ['NESTLE SVE', 10, -583.2, 20.1],
+];
+let clientBad = 0;
+for (const [name, ctr, smt, share] of expTop) {
+  const c = exposure.clients.find((x) => x.client === name);
+  if (!c || c.contracts !== ctr || Math.abs(c.smt - smt) > 0.01 || Math.abs(c.sharePct - share) > 0.1) {
+    clientBad++;
+    fail(`client ${name}: got ${c?.contracts}/${c?.smt}/${c?.sharePct}%, expected ${ctr}/${smt}/${share}%`);
+  }
+}
+if (clientBad === 0) ok('top-3 clients exact (contracts / SMT / share): KONINKLUJKE, NESTRADE, NESTLE SVE');
+if (exposure.clients[0]?.client === 'KONINKLUJKE') ok('largest counterparty is KONINKLUJKE (sorted by |SMT|)');
+else fail(`largest counterparty: got ${exposure.clients[0]?.client}, expected KONINKLUJKE`);
+nearPx('total SMT (exposure)', exposure.total.smt, -2907.81);
+
+const status = computeShipmentStatus(parsedSales);
+if (status.overall.booked.contracts === 17 && Math.abs(status.overall.booked.smt - -528.12) <= 0.01)
+  ok('booked: 17 contracts / −528.12 MT (PreshipID present, \'0\' treated as empty)');
+else fail(`booked: got ${status.overall.booked.contracts}/${status.overall.booked.smt}, expected 17/-528.12`);
+if (status.overall.vesselAssigned.contracts === 12 && Math.abs(status.overall.vesselAssigned.smt - -410.52) <= 0.01)
+  ok('vessel assigned: 12 contracts / −410.52 MT');
+else fail(`vessel assigned: got ${status.overall.vesselAssigned.contracts}/${status.overall.vesselAssigned.smt}, expected 12/-410.52`);
+const LADDER: Record<string, [number, number]> = {
+  '2026/05': [3, 0],
+  '2026/06': [9, 13],
+  '2026/07': [3, 6],
+  '2026/08': [2, 7],
+  '2026/09': [0, 9],
+  '2026/10': [0, 4],
+  '2026/11': [0, 2],
+};
+let ladderBad = 0;
+for (const [mo, [b, u]] of Object.entries(LADDER)) {
+  const row = status.byMonth[mo];
+  if (!row || row.booked !== b || row.unbooked !== u) {
+    ladderBad++;
+    fail(`ladder ${mo}: got ${row?.booked}/${row?.unbooked}, expected ${b}/${u}`);
+  }
+}
+if (ladderBad === 0) ok('booked/unbooked ladder exact across the 7 main delivery months');
+const etdMonths = status.shipments.filter((s) => s.etd).map((s) => s.etd!.slice(0, 7));
+if (etdMonths.filter((m) => m === '2026-06').length === 9 && etdMonths.filter((m) => m === '2026-07').length === 3)
+  ok('ETDs across vessel-assigned shipments: 9× 2026-06, 3× 2026-07');
+else fail(`ETD months: got ${JSON.stringify(etdMonths)}, expected 9× 2026-06 + 3× 2026-07`);
+
+// demo-seed spot-checks: the new fields must survive the enrichment join
+const demoExposure = computeClientExposure(demoSeedSales);
+const demoKon = demoExposure.clients.find((c) => c.client === 'KONINKLUJKE');
+if (demoKon && demoKon.contracts === 8 && Math.abs(demoKon.smt - -864.0) <= 0.01 && demoKon.destinations.includes('NETH'))
+  ok('demo seed: KONINKLUJKE exposure survives the join (8 ctr / −864 MT / NETH)');
+else fail(`demo seed KONINKLUJKE: got ${demoKon?.contracts}/${demoKon?.smt}/${demoKon?.destinations}`);
+const demoStatus = computeShipmentStatus(demoSeedSales);
+const demoVessels = demoStatus.shipments.filter((s) => s.vessel != null).length;
+if (demoStatus.overall.booked.contracts >= 15 && demoVessels >= 10)
+  ok(`demo seed: ${demoStatus.overall.booked.contracts} booked contracts, ${demoVessels} with vessels — booking detail survives the join`);
+else fail(`demo seed booked: ${demoStatus.overall.booked.contracts} booked, ${demoVessels} vessels (expected ≥15 / ≥10)`);
+
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));
 
