@@ -2,7 +2,8 @@ import { LuaSkill, LuaTool } from 'lua-cli';
 import { z } from 'zod';
 import { normGrade, POST_GRADES_SUMMARY } from '../lib/grades';
 import { bagsToMt, round } from '../lib/units';
-import { getSnapshot } from './store';
+import { computePricing, PriceDimension } from '../lib/pricing';
+import { getSnapshot, loadBlendRecipes } from './store';
 
 /**
  * Q&A over computed snapshots: position lookups and what-if checks. These
@@ -138,13 +139,82 @@ class WhatIf implements LuaTool {
   }
 }
 
+class PriceAnalytics implements LuaTool {
+  name = 'price-analytics';
+  description =
+    'Average price level of the shorts book: SMT-weighted contract differential AND FOB-equivalent differential (USc/lb vs NY KC) — overall or by sold grade, POST grade, client, delivery month, or fixation month; plus the fixed vs price-to-be-fixed split. No cost basis, P&L, or market prices.';
+  inputSchema = z.object({
+    positionDate: dateField,
+    dimension: z
+      .enum(['soldGrade', 'postGrade', 'client', 'deliveryMonth', 'fixMonth'])
+      .optional()
+      .describe('Break the averages down by this dimension; omit for the overall book'),
+    grade: z.string().optional().describe('With dimension=postGrade: filter to POST grades fuzzy-matching this (e.g. "grinder")'),
+    client: z.string().optional().describe('Filter sales to one client before averaging'),
+    month: z.string().regex(/^\d{4}\/\d{2}$/).optional().describe('Filter sales to one delivery month YYYY/MM'),
+    fixMonth: z.string().optional().describe('Filter sales to one futures fixation month, e.g. KCU/2026'),
+  });
+
+  async execute(input: {
+    positionDate?: string;
+    dimension?: PriceDimension;
+    grade?: string;
+    client?: string;
+    month?: string;
+    fixMonth?: string;
+  }) {
+    const snap = await getSnapshot(input.positionDate);
+    if (!snap) throw new Error('No position snapshot exists yet — ingest the exports first.');
+    const d = snap.data;
+    let sales: any[] = d.sales ?? [];
+    if (sales.length === 0) throw new Error('This snapshot has no sales — ingest the logistics report first.');
+
+    if (input.client) sales = sales.filter((s) => (s.client ?? '').toUpperCase().includes(input.client!.toUpperCase()));
+    if (input.month) sales = sales.filter((s) => s.month === input.month);
+    if (input.fixMonth) sales = sales.filter((s) => (s.sFixDte ?? '').toUpperCase() === input.fixMonth!.toUpperCase());
+    if (sales.length === 0) return { positionDate: d.positionDate, note: 'No sales match that filter.' };
+
+    const blends = input.dimension === 'postGrade' ? await loadBlendRecipes() : undefined;
+    const result = computePricing(sales, { dimension: input.dimension, blends });
+
+    let byBucket = result.byBucket;
+    if (byBucket && input.dimension === 'postGrade' && input.grade) {
+      const target = normGrade(input.grade);
+      byBucket = Object.fromEntries(Object.entries(byBucket).filter(([g]) => normGrade(g).includes(target)));
+      if (Object.keys(byBucket).length === 0)
+        return { positionDate: d.positionDate, note: `No POST grade matching "${input.grade}" carries priced shorts.` };
+    }
+
+    return {
+      positionDate: d.positionDate,
+      demo: d.demo === true || undefined,
+      scope: 'unallocated shorts book only (differentials vs NY KC, USc/lb)',
+      overall: result.overall,
+      byBucket,
+      coverage: result.coverage,
+      caveats: [
+        'Contract dif is on each sale\'s own Incoterm; FOB dif is the FOB-equivalent — present BOTH, never just one.',
+        `Price-to-be-fixed volume: ${result.overall.ptbf.smt} MT across ${result.overall.ptbf.contracts} contracts (differential agreed, futures leg open).`,
+        ...(input.dimension === 'postGrade'
+          ? ['POST-grade figures attribute each contract\'s differential across its blend grades (weighted by allocated bags).']
+          : []),
+        ...(result.coverage.unpriced > 0
+          ? [`${result.coverage.unpriced} sale(s) carry no differential and are excluded: ${result.coverage.unpricedContracts.join(', ')}`]
+          : []),
+      ],
+    };
+  }
+}
+
 export const querySkill = new LuaSkill({
   name: 'position-query',
   description: 'Answer position questions and what-ifs from the computed snapshots.',
   context: `Answering questions about the position.
 - query-position for "what's my net position", "how short am I on AB FAQ", "shorts by month for grinders". Always mention the position date and any pending blend confirmations.
 - what-if for "can I sell N bags of X for month M" — report netAfter and, if it goes short, the first month it happens. Never turn this into trade advice; state the numbers.
+- price-analytics for "at what price level am I short", "average differential on grinders", "how much is fixed vs to-be-fixed". "Price level" on this desk = differential vs the NY KC futures in USc/lb. ALWAYS present the contract differential and the FOB-equivalent side by side — neither is the headline. State the fixed vs price-to-be-fixed split and any excluded (unpriced) sales. It covers the unallocated shorts book only: no purchase cost basis, no P&L or mark-to-market (no market prices exist in the data), no price history — say so when asked.
 - Grades are matched fuzzily ("AB FAQ" → POST 16 FAQ); confirm the resolved grade in the answer.
-- Quote bags by default; add MT when the trader asks or the number is hedge-related.`,
-  tools: [new QueryPosition(), new WhatIf()],
+- Quote bags by default; add MT when the trader asks or the number is hedge-related.
+- Never label net values as "longs": longs = theoretical stock, net = longs + shorts. Say which one you're quoting.`,
+  tools: [new QueryPosition(), new WhatIf(), new PriceAnalytics()],
 });
