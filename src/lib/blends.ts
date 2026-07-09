@@ -59,21 +59,34 @@ export function rememberAssignment(mem: AssignmentMemory, sale: Sale, blendNo: n
 }
 
 /**
+ * Keys that have EVER legitimately mapped to more than one blend (e.g.
+ * 32CUP/NAT.SPECIALTY → #91 and #100). Once a key is known-ambiguous it must
+ * always be flagged, even when a partial history slice shows a single
+ * candidate — auto-applying there is where silent mis-allocations came from.
+ * Build this from the full assignment history and persist it alongside the
+ * memory.
+ */
+export function globallyAmbiguousKeys(mem: AssignmentMemory): Set<string> {
+  return new Set(Object.keys(mem).filter((k) => Object.keys(mem[k]).length > 1));
+}
+
+/**
  * Resolve a sale to a blend.
  *
  * Precedence:
  *  1. `sale.blendNo` already set and `useAssigned` → trust it ('assigned').
- *  2. Learned memory for the (client, grade, strategy) key:
+ *  2. Key in `ambiguousKeys` (ever mapped to >1 blend) → 'medium' (always flag).
+ *  3. Learned memory for the (client, grade, strategy) key:
  *       - unique blend           → 'high'   (auto-apply)
  *       - multiple historical     → 'medium' (flag; candidates listed)
- *  3. Unseen key                  → 'none'   (flag; trader assigns, then remembered)
+ *  4. Unseen key                  → 'none'   (flag; trader assigns, then remembered)
  */
 export function matchBlend(
   sale: Sale,
   blends: Blend[],
-  opts: { useAssigned?: boolean; memory?: AssignmentMemory } = {}
+  opts: { useAssigned?: boolean; memory?: AssignmentMemory; ambiguousKeys?: Set<string> } = {}
 ): BlendMatch {
-  const { useAssigned = true, memory = {} } = opts;
+  const { useAssigned = true, memory = {}, ambiguousKeys } = opts;
   const findBlend = (n: number) => blends.find((b) => b.blendNo === n) ?? null;
 
   if (useAssigned && sale.blendNo != null) {
@@ -87,7 +100,21 @@ export function matchBlend(
     };
   }
 
-  const seen = memory[assignmentKey(sale)];
+  const key = assignmentKey(sale);
+  const seen = memory[key];
+  if (ambiguousKeys?.has(key)) {
+    const candidates = seen
+      ? Object.keys(seen).map(Number).sort((a, b) => (seen[b] || 0) - (seen[a] || 0))
+      : [];
+    return {
+      sale,
+      blend: candidates.length ? findBlend(candidates[0]) : null,
+      confidence: 'medium',
+      reason: `Known-ambiguous key (${sale.client}/${sale.sGrade})${candidates.length ? ` — blends ${candidates.map((c) => '#' + c).join(', ')}` : ''}; confirm`,
+      needsConfirmation: true,
+    };
+  }
+
   if (seen) {
     const candidates = Object.keys(seen).map(Number).sort((a, b) => (seen[b] || 0) - (seen[a] || 0));
     if (candidates.length === 1) {

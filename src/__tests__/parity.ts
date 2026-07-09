@@ -15,7 +15,7 @@
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { loadBlends, matchBlend, buildAssignmentMemory } from '../lib/blends';
+import { loadBlends, matchBlend, buildAssignmentMemory, globallyAmbiguousKeys } from '../lib/blends';
 import { computeForwardSales, sumOverMonths } from '../lib/shorts';
 import { computeNetPosition, computeOffers } from '../lib/netposition';
 import { normGrade } from '../lib/grades';
@@ -85,13 +85,17 @@ else console.log(`  → max cell Δ ${maxCellDiff.toFixed(3)} across ${cellCheck
 
 // ---------- 2. Blend learned-matcher accuracy (leave-one-out) ----------
 console.log('\n[2] Blend matcher — leave-one-out over learned assignment memory');
+// The globally-ambiguous registry is persistent knowledge (built as
+// confirmations accumulate), so it comes from FULL history even though the
+// per-sale memory is leave-one-out.
+const ambiguousKeys = globallyAmbiguousKeys(buildAssignmentMemory(sales));
 let correct = 0, flagged = 0, wrong = 0;
 const wrongSamples: string[] = [];
 for (let i = 0; i < sales.length; i++) {
   const sale = sales[i];
   const history = sales.filter((_, j) => j !== i); // hold out sale i
   const memory = buildAssignmentMemory(history);
-  const m = matchBlend(sale, blends, { useAssigned: false, memory });
+  const m = matchBlend(sale, blends, { useAssigned: false, memory, ambiguousKeys });
   if (m.needsConfirmation || !m.blend) {
     flagged++;
   } else if (m.blend.blendNo === sale.blendNo) {

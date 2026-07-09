@@ -1,5 +1,5 @@
 import { Blend, Sale, ForwardSalesResult, BlendMatch } from './types';
-import { matchBlend } from './blends';
+import { matchBlend, AssignmentMemory } from './blends';
 import { FORWARD_SALES_SKIP } from './grades';
 import { saleMtToBags, round } from './units';
 
@@ -15,7 +15,7 @@ import { saleMtToBags, round } from './units';
 export function computeForwardSales(
   sales: Sale[],
   blends: Blend[],
-  opts: { useAssigned?: boolean } = {}
+  opts: { useAssigned?: boolean; memory?: AssignmentMemory; ambiguousKeys?: Set<string> } = {}
 ): ForwardSalesResult {
   const matrix: Record<string, Record<string, number>> = {};
   const byGrade: Record<string, number> = {};
