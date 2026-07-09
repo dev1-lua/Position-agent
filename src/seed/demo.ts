@@ -23,7 +23,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 451.3,
   "sFobDif": 451.3,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "BELG",
+  "paymentTerm": "CAD",
+  "trader": "COA",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-107613",
@@ -40,7 +46,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USD/MT",
   "sDif": 56.00000000000001,
   "sFobDif": 50.5047,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "ISRA",
+  "paymentTerm": "CADBC",
+  "trader": "OYA",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104225",
+   "line": null,
+   "vessel": null,
+   "voyage": null,
+   "bookingNum": null,
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "ILHFA",
+   "etd": null,
+   "eta": null,
+   "siDate": "2026-05-25"
+  }
  },
  {
   "saleCtr": "SSKE-106869",
@@ -57,7 +81,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": -6,
   "sFobDif": -6,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "GERM",
+  "paymentTerm": "CAD",
+  "trader": "TOB",
+  "sCert": "RA",
+  "booking": {
+   "preshipId": "103782",
+   "line": "MSC",
+   "vessel": "MSC ROBERTA V",
+   "voyage": "OM622R",
+   "bookingNum": "EBKG16802955",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "NLRTM",
+   "etd": "2026-06-21",
+   "eta": "2026-08-13",
+   "siDate": "2026-04-01"
+  }
  },
  {
   "saleCtr": "SSKE-107052",
@@ -74,7 +116,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 35,
   "sFobDif": 35,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "CHIN",
+  "paymentTerm": "CAD",
+  "trader": "LYA",
+  "sCert": null,
+  "booking": {
+   "preshipId": "103102",
+   "line": "PIL",
+   "vessel": "KOTA SEMPENA",
+   "voyage": "KSMP0617E",
+   "bookingNum": "MBA600066900",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "CNSHA",
+   "etd": "2026-06-06",
+   "eta": "2026-06-28",
+   "siDate": "2026-04-14"
+  }
  },
  {
   "saleCtr": "SSKE-103502",
@@ -91,7 +151,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 175,
   "sFobDif": 161.0029,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWIT",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "CP.EUDR",
+  "booking": {
+   "preshipId": "104828 / 104829",
+   "line": "MSC",
+   "vessel": "HAO BO 01",
+   "voyage": "0026N",
+   "bookingNum": "MEDUM2894589 / MEDUM2894605",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "BEANR",
+   "etd": "2026-06-27",
+   "eta": null,
+   "siDate": null
+  }
  },
  {
   "saleCtr": "SSKE-107773",
@@ -108,7 +186,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 60,
   "sFobDif": 55.1955,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "KORE",
+  "paymentTerm": "BLCR",
+  "trader": "AWO",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104002",
+   "line": "OEXP",
+   "vessel": "REN JIAN 10",
+   "voyage": "621E",
+   "bookingNum": "ONEYMBAG01231700",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "KRPUS",
+   "etd": "2026-06-30",
+   "eta": "2026-07-31",
+   "siDate": "2026-05-15"
+  }
  },
  {
   "saleCtr": "SSKE-107774",
@@ -125,7 +221,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 60,
   "sFobDif": 55.1955,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "KORE",
+  "paymentTerm": "BLCR",
+  "trader": "AWO",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104003",
+   "line": "OEXP",
+   "vessel": "REN JIAN 10",
+   "voyage": "621E",
+   "bookingNum": "ONEYMBAG01232800",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "KRPUS",
+   "etd": "2026-06-30",
+   "eta": "2026-07-31",
+   "siDate": "2026-05-15"
+  }
  },
  {
   "saleCtr": "SSKE-107712",
@@ -142,7 +256,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 56.99999999999999,
   "sFobDif": 50.0022,
-  "sTerm": "CIF"
+  "sTerm": "CIF",
+  "sCity": "CNSHA",
+  "sCountry": "CHIN",
+  "paymentTerm": "CADK",
+  "trader": "JJA",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104013",
+   "line": "PIL",
+   "vessel": "REN JIAN 10",
+   "voyage": "621E",
+   "bookingNum": "MBA600099600",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "CNSHA",
+   "etd": "2026-06-30",
+   "eta": "2026-07-21",
+   "siDate": "2026-05-15"
+  }
  },
  {
   "saleCtr": "SSKE-107713",
@@ -159,7 +291,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 44,
   "sFobDif": 25.0022,
-  "sTerm": "CIF"
+  "sTerm": "CIF",
+  "sCity": "CNSHA",
+  "sCountry": "CHIN",
+  "paymentTerm": "CADK",
+  "trader": "JJA",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-107522",
@@ -176,7 +314,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 44,
   "sFobDif": 29.4849,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "NETH",
+  "paymentTerm": "JDE300",
+  "trader": "SBO",
+  "sCert": null,
+  "booking": {
+   "preshipId": "103580",
+   "line": "MSC",
+   "vessel": "HAO BO 01",
+   "voyage": "0026N",
+   "bookingNum": "MEDUM2891569",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "FRFOS",
+   "etd": "2026-06-25",
+   "eta": "2026-08-06",
+   "siDate": "2026-04-30"
+  }
  },
  {
   "saleCtr": "SSGP-107624-2",
@@ -193,7 +349,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 216.5,
   "sFobDif": 216.5,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "JAPA",
+  "paymentTerm": "CAD",
+  "trader": "FCH",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSGP-107624-1",
@@ -210,7 +372,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 205.49999999999997,
   "sFobDif": 205.49999999999997,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "JAPA",
+  "paymentTerm": "CAD",
+  "trader": "FCH",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104824",
+   "line": "PIL",
+   "vessel": "REN JIAN 10",
+   "voyage": "0621E",
+   "bookingNum": "MBA600097000",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "JPYOK",
+   "etd": "2026-07-23",
+   "eta": null,
+   "siDate": null
+  }
  },
  {
   "saleCtr": "SSGP-107612-1",
@@ -227,7 +407,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USD/KG",
   "sDif": 369.2157,
   "sFobDif": 369.2157,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "UK",
+  "paymentTerm": "CAD",
+  "trader": "SLA",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSGP-107612-2",
@@ -244,7 +430,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USD/KG",
   "sDif": 301.1761,
   "sFobDif": 301.1761,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "UK",
+  "paymentTerm": "CAD",
+  "trader": "SLA",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSGP-107612-3",
@@ -261,7 +453,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USD/KG",
   "sDif": 233.1366,
   "sFobDif": 233.1366,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "UK",
+  "paymentTerm": "CAD",
+  "trader": "SLA",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-107744",
@@ -278,7 +476,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 50,
   "sFobDif": 37.5,
-  "sTerm": "CIF"
+  "sTerm": "CIF",
+  "sCity": "CNCAN",
+  "sCountry": "SING",
+  "paymentTerm": "CADK",
+  "trader": "LYA",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104017",
+   "line": "PIL",
+   "vessel": null,
+   "voyage": null,
+   "bookingNum": null,
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "CNSHA",
+   "etd": null,
+   "eta": null,
+   "siDate": "2026-05-15"
+  }
  },
  {
   "saleCtr": "SSKE-104428",
@@ -295,7 +511,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 4,
   "sFobDif": 3.5242,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "JAPA",
+  "paymentTerm": "CAD",
+  "trader": "OCH",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-107943",
@@ -312,7 +534,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USD/KG",
   "sDif": 102.6715,
   "sFobDif": 99.6873,
-  "sTerm": "CIF"
+  "sTerm": "CIF",
+  "sCity": "THBKK",
+  "sCountry": "MALA",
+  "paymentTerm": "CADK",
+  "trader": "JUN",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSGP-107959-1",
@@ -329,7 +557,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 197.94000000000003,
   "sFobDif": 186.1024,
-  "sTerm": "DAP"
+  "sTerm": "DAP",
+  "sCity": "HKHKG",
+  "sCountry": "HONG",
+  "paymentTerm": "CODCR",
+  "trader": "TTS",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104631",
+   "line": "OEXP",
+   "vessel": "REN JIAN 10",
+   "voyage": "621E",
+   "bookingNum": "ONEYMBAG01122600",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "HKHKG",
+   "etd": "2026-06-30",
+   "eta": "2026-07-21",
+   "siDate": null
+  }
  },
  {
   "saleCtr": "SSGP-107959-2",
@@ -346,7 +592,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 197.94000000000003,
   "sFobDif": 186.1024,
-  "sTerm": "DAP"
+  "sTerm": "DAP",
+  "sCity": "HKHKG",
+  "sCountry": "HONG",
+  "paymentTerm": "CODCR",
+  "trader": "TTS",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSGP-107959-5",
@@ -363,7 +615,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 97.94,
   "sFobDif": 86.1024,
-  "sTerm": "DAP"
+  "sTerm": "DAP",
+  "sCity": "HKHKG",
+  "sCountry": "HONG",
+  "paymentTerm": "CODCR",
+  "trader": "TTS",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSGP-107959-3",
@@ -380,7 +638,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 192.94,
   "sFobDif": 181.1024,
-  "sTerm": "DAP"
+  "sTerm": "DAP",
+  "sCity": "HKHKG",
+  "sCountry": "HONG",
+  "paymentTerm": "CODCR",
+  "trader": "TTS",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSGP-107959-4",
@@ -397,7 +661,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 192.94,
   "sFobDif": 181.1024,
-  "sTerm": "DAP"
+  "sTerm": "DAP",
+  "sCity": "HKHKG",
+  "sCountry": "HONG",
+  "paymentTerm": "CODCR",
+  "trader": "TTS",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108133",
@@ -414,7 +684,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 95,
   "sFobDif": 95,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "USA",
+  "paymentTerm": "CAD",
+  "trader": "SRR",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104158",
+   "line": "CMAF",
+   "vessel": "CMA CGM SEMARANG",
+   "voyage": "SW2000N19",
+   "bookingNum": "MOB0158775",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "USNYC",
+   "etd": "2026-07-04",
+   "eta": "2026-09-01",
+   "siDate": "2026-05-21"
+  }
  },
  {
   "saleCtr": "SSKE-108500",
@@ -431,7 +719,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 95,
   "sFobDif": 95,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "BELG",
+  "paymentTerm": "CAD",
+  "trader": "COA",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108536",
@@ -448,7 +742,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 498,
   "sFobDif": 498,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "BELG",
+  "paymentTerm": "CAD",
+  "trader": "COA",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-103503",
@@ -465,7 +765,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 175,
   "sFobDif": 161.0029,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWIT",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "CP.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-104927",
@@ -482,7 +788,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 123,
   "sFobDif": 111.0001,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWED",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "RA.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-104936",
@@ -499,7 +811,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 113,
   "sFobDif": 101.0001,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWED",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "AAA.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-107775",
@@ -516,7 +834,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 70,
   "sFobDif": 65.2009,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "KORE",
+  "paymentTerm": "BLCR",
+  "trader": "AWO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-107245",
@@ -533,7 +857,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 35,
   "sFobDif": 30.196400000000004,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "KORE",
+  "paymentTerm": "BLCR",
+  "trader": "AWO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-107937",
@@ -550,7 +880,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USD/MT",
   "sDif": 125,
   "sFobDif": 88.1791,
-  "sTerm": "DAP"
+  "sTerm": "DAP",
+  "sCity": "CNSHA",
+  "sCountry": "CHIN",
+  "paymentTerm": "CAR",
+  "trader": "LYA",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104035",
+   "line": "PIL",
+   "vessel": "REN JIAN 10",
+   "voyage": "0621E",
+   "bookingNum": "MBA600084100",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "CNSHA",
+   "etd": "2026-06-26",
+   "eta": "2026-07-17",
+   "siDate": "2026-05-18"
+  }
  },
  {
   "saleCtr": "SSKE-108289",
@@ -567,7 +915,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 50,
   "sFobDif": 47.9974,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "NETH",
+  "paymentTerm": "BLCR",
+  "trader": "SLS",
+  "sCert": "RA",
+  "booking": {
+   "preshipId": "104856",
+   "line": "MSC",
+   "vessel": null,
+   "voyage": null,
+   "bookingNum": null,
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "NLRTM",
+   "etd": null,
+   "eta": null,
+   "siDate": "2026-06-17"
+  }
  },
  {
   "saleCtr": "SSKE-103498",
@@ -584,7 +950,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 175,
   "sFobDif": 161.0029,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWIT",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108297",
@@ -601,7 +973,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USD/MT",
   "sDif": 70,
   "sFobDif": 35.2951,
-  "sTerm": "DAP"
+  "sTerm": "DAP",
+  "sCity": "CNSHA",
+  "sCountry": "CHIN",
+  "paymentTerm": "CAR",
+  "trader": "LYA",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104413",
+   "line": "PIL",
+   "vessel": null,
+   "voyage": null,
+   "bookingNum": null,
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "CNSHA",
+   "etd": null,
+   "eta": null,
+   "siDate": "2026-06-02"
+  }
  },
  {
   "saleCtr": "SSKE-103499",
@@ -618,7 +1008,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 175,
   "sFobDif": 161.0029,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWIT",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-103504",
@@ -635,7 +1031,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 175,
   "sFobDif": 161.0029,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWIT",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "CP.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-104928",
@@ -652,7 +1054,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 123,
   "sFobDif": 111.0001,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWED",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "RA.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-104937",
@@ -669,7 +1077,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 113,
   "sFobDif": 101.0001,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWED",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "AAA.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-105761",
@@ -686,7 +1100,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 65,
   "sFobDif": 64.296,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "KORE",
+  "paymentTerm": "CADK",
+  "trader": "MKB",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-107620",
@@ -703,7 +1123,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": -22,
   "sFobDif": -35.2691,
-  "sTerm": "IS"
+  "sTerm": "IS",
+  "sCity": "ESBCN",
+  "sCountry": "SPAI",
+  "paymentTerm": "CAR",
+  "trader": "SRT",
+  "sCert": null,
+  "booking": {
+   "preshipId": "103584",
+   "line": "MCHA",
+   "vessel": "ARGOLIKOS",
+   "voyage": "627N",
+   "bookingNum": "270849993",
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "ESBCN",
+   "etd": "2026-07-02",
+   "eta": "2026-08-24",
+   "siDate": "2026-04-30"
+  }
  },
  {
   "saleCtr": "SSKE-108412",
@@ -720,7 +1158,25 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 102.4,
   "sFobDif": 94.1318,
-  "sTerm": "FCA"
+  "sTerm": "FCA",
+  "sCity": "CNKUS",
+  "sCountry": "CHIN",
+  "paymentTerm": "SUCAINTERC",
+  "trader": "LYA",
+  "sCert": null,
+  "booking": {
+   "preshipId": "104674",
+   "line": "PIL",
+   "vessel": null,
+   "voyage": null,
+   "bookingNum": null,
+   "transType": "VESSEL",
+   "pol": "KEMBA",
+   "pod": "CNSHA",
+   "etd": null,
+   "eta": null,
+   "siDate": "2026-06-10"
+  }
  },
  {
   "saleCtr": "SSKE-108570",
@@ -737,7 +1193,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 127.00000000000001,
   "sFobDif": 92.1832,
-  "sTerm": "DAP"
+  "sTerm": "DAP",
+  "sCity": "CNSGH",
+  "sCountry": "CHIN",
+  "paymentTerm": "CAR",
+  "trader": "LYA",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108572",
@@ -754,7 +1216,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 50,
   "sFobDif": 36.8892,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "NETH",
+  "paymentTerm": "JDE300",
+  "trader": "SBO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-104929",
@@ -771,7 +1239,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 133,
   "sFobDif": 120.9996,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWED",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "RA.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-104938",
@@ -788,7 +1262,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 123,
   "sFobDif": 111.0001,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWED",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "AAA.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-107893",
@@ -805,7 +1285,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 17,
   "sFobDif": 9.5002,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWIT",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "4C.RFA",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108405",
@@ -822,7 +1308,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 75,
   "sFobDif": 71.0029,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "KORE",
+  "paymentTerm": "BLCR",
+  "trader": "AWO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108406",
@@ -839,7 +1331,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 75,
   "sFobDif": 71.0029,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "KORE",
+  "paymentTerm": "BLCR",
+  "trader": "AWO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108571",
@@ -856,7 +1354,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 65,
   "sFobDif": 51.266400000000004,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "NETH",
+  "paymentTerm": "JDE300",
+  "trader": "SBO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108573",
@@ -873,7 +1377,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 50,
   "sFobDif": 36.9205,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "NETH",
+  "paymentTerm": "JDE300",
+  "trader": "SBO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108574",
@@ -890,7 +1400,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 21,
   "sFobDif": 9.0781,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "NETH",
+  "paymentTerm": "JDE300",
+  "trader": "SBO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108576",
@@ -907,7 +1423,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 8,
   "sFobDif": -3.3525999999999994,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "NETH",
+  "paymentTerm": "JDE300",
+  "trader": "SBO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-104930",
@@ -924,7 +1446,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 133,
   "sFobDif": 121.0001,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWED",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "RA.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-104939",
@@ -941,7 +1469,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 123,
   "sFobDif": 111.0001,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWED",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "AAA.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108575",
@@ -958,7 +1492,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 21,
   "sFobDif": 9.0781,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "NETH",
+  "paymentTerm": "JDE300",
+  "trader": "SBO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-108577",
@@ -975,7 +1515,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 8,
   "sFobDif": -3.3525999999999994,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "NETH",
+  "paymentTerm": "JDE300",
+  "trader": "SBO",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSWW-96188B",
@@ -992,7 +1538,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 34.29,
   "sFobDif": 21.2935,
-  "sTerm": "EXW"
+  "sTerm": "EXW",
+  "sCity": "OPEN",
+  "sCountry": "USA",
+  "paymentTerm": "CAD",
+  "trader": "DLA",
+  "sCert": null,
+  "booking": null
  },
  {
   "saleCtr": "SSKE-104931",
@@ -1009,7 +1561,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 133,
   "sFobDif": 120.99960000000002,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWED",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "RA.EUDR",
+  "booking": null
  },
  {
   "saleCtr": "SSKE-104940",
@@ -1026,7 +1584,13 @@ export const DEMO_SALES: any[] = [
   "sPriceUnit": "USC/LB",
   "sDif": 123,
   "sFobDif": 111.0001,
-  "sTerm": "FOB"
+  "sTerm": "FOB",
+  "sCity": "KEMBA",
+  "sCountry": "SWED",
+  "paymentTerm": "NESTRADE",
+  "trader": "OCH",
+  "sCert": "AAA.EUDR",
+  "booking": null
  }
 ];
 
