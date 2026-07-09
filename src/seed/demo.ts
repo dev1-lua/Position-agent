@@ -18,7 +18,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -8,
   "month": "2026/03",
   "sFixDte": "KCK/2026",
-  "blendNo": 91
+  "blendNo": 91,
+  "sPrice": 750,
+  "sPriceUnit": "USC/LB",
+  "sDif": 451.3,
+  "sFobDif": 451.3,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107613",
@@ -30,7 +35,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1280,
   "month": "2026/05",
   "sFixDte": "KCN/2026",
-  "blendNo": 23
+  "blendNo": 23,
+  "sPrice": 6981.97,
+  "sPriceUnit": "USD/MT",
+  "sDif": 56.00000000000001,
+  "sFobDif": 50.5047,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-106869",
@@ -42,7 +52,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1800,
   "month": "2026/05",
   "sFixDte": "KCN/2026",
-  "blendNo": 105
+  "blendNo": 105,
+  "sPrice": 281.51,
+  "sPriceUnit": "USC/LB",
+  "sDif": -6,
+  "sFobDif": -6,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107052",
@@ -54,7 +69,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/05",
   "sFixDte": "KCU/2026",
-  "blendNo": 31
+  "blendNo": 31,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 35,
+  "sFobDif": 35,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-103502",
@@ -66,7 +86,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -640,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 625
+  "blendNo": 625,
+  "sPrice": 438.00000000000006,
+  "sPriceUnit": "USC/LB",
+  "sDif": 175,
+  "sFobDif": 161.0029,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107773",
@@ -78,7 +103,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 23
+  "blendNo": 23,
+  "sPrice": 316.2,
+  "sPriceUnit": "USC/LB",
+  "sDif": 60,
+  "sFobDif": 55.1955,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107774",
@@ -90,7 +120,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 23
+  "blendNo": 23,
+  "sPrice": 316.2,
+  "sPriceUnit": "USC/LB",
+  "sDif": 60,
+  "sFobDif": 55.1955,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107712",
@@ -102,7 +137,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 23
+  "blendNo": 23,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 56.99999999999999,
+  "sFobDif": 50.0022,
+  "sTerm": "CIF"
  },
  {
   "saleCtr": "SSKE-107713",
@@ -114,7 +154,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1280,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 320425
+  "blendNo": 320425,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 44,
+  "sFobDif": 25.0022,
+  "sTerm": "CIF"
  },
  {
   "saleCtr": "SSKE-107522",
@@ -126,7 +171,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1800,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 100
+  "blendNo": 100,
+  "sPrice": 294.85,
+  "sPriceUnit": "USC/LB",
+  "sDif": 44,
+  "sFobDif": 29.4849,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSGP-107624-2",
@@ -138,7 +188,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -60,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 100
+  "blendNo": 100,
+  "sPrice": 505,
+  "sPriceUnit": "USC/LB",
+  "sDif": 216.5,
+  "sFobDif": 216.5,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSGP-107624-1",
@@ -150,7 +205,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -52,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 100
+  "blendNo": 100,
+  "sPrice": 494,
+  "sPriceUnit": "USC/LB",
+  "sDif": 205.49999999999997,
+  "sFobDif": 205.49999999999997,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSGP-107612-1",
@@ -162,7 +222,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -3,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 91
+  "blendNo": 91,
+  "sPrice": 14.5,
+  "sPriceUnit": "USD/KG",
+  "sDif": 369.2157,
+  "sFobDif": 369.2157,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSGP-107612-2",
@@ -174,7 +239,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -3,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 91
+  "blendNo": 91,
+  "sPrice": 13,
+  "sPriceUnit": "USD/KG",
+  "sDif": 301.1761,
+  "sFobDif": 301.1761,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSGP-107612-3",
@@ -186,7 +256,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -4,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 91
+  "blendNo": 91,
+  "sPrice": 11.5,
+  "sPriceUnit": "USD/KG",
+  "sDif": 233.1366,
+  "sFobDif": 233.1366,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107744",
@@ -198,7 +273,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 320425
+  "blendNo": 320425,
+  "sPrice": 308.5,
+  "sPriceUnit": "USC/LB",
+  "sDif": 50,
+  "sFobDif": 37.5,
+  "sTerm": "CIF"
  },
  {
   "saleCtr": "SSKE-104428",
@@ -210,7 +290,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -840,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 100
+  "blendNo": 100,
+  "sPrice": 277.25,
+  "sPriceUnit": "USC/LB",
+  "sDif": 4,
+  "sFobDif": 3.5242,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107943",
@@ -222,7 +307,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 18
+  "blendNo": 18,
+  "sPrice": 8.4,
+  "sPriceUnit": "USD/KG",
+  "sDif": 102.6715,
+  "sFobDif": 99.6873,
+  "sTerm": "CIF"
  },
  {
   "saleCtr": "SSGP-107959-1",
@@ -234,7 +324,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -32,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 100
+  "blendNo": 100,
+  "sPrice": 464.84,
+  "sPriceUnit": "USC/LB",
+  "sDif": 197.94000000000003,
+  "sFobDif": 186.1024,
+  "sTerm": "DAP"
  },
  {
   "saleCtr": "SSGP-107959-2",
@@ -246,7 +341,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -32,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 100
+  "blendNo": 100,
+  "sPrice": 464.84,
+  "sPriceUnit": "USC/LB",
+  "sDif": 197.94000000000003,
+  "sFobDif": 186.1024,
+  "sTerm": "DAP"
  },
  {
   "saleCtr": "SSGP-107959-5",
@@ -258,7 +358,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -100,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 91
+  "blendNo": 91,
+  "sPrice": 364.84,
+  "sPriceUnit": "USC/LB",
+  "sDif": 97.94,
+  "sFobDif": 86.1024,
+  "sTerm": "DAP"
  },
  {
   "saleCtr": "SSGP-107959-3",
@@ -270,7 +375,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -12,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 100
+  "blendNo": 100,
+  "sPrice": 459.84,
+  "sPriceUnit": "USC/LB",
+  "sDif": 192.94,
+  "sFobDif": 181.1024,
+  "sTerm": "DAP"
  },
  {
   "saleCtr": "SSGP-107959-4",
@@ -282,7 +392,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -24,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 100
+  "blendNo": 100,
+  "sPrice": 459.84,
+  "sPriceUnit": "USC/LB",
+  "sDif": 192.94,
+  "sFobDif": 181.1024,
+  "sTerm": "DAP"
  },
  {
   "saleCtr": "SSKE-108133",
@@ -294,7 +409,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 18
+  "blendNo": 18,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 95,
+  "sFobDif": 95,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108500",
@@ -306,7 +426,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -315,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 91
+  "blendNo": 91,
+  "sPrice": 340,
+  "sPriceUnit": "USC/LB",
+  "sDif": 95,
+  "sFobDif": 95,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108536",
@@ -318,7 +443,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -7,
   "month": "2026/06",
   "sFixDte": "KCN/2026",
-  "blendNo": 100
+  "blendNo": 100,
+  "sPrice": 750,
+  "sPriceUnit": "USC/LB",
+  "sDif": 498,
+  "sFobDif": 498,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-103503",
@@ -330,7 +460,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -2240,
   "month": "2026/07",
   "sFixDte": "KCU/2026",
-  "blendNo": 625
+  "blendNo": 625,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 175,
+  "sFobDif": 161.0029,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-104927",
@@ -342,7 +477,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1080,
   "month": "2026/07",
   "sFixDte": "KCZ/2026",
-  "blendNo": 34
+  "blendNo": 34,
+  "sPrice": 363.35,
+  "sPriceUnit": "USC/LB",
+  "sDif": 123,
+  "sFobDif": 111.0001,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-104936",
@@ -354,7 +494,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -720,
   "month": "2026/07",
   "sFixDte": "KCZ/2026",
-  "blendNo": 34
+  "blendNo": 34,
+  "sPrice": 353.35,
+  "sPriceUnit": "USC/LB",
+  "sDif": 113,
+  "sFobDif": 101.0001,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107775",
@@ -366,7 +511,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/07",
   "sFixDte": "KCU/2026",
-  "blendNo": 23
+  "blendNo": 23,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 70,
+  "sFobDif": 65.2009,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107245",
@@ -378,7 +528,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/07",
   "sFixDte": "KCU/2026",
-  "blendNo": 320425
+  "blendNo": 320425,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 35,
+  "sFobDif": 30.196400000000004,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107937",
@@ -390,7 +545,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/07",
   "sFixDte": "KCN/2026",
-  "blendNo": 100
+  "blendNo": 100,
+  "sPrice": 8308.04,
+  "sPriceUnit": "USD/MT",
+  "sDif": 125,
+  "sFobDif": 88.1791,
+  "sTerm": "DAP"
  },
  {
   "saleCtr": "SSKE-108289",
@@ -402,7 +562,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -360,
   "month": "2026/07",
   "sFixDte": "KCU/2026",
-  "blendNo": 55
+  "blendNo": 55,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 50,
+  "sFobDif": 47.9974,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-103498",
@@ -414,7 +579,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -2880,
   "month": "2026/07",
   "sFixDte": "KCU/2026",
-  "blendNo": 91
+  "blendNo": 91,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 175,
+  "sFobDif": 161.0029,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108297",
@@ -426,7 +596,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/07",
   "sFixDte": "KCU/2026",
-  "blendNo": 31
+  "blendNo": 31,
+  "sPrice": 6834.259999999999,
+  "sPriceUnit": "USD/MT",
+  "sDif": 70,
+  "sFobDif": 35.2951,
+  "sTerm": "DAP"
  },
  {
   "saleCtr": "SSKE-103499",
@@ -438,7 +613,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -2240,
   "month": "2026/08",
   "sFixDte": "KCU/2026",
-  "blendNo": 625
+  "blendNo": 625,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 175,
+  "sFobDif": 161.0029,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-103504",
@@ -450,7 +630,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -2560,
   "month": "2026/08",
   "sFixDte": "KCU/2026",
-  "blendNo": 625
+  "blendNo": 625,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 175,
+  "sFobDif": 161.0029,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-104928",
@@ -462,7 +647,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1080,
   "month": "2026/08",
   "sFixDte": "KCZ/2026",
-  "blendNo": 34
+  "blendNo": 34,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 123,
+  "sFobDif": 111.0001,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-104937",
@@ -474,7 +664,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1080,
   "month": "2026/08",
   "sFixDte": "KCZ/2026",
-  "blendNo": 34
+  "blendNo": 34,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 113,
+  "sFobDif": 101.0001,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-105761",
@@ -486,7 +681,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/08",
   "sFixDte": "KCU/2026",
-  "blendNo": 23
+  "blendNo": 23,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 65,
+  "sFobDif": 64.296,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107620",
@@ -498,7 +698,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -640,
   "month": "2026/08",
   "sFixDte": "KCU/2026",
-  "blendNo": 107
+  "blendNo": 107,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": -22,
+  "sFobDif": -35.2691,
+  "sTerm": "IS"
  },
  {
   "saleCtr": "SSKE-108412",
@@ -510,7 +715,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/08",
   "sFixDte": "KCU/2026",
-  "blendNo": 18
+  "blendNo": 18,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 102.4,
+  "sFobDif": 94.1318,
+  "sTerm": "FCA"
  },
  {
   "saleCtr": "SSKE-108570",
@@ -522,7 +732,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/08",
   "sFixDte": "KCU/2026",
-  "blendNo": 91
+  "blendNo": 91,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 127.00000000000001,
+  "sFobDif": 92.1832,
+  "sTerm": "DAP"
  },
  {
   "saleCtr": "SSKE-108572",
@@ -534,7 +749,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1800,
   "month": "2026/08",
   "sFixDte": "KCU/2026",
-  "blendNo": 32
+  "blendNo": 32,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 50,
+  "sFobDif": 36.8892,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-104929",
@@ -546,7 +766,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1080,
   "month": "2026/09",
   "sFixDte": "KCH/2027",
-  "blendNo": 34
+  "blendNo": 34,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 133,
+  "sFobDif": 120.9996,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-104938",
@@ -558,7 +783,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1080,
   "month": "2026/09",
   "sFixDte": "KCH/2027",
-  "blendNo": 34
+  "blendNo": 34,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 123,
+  "sFobDif": 111.0001,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-107893",
@@ -570,7 +800,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -2415,
   "month": "2026/09",
   "sFixDte": "KCH/2027",
-  "blendNo": 105
+  "blendNo": 105,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 17,
+  "sFobDif": 9.5002,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108405",
@@ -582,7 +817,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/09",
   "sFixDte": "KCZ/2026",
-  "blendNo": 23
+  "blendNo": 23,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 75,
+  "sFobDif": 71.0029,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108406",
@@ -594,7 +834,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -320,
   "month": "2026/09",
   "sFixDte": "KCZ/2026",
-  "blendNo": 23
+  "blendNo": 23,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 75,
+  "sFobDif": 71.0029,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108571",
@@ -606,7 +851,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1800,
   "month": "2026/09",
   "sFixDte": "KCZ/2026",
-  "blendNo": 31
+  "blendNo": 31,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 65,
+  "sFobDif": 51.266400000000004,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108573",
@@ -618,7 +868,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1800,
   "month": "2026/09",
   "sFixDte": "KCZ/2026",
-  "blendNo": 32
+  "blendNo": 32,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 50,
+  "sFobDif": 36.9205,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108574",
@@ -630,7 +885,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1800,
   "month": "2026/09",
   "sFixDte": "KCZ/2026",
-  "blendNo": 104
+  "blendNo": 104,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 21,
+  "sFobDif": 9.0781,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108576",
@@ -642,7 +902,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1800,
   "month": "2026/09",
   "sFixDte": "KCZ/2026",
-  "blendNo": 105
+  "blendNo": 105,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 8,
+  "sFobDif": -3.3525999999999994,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-104930",
@@ -654,7 +919,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1080,
   "month": "2026/10",
   "sFixDte": "KCH/2027",
-  "blendNo": 34
+  "blendNo": 34,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 133,
+  "sFobDif": 121.0001,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-104939",
@@ -666,7 +936,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1080,
   "month": "2026/10",
   "sFixDte": "KCH/2027",
-  "blendNo": 34
+  "blendNo": 34,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 123,
+  "sFobDif": 111.0001,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108575",
@@ -678,7 +953,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1800,
   "month": "2026/10",
   "sFixDte": "KCZ/2026",
-  "blendNo": 104
+  "blendNo": 104,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 21,
+  "sFobDif": 9.0781,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-108577",
@@ -690,7 +970,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1800,
   "month": "2026/10",
   "sFixDte": "KCZ/2026",
-  "blendNo": 105
+  "blendNo": 105,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 8,
+  "sFobDif": -3.3525999999999994,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSWW-96188B",
@@ -702,7 +987,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -1200,
   "month": "2024/10",
   "sFixDte": "KCH/2025",
-  "blendNo": 91
+  "blendNo": 91,
+  "sPrice": 285.64,
+  "sPriceUnit": "USC/LB",
+  "sDif": 34.29,
+  "sFobDif": 21.2935,
+  "sTerm": "EXW"
  },
  {
   "saleCtr": "SSKE-104931",
@@ -714,7 +1004,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -720,
   "month": "2026/11",
   "sFixDte": "KCH/2027",
-  "blendNo": 34
+  "blendNo": 34,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 133,
+  "sFobDif": 120.99960000000002,
+  "sTerm": "FOB"
  },
  {
   "saleCtr": "SSKE-104940",
@@ -726,7 +1021,12 @@ export const DEMO_SALES: any[] = [
   "sbags": -720,
   "month": "2026/11",
   "sFixDte": "KCH/2027",
-  "blendNo": 34
+  "blendNo": 34,
+  "sPrice": 0,
+  "sPriceUnit": "USC/LB",
+  "sDif": 123,
+  "sFobDif": 111.0001,
+  "sTerm": "FOB"
  }
 ];
 
