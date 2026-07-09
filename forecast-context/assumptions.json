@@ -1,0 +1,477 @@
+{
+  "STANDARD_STRATEGIES": [
+    "SPECIALTY",
+    "AA TOP",
+    "AB TOP",
+    "PB TOP",
+    "AA PLUS",
+    "AB PLUS",
+    "PB PLUS",
+    "ABC PLUS",
+    "AA FAQ",
+    "AB FAQ",
+    "PB FAQ",
+    "ABC FAQ",
+    "GRINDERS",
+    "MBUNIS",
+    "REJECTS",
+    "NEEDS_ASSUMPTION",
+    "NEEDS_MAPPING"
+  ],
+  "ASSUMPTIONS": {
+    "SPECIALTY // AA": {
+      "percentToProcess": 1,
+      "outputs": {
+        "SPECIALTY": 0.95,
+        "REJECTS": 0.05
+      }
+    },
+    "SPECIALTY // AB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "SPECIALTY": 0.95,
+        "REJECTS": 0.05
+      }
+    },
+    "SPECIALTY // C": {
+      "percentToProcess": 1,
+      "outputs": {
+        "SPECIALTY": 0.95,
+        "REJECTS": 0.05
+      }
+    },
+    "SPECIALTY // GT LIGHTS": {
+      "percentToProcess": 1,
+      "outputs": {
+        "SPECIALTY": 0.7,
+        "REJECTS": 0.3
+      }
+    },
+    "SPECIALTY // MH": {
+      "percentToProcess": 1,
+      "outputs": {
+        "SPECIALTY": 1
+      }
+    },
+    "SPECIALTY // ML": {
+      "percentToProcess": 1,
+      "outputs": {
+        "SPECIALTY": 1
+      }
+    },
+    "SPECIALTY // NH": {
+      "percentToProcess": 1,
+      "outputs": {
+        "SPECIALTY": 1
+      }
+    },
+    "SPECIALTY // PB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "SPECIALTY": 1
+      }
+    },
+    "AA TOP // AA": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AA TOP": 0.99,
+        "REJECTS": 0.01
+      }
+    },
+    "AA TOP // AB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AA TOP": 0.98,
+        "REJECTS": 0.02
+      }
+    },
+    "AA TOP // PB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AA TOP": 0.8,
+        "PB TOP": 0.18,
+        "REJECTS": 0.02
+      }
+    },
+    "AB TOP // AB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AA TOP": 0.5,
+        "AB TOP": 0.48,
+        "REJECTS": 0.02
+      }
+    },
+    "PB TOP // AA": {
+      "percentToProcess": 1,
+      "outputs": {
+        "PB TOP": 1
+      }
+    },
+    "PB TOP // C": {
+      "percentToProcess": 1,
+      "outputs": {
+        "PB TOP": 1
+      }
+    },
+    "PB TOP // PB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "PB TOP": 0.98,
+        "REJECTS": 0.02
+      }
+    },
+    "AA PLUS // AA": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AA PLUS": 0.98,
+        "REJECTS": 0.02
+      }
+    },
+    "AA PLUS // AB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AA PLUS": 0.98,
+        "REJECTS": 0.02
+      }
+    },
+    "AA PLUS // PB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AA PLUS": 0.98,
+        "REJECTS": 0.02
+      }
+    },
+    "AB PLUS // AB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AB PLUS": 0.98,
+        "REJECTS": 0.02
+      }
+    },
+    "PB PLUS // PB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "PB PLUS": 0.98,
+        "REJECTS": 0.02
+      }
+    },
+    "ABC PLUS // AA": {
+      "percentToProcess": 1,
+      "outputs": {
+        "ABC PLUS": 0.85,
+        "REJECTS": 0.15
+      }
+    },
+    "ABC PLUS // C": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AB PLUS": 0.48,
+        "ABC PLUS": 0.5,
+        "REJECTS": 0.02
+      }
+    },
+    "AA FAQ // AA": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AA FAQ": 0.98,
+        "REJECTS": 0.02
+      }
+    },
+    "AA FAQ // AB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AA FAQ": 0.9,
+        "AB FAQ": 0.08,
+        "REJECTS": 0.02
+      }
+    },
+    "AB FAQ // AB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AB FAQ": 0.98,
+        "REJECTS": 0.02
+      }
+    },
+    "AB FAQ // C": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AB FAQ": 0.9,
+        "ABC FAQ": 0.08,
+        "REJECTS": 0.02
+      }
+    },
+    "AB FAQ // PB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AB FAQ": 0.9,
+        "PB FAQ": 0.08,
+        "REJECTS": 0.02
+      }
+    },
+    "AB FAQ // TT": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AB FAQ": 0.9,
+        "GRINDERS": 0.06,
+        "REJECTS": 0.04
+      }
+    },
+    "PB FAQ // PB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "PB FAQ": 1
+      }
+    },
+    "ABC FAQ // AA": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AA FAQ": 0.15,
+        "AB FAQ": 0.35,
+        "ABC FAQ": 0.35,
+        "GRINDERS": 0.1,
+        "REJECTS": 0.05
+      }
+    },
+    "ABC FAQ // AB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "AB FAQ": 0.35,
+        "ABC FAQ": 0.5,
+        "GRINDERS": 0.05,
+        "REJECTS": 0.1
+      }
+    },
+    "ABC FAQ // BELOW SCREEN 15": {
+      "percentToProcess": 1,
+      "outputs": {
+        "ABC FAQ": 0.95,
+        "GRINDERS": 0.03,
+        "REJECTS": 0.02
+      }
+    },
+    "ABC FAQ // C": {
+      "percentToProcess": 1,
+      "outputs": {
+        "ABC FAQ": 0.9,
+        "GRINDERS": 0.05,
+        "REJECTS": 0.05
+      }
+    },
+    "ABC FAQ // PB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "ABC FAQ": 0.8,
+        "GRINDERS": 0.1,
+        "REJECTS": 0.1
+      }
+    },
+    "ABC FAQ // T": {
+      "percentToProcess": 1,
+      "outputs": {
+        "ABC FAQ": 0.7,
+        "GRINDERS": 0.2,
+        "REJECTS": 0.1
+      }
+    },
+    "ABC FAQ // TT": {
+      "percentToProcess": 1,
+      "outputs": {
+        "ABC FAQ": 0.6,
+        "GRINDERS": 0.3,
+        "REJECTS": 0.1
+      }
+    },
+    "GRINDERS // AA": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // AB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // C": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // E": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // Ex office - No.2": {
+      "percentToProcess": 1,
+      "outputs": {
+        "REJECTS": 1
+      }
+    },
+    "GRINDERS // GT HEAVY": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 0.9,
+        "REJECTS": 0.1
+      }
+    },
+    "GRINDERS // HE": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 0.9,
+        "REJECTS": 0.1
+      }
+    },
+    "GRINDERS // MH": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 0.01,
+        "MBUNIS": 0.99
+      }
+    },
+    "GRINDERS // NH": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 0.9,
+        "REJECTS": 0.1
+      }
+    },
+    "GRINDERS // PB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // SB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // T": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // TT": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // UG": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // UG1": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // UG2": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "GRINDERS // UG3": {
+      "percentToProcess": 1,
+      "outputs": {
+        "GRINDERS": 1
+      }
+    },
+    "MBUNIS // GT LIGHTS": {
+      "percentToProcess": 1,
+      "outputs": {
+        "MBUNIS": 0.9,
+        "REJECTS": 0.1
+      }
+    },
+    "MBUNIS // MH": {
+      "percentToProcess": 1,
+      "outputs": {
+        "MBUNIS": 1
+      }
+    },
+    "MBUNIS // ML": {
+      "percentToProcess": 1,
+      "outputs": {
+        "MBUNIS": 0.95,
+        "REJECTS": 0.05
+      }
+    },
+    "MBUNIS // NH": {
+      "percentToProcess": 1,
+      "outputs": {
+        "MBUNIS": 1
+      }
+    },
+    "MBUNIS // NL": {
+      "percentToProcess": 1,
+      "outputs": {
+        "MBUNIS": 1
+      }
+    },
+    "REJECTS // AB": {
+      "percentToProcess": 1,
+      "outputs": {
+        "REJECTS": 1
+      }
+    },
+    "REJECTS // Ex office - No.2": {
+      "percentToProcess": 1,
+      "outputs": {
+        "REJECTS": 1
+      }
+    },
+    "REJECTS // Ex office - PX": {
+      "percentToProcess": 1,
+      "outputs": {
+        "REJECTS": 1
+      }
+    },
+    "REJECTS // GT LIGHTS": {
+      "percentToProcess": 1,
+      "outputs": {
+        "REJECTS": 1
+      }
+    },
+    "REJECTS // ML": {
+      "percentToProcess": 1,
+      "outputs": {
+        "REJECTS": 1
+      }
+    },
+    "REJECTS // SWEEPINGS": {
+      "percentToProcess": 1,
+      "outputs": {
+        "REJECTS": 1
+      }
+    },
+    "REJECTS // T": {
+      "percentToProcess": 1,
+      "outputs": {
+        "REJECTS": 1
+      }
+    },
+    "REJECTS // TT": {
+      "percentToProcess": 1,
+      "outputs": {
+        "REJECTS": 1
+      }
+    },
+    "REJECTS // UG1": {
+      "percentToProcess": 1,
+      "outputs": {
+        "REJECTS": 1
+      }
+    }
+  }
+}

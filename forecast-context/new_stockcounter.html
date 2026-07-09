@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Inventory Parser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        dialog::backdrop { background-color: rgba(0, 0, 0, 0.5); }
+        tbody tr { cursor: pointer; }
+        .forecast-input { width: 4em; text-align: right; padding: 2px; border: 1px solid #ccc; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto mt-10 p-6 max-w-7xl bg-white rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-4 text-gray-700">Upload and Parse Inventory Files</h1>
+        <p class="text-gray-600 mb-6">
+            Choose one or more .xlsx or .csv files to generate the summary tables.
+        </p>
+        
+        <input 
+            type="file" 
+            id="file-input" 
+            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            accept=".xlsx,.csv"
+            multiple
+        />
+
+        <div class="mt-4 flex space-x-4">
+            <button 
+                id="download-assumptions-btn" 
+                class="px-4 py-2 bg-gray-500 text-white rounded-md text-sm font-semibold hover:bg-gray-600 transition-colors"
+                title="Download current processing percentages as a JSON file."
+            >
+                Download Assumptions (JSON)
+            </button>
+            
+            <button 
+                id="import-assumptions-btn" 
+                class="px-4 py-2 bg-gray-500 text-white rounded-md text-sm font-semibold hover:bg-gray-600 transition-colors"
+                title="Upload a previously saved JSON configuration file."
+            >
+                Upload Assumptions (JSON)
+            </button>
+            
+            <input 
+                type="file" 
+                id="import-assumptions-input" 
+                accept=".json" 
+                style="display: none;" 
+            />
+        </div>
+
+        <div id="status-message" class="mt-4 text-green-600 font-medium"></div>
+
+        <div id="results-container" class="mt-8 border-t pt-6">
+            <div id="table1-container"></div>
+            <div id="table2-container" class="mt-8"></div>
+        </div>
+
+        <div id="forecast-container" class="mt-8 border-t pt-6"></div>
+    </div>
+
+    <dialog id="details-modal" class="p-6 rounded-lg shadow-xl w-full max-w-3xl">
+        <div id="modal-content"></div>
+        <button id="modal-close-btn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Close</button>
+    </dialog>
+
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const statusMessage = document.getElementById('status-message');
+        const table1Container = document.getElementById('table1-container');
+        const table2Container = document.getElementById('table2-container');
+        const forecastContainer = document.getElementById('forecast-container');
+        const detailsModal = document.getElementById('details-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        
+        // Buttons for Assumptions
+        const downloadAssumptionsBtn = document.getElementById('download-assumptions-btn');
+        const importAssumptionsBtn = document.getElementById('import-assumptions-btn');
+        const importAssumptionsInput = document.getElementById('import-assumptions-input');
+
+        let allDataRows = [];
+        let percentages = {};
+        let currentStatusData = [];
+        const today = new Date();
+
+        const PRE_IN_ORDER = ["PRE AA - FAQ", "PRE AA - FAQ MINUS", "PRE AA - PLUS", "PRE AA - TOP", "PRE AB - FAQ", "PRE AB - FAQ MINUS", "PRE AB - PLUS", "PRE AB - TOP", "PRE ABC - FAQ", "PRE ABC - PLUS", "PRE AA - FAQ PLUS", "PRE AB - FAQ PLUS", "PRE GRINDER BOLD", "PRE GRINDER LIGHT", "PRE MBUNIS", "PRE PB - FAQ", "PRE PB - PLUS", "PRE PB-TOP", "PRE REJECT", "PRE SPECIALTY - NATURAL", "PRE SPECIALTY - WASHED", "PRE RECOVERABLES", "IN AA - FAQ", "IN AA - FAQ MINUS", "IN AA - PLUS", "IN AA - TOP", "IN AB - FAQ", "IN AB - FAQ MINUS", "IN AB - PLUS", "IN AB - TOP", "IN ABC - FAQ", "IN ABC - PLUS", "IN AA - FAQ PLUS", "IN AB - FAQ PLUS", "IN GRINDER BOLD", "IN GRINDER LIGHT", "IN MBUNIS", "IN PB - FAQ", "IN PB - PLUS", "IN PB-TOP", "IN REJECT", "IN SPECIALTY - NATURAL", "IN SPECIALTY - WASHED"];
+        const POST_ORDER = [
+            "POST NATURAL",
+            // TOPs, sorted by screen size
+            "POST 17 UP TOP", 
+            "POST 16 TOP", 
+            "POST 15 TOP", 
+            "POST PB - TOP",
+            // PLUSes, sorted by screen size
+            "POST 17 UP PLUS", 
+            "POST 16 PLUS", 
+            "POST 15 PLUS", 
+            "POST 14 PLUS",
+            "POST PB - PLUS",
+            // FAQs, sorted by screen size
+            "POST 17 UP FAQ", 
+            "POST 16 FAQ", 
+            "POST 15 FAQ", 
+            "POST 14 FAQ",
+            "POST PB - FAQ",
+            // All other grades
+            "POST GRINDER BOLD", 
+            "POST GRINDER LIGHT", 
+            "POST MH", 
+            "POST ML", 
+            "POST REJECTS S",
+            "POST REJECTS P"
+        ];
+
+        function savePercentagesToStorage() { localStorage.setItem('processingPercentages', JSON.stringify(percentages)); }
+        function loadPercentagesFromStorage() { const stored = localStorage.getItem('processingPercentages'); return stored ? JSON.parse(stored) : {}; }
+
+        // --- ASSUMPTIONS EXPORT/IMPORT LOGIC ---
+
+        function exportPercentages() {
+            if (Object.keys(percentages).length === 0) {
+                alert('No assumptions (percentages) have been entered yet to download.');
+                return;
+            }
+            const dataStr = JSON.stringify(percentages, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'coffee_inventory_assumptions_config.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            statusMessage.textContent = 'Assumptions downloaded successfully.';
+            statusMessage.classList.remove('text-red-600');
+            statusMessage.classList.add('text-green-600');
+        }
+
+        function importPercentages(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const jsonContent = e.target.result;
+                    const parsedData = JSON.parse(jsonContent);
+
+                    if (typeof parsedData !== 'object' || parsedData === null) {
+                        throw new Error("Invalid JSON format");
+                    }
+
+                    // Update global variable and local storage
+                    percentages = parsedData;
+                    savePercentagesToStorage();
+
+                    statusMessage.textContent = 'Assumptions imported successfully!';
+                    statusMessage.classList.remove('text-red-600');
+                    statusMessage.classList.add('text-green-600');
+
+                    // Refresh the view if data is already loaded
+                    if (allDataRows.length > 0) {
+                        renderForecastSection(currentStatusData);
+                    }
+                } catch (error) {
+                    console.error("Error importing JSON:", error);
+                    alert("Failed to import assumptions. Please check the file format.");
+                }
+                // Reset input so the same file can be selected again if needed
+                importAssumptionsInput.value = ''; 
+            };
+            reader.readAsText(file);
+        }
+
+        // --- END ASSUMPTIONS LOGIC ---
+
+        const HEADER_ALIASES = { 
+            strategy: ["Position Strategy Allocation"], 
+            warehouse: ["Warehouse"], 
+            intakeDate: ["Intake Date"], 
+            batchId: ["Batch No."], 
+            qty: ["Qty."],
+            itemName: ["Item Name"] // Added Item Name mapping
+        };
+        
+        function mapHeaders(headerRow) {
+            const map = {};
+            for (const key in HEADER_ALIASES) {
+                map[key] = -1;
+                for (const alias of HEADER_ALIASES[key]) {
+                    const index = headerRow.findIndex(header => header && header.trim() === alias);
+                    if (index !== -1) {
+                        map[key] = index;
+                        break;
+                    }
+                }
+            }
+            return map;
+        }
+
+        function parseFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+                        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                        if (jsonData.length < 2) resolve([]);
+                        const headers = jsonData[0];
+                        const headerMap = mapHeaders(headers);
+                        const dataRows = jsonData.slice(1);
+                        const standardizedRows = dataRows.map(row => ({ 
+                            strategy: row[headerMap.strategy], 
+                            warehouse: row[headerMap.warehouse], 
+                            intakeDate: row[headerMap.intakeDate], 
+                            batchId: row[headerMap.batchId], 
+                            qty: row[headerMap.qty],
+                            itemName: row[headerMap.itemName] // Capture Item Name
+                        }));
+                        resolve(standardizedRows);
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(file);
+            });
+        }
+        
+        function processInventoryLocation(rows) {
+            const locations = {};
+            let grandTotalKgs = 0;
+            let grandTotalWeight = 0;
+            rows.forEach(row => {
+                const warehouse = (row.warehouse ? String(row.warehouse).trim() : 'NO WAREHOUSE');
+                const qty = parseFloat(row.qty);
+                if (isNaN(qty)) return;
+                if (!locations[warehouse]) locations[warehouse] = { totalKgs: 0, totalWeight: 0 };
+                locations[warehouse].totalKgs += qty;
+                const intakeDate = row.intakeDate;
+                if (intakeDate instanceof Date && !isNaN(intakeDate)) {
+                    const ageInDays = (today - intakeDate) / (1000 * 3600 * 24);
+                    locations[warehouse].totalWeight += ageInDays * qty;
+                }
+            });
+            Object.values(locations).forEach(loc => {
+                grandTotalKgs += loc.totalKgs;
+                grandTotalWeight += loc.totalWeight;
+            });
+            const results = Object.keys(locations).map(warehouseName => {
+                const { totalKgs, totalWeight } = locations[warehouseName];
+                let displayName = '';
+                if (warehouseName === 'KAHAWA BORA WAREHOUSE') displayName = 'In Our Warehouse';
+                else if (warehouseName === 'NO WAREHOUSE') displayName = 'No Warehouse Assigned';
+                else displayName = `Pending Arrival (${warehouseName})`;
+                const avgDays = totalKgs > 0 ? totalWeight / totalKgs : 0;
+                return {
+                    location: displayName, kgs: totalKgs, bags: totalKgs / 60,
+                    avgDays: avgDays, original_name: warehouseName,
+                    percentOfTotal: grandTotalKgs > 0 ? (totalKgs / grandTotalKgs) * 100 : 0
+                };
+            });
+            results.sort((a, b) => b.bags - a.bags);
+            const totals = {
+                bags: grandTotalKgs / 60,
+                avgDays: grandTotalKgs > 0 ? grandTotalWeight / grandTotalKgs : 0
+            };
+            return { results, totals };
+        }
+
+        function processWarehouseStatus(rows) {
+            const stageKeys = { PRE: "Pre Processing", IN: "In Processing", POST: "Post-Processing", FINISHED: "FINISHED", PENDING: "Pending Inbound processing alignment", UNCLASSIFIED: "Unclassified" };
+            const stages = { PRE: 0, IN: 0, POST: 0, FINISHED: 0, PENDING: 0, UNCLASSIFIED: 0 };
+            let totalKgs = 0;
+            rows.forEach(row => {
+                const strategy = row.strategy ? String(row.strategy).toUpperCase().trim() : '';
+                const qty = parseFloat(row.qty);
+                if (isNaN(qty)) return;
+                totalKgs += qty;
+                if (!strategy) stages.UNCLASSIFIED += qty;
+                else if (strategy.startsWith('PRE')) stages.PRE += qty;
+                else if (strategy.startsWith('IN')) stages.IN += qty;
+                else if (strategy.startsWith('POST')) stages.POST += qty;
+                else if (strategy.startsWith('FINISHED')) stages.FINISHED += qty;
+                else stages.PENDING += qty;
+            });
+            return Object.keys(stages).map(key => ({
+                stage: stageKeys[key], bags: stages[key] / 60, key: key,
+                percentOfTotal: totalKgs > 0 ? (stages[key] / totalKgs) * 100 : 0
+            }));
+        }
+        
+        function renderTable1({ results, totals }) {
+            let tableHTML = `<h2 class="text-xl font-bold mb-2 text-gray-700">Inventory Location Summary</h2><table class="w-full text-left border-collapse"><thead><tr><th class="border-b-2 p-2 bg-gray-50">Location</th><th class="border-b-2 p-2 bg-gray-50 text-right">Total Bags (60kg)</th><th class="border-b-2 p-2 bg-gray-50 text-right">% of Total</th><th class="border-b-2 p-2 bg-gray-50 text-right">Avg. Days since Intake</th></tr></thead><tbody>`;
+            results.forEach(item => {
+                tableHTML += `<tr data-filter-type="location" data-filter-value="${item.original_name}" class="hover:bg-gray-100"><td class="border-b p-2">${item.location}</td><td class="border-b p-2 text-right">${item.bags.toFixed(2)}</td><td class="border-b p-2 text-right">${item.percentOfTotal.toFixed(1)}%</td><td class="border-b p-2 text-right">${item.avgDays.toFixed(1)}</td></tr>`;
+            });
+            tableHTML += `</tbody><tfoot><tr class="font-bold border-t-2"><td class="p-2">Total</td><td class="p-2 text-right">${totals.bags.toFixed(2)}</td><td class="p-2 text-right">100.0%</td><td class="p-2 text-right">${totals.avgDays.toFixed(1)}</td></tr></tfoot></table>`;
+            table1Container.innerHTML = tableHTML;
+        }
+
+        function renderTable2(data) {
+            const totalBags = data.reduce((sum, item) => sum + item.bags, 0);
+            let tableHTML = `<h2 class="text-xl font-bold mb-2 text-gray-700">Processing Status</h2><table class="w-full text-left border-collapse"><thead><tr><th class="border-b-2 p-2 bg-gray-50">Processing Stage</th><th class="border-b-2 p-2 bg-gray-50 text-right">Total Bags (60kg)</th><th class="border-b-2 p-2 bg-gray-50 text-right">% of Total</th></tr></thead><tbody>`;
+            data.forEach(item => {
+                if (item.bags > 0) {
+                    tableHTML += `<tr data-filter-type="status" data-filter-value="${item.key}" class="hover:bg-gray-100"><td class="border-b p-2">${item.stage}</td><td class="border-b p-2 text-right">${item.bags.toFixed(2)}</td><td class="border-b p-2 text-right">${item.percentOfTotal.toFixed(1)}%</td></tr>`;
+                }
+            });
+            tableHTML += `</tbody><tfoot><tr class="font-bold border-t-2"><td class="p-2">Total</td><td class="p-2 text-right">${totalBags.toFixed(2)}</td><td class="p-2 text-right">${totalBags > 0 ? '100.0%' : '0.0%'}</td></tr></tfoot></table>`;
+            table2Container.innerHTML = tableHTML;
+        }
+
+        function showDetailsModal(filterType, filterValue) {
+            let relevantRows = [];
+            if (filterType === 'location') {
+                relevantRows = allDataRows.filter(row => (row.warehouse ? String(row.warehouse).trim() : 'NO WAREHOUSE') === filterValue);
+            } else if (filterType === 'status') {
+                relevantRows = allDataRows.filter(row => {
+                    const strategy = row.strategy ? String(row.strategy).toUpperCase().trim() : '';
+                    if (filterValue === 'PRE') return strategy.startsWith('PRE');
+                    if (filterValue === 'IN') return strategy.startsWith('IN');
+                    if (filterValue === 'POST') return strategy.startsWith('POST');
+                    if (filterValue === 'FINISHED') return strategy.startsWith('FINISHED');
+                    if (filterValue === 'PENDING') return strategy && !strategy.startsWith('PRE') && !strategy.startsWith('IN') && !strategy.startsWith('POST') && !strategy.startsWith('FINISHED');
+                    if (filterValue === 'UNCLASSIFIED') return !strategy;
+                    return false;
+                });
+            }
+            const processedRows = relevantRows.map(row => {
+                const intakeDate = row.intakeDate;
+                let ageInDays = null;
+                if (intakeDate instanceof Date && !isNaN(intakeDate)) ageInDays = (today - intakeDate) / (1000 * 3600 * 24);
+                const kgs = parseFloat(row.qty) || 0;
+                return {
+                    strategy: row.strategy || 'N/A', batchId: row.batchId || 'N/A', kgs: kgs,
+                    bags: kgs / 60, ageInDays: ageInDays
+                };
+            }).filter(row => row.kgs > 0);
+            let weightedAvgHTML = '';
+            if (filterType === 'status') {
+                let totalWeight = 0, totalKgs = 0;
+                processedRows.forEach(row => { if (row.ageInDays !== null) { totalWeight += row.ageInDays * row.kgs; totalKgs += row.kgs; } });
+                const avgDays = totalKgs > 0 ? (totalWeight / totalKgs).toFixed(1) : 'N/A';
+                weightedAvgHTML = `<p class="mb-4"><strong>Weighted Average Age:</strong> ${avgDays} days</p>`;
+            }
+            processedRows.sort((a, b) => b.kgs - a.kgs);
+            const top10 = processedRows.slice(0, 10);
+            let detailsHTML = `<h3 class="text-xl font-bold mb-2">Top 10 Batches</h3>${weightedAvgHTML}<table class="w-full text-sm text-left"><thead><tr><th class="border-b p-2 bg-gray-50">Position Strategy Allocation</th><th class="border-b p-2 bg-gray-50">Batch ID</th><th class="border-b p-2 bg-gray-50 text-right">Bags (60kg)</th><th class="border-b p-2 bg-gray-50 text-right">Age (Days)</th></tr></thead><tbody>`;
+            top10.forEach(row => { detailsHTML += `<tr><td class="border-b p-2">${row.strategy}</td><td class="border-b p-2">${row.batchId}</td><td class="border-b p-2 text-right">${row.bags.toFixed(2)}</td><td class="border-b p-2 text-right">${row.ageInDays !== null ? row.ageInDays.toFixed(0) : 'N/A'}</td></tr>`; });
+            detailsHTML += `</tbody></table>`;
+            modalContent.innerHTML = detailsHTML;
+            detailsModal.showModal();
+        }
+
+        function processMatrixData(rows) {
+            const matrixRows = {};
+            const relevantRows = rows.filter(row => {
+                const strategy = (row.strategy || '').trim();
+                return strategy.startsWith('PRE') || strategy.startsWith('IN');
+            });
+            relevantRows.forEach(row => {
+                let strategy = String(row.strategy).trim();
+                const itemName = row.itemName ? String(row.itemName).trim() : 'Unknown Item';
+                const batchPrefix = (row.batchId || 'N/A').substring(0, 2).toUpperCase();
+
+                // If strategy is Recoverable, append Item Name to the Strategy Name
+                if (strategy.toUpperCase().includes('RECOVERABLE')) {
+                    strategy = `${strategy} (${itemName})`;
+                }
+
+                const key = `${strategy}|${batchPrefix}`;
+                const qty = parseFloat(row.qty);
+                if (!isNaN(qty)) {
+                    if (!matrixRows[key]) matrixRows[key] = { strategy, batchPrefix, totalKgs: 0 };
+                    matrixRows[key].totalKgs += qty;
+                }
+            });
+            
+            // Sort standard items first, then dynamic recoverable items
+            return Object.values(matrixRows).sort((a, b) => {
+                const indexA = PRE_IN_ORDER.indexOf(a.strategy);
+                const indexB = PRE_IN_ORDER.indexOf(b.strategy);
+                
+                // If both are in the standard list, sort by index
+                if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                
+                // If A is standard and B is dynamic, A comes first
+                if (indexA !== -1) return -1;
+                if (indexB !== -1) return 1;
+                
+                // If both are dynamic, sort alphabetically
+                return a.strategy.localeCompare(b.strategy);
+            });
+        }
+
+        function calculateTheoreticalStock(matrixData, statusData) {
+            const stock = {};
+
+            const finishedData = statusData.find(s => s.key === 'FINISHED');
+            const pendingData = statusData.find(s => s.key === 'PENDING');
+            const unclassifiedData = statusData.find(s => s.key === 'UNCLASSIFIED');
+            const grandTotalFinished = finishedData ? finishedData.bags : 0;
+            const unclassifiedBags = (pendingData ? pendingData.bags : 0) + (unclassifiedData ? unclassifiedData.bags : 0);
+
+            const consolidationMap = { "POST FAQ MINUS": "POST 17 UP FAQ", "POST FAQ PLUS": "POST 17 UP FAQ" };
+
+            allDataRows.forEach(row => {
+                const strategy = (row.strategy || '').trim();
+                if (!strategy.toUpperCase().startsWith('POST')) return;
+                const qty = parseFloat(row.qty);
+                if (isNaN(qty)) return;
+
+                const bags = qty / 60;
+                const targetStrategy = consolidationMap[strategy] || strategy;
+                
+                if (!stock[targetStrategy]) stock[targetStrategy] = { alreadyInPost: 0, expected: 0 };
+                stock[targetStrategy].alreadyInPost += bags;
+            });
+
+            matrixData.forEach(row => {
+                const rowKey = `${row.strategy}|${row.batchPrefix}`;
+                const inputBags = row.totalKgs / 60;
+                if (percentages[rowKey]) {
+                    for (const postKey in percentages[rowKey]) {
+                        const percent = parseFloat(percentages[rowKey][postKey] || 0);
+                        if (percent > 0) {
+                            const targetPost = consolidationMap[postKey] || postKey;
+                            if (!stock[targetPost]) stock[targetPost] = { alreadyInPost: 0, expected: 0 };
+                            stock[targetPost].expected += inputBags * (percent / 100);
+                        }
+                    }
+                }
+            });
+
+            const totals = { alreadyInPost: 0, expected: 0, total: 0 };
+            for (const key in stock) {
+                if (key.toUpperCase().startsWith('POST') && stock[key] && typeof stock[key] === 'object') {
+                    totals.alreadyInPost += stock[key].alreadyInPost || 0;
+                    totals.expected += stock[key].expected || 0;
+                }
+            }
+            
+            const finalStock = { grandTotalFinished, unclassifiedBags, totals };
+            POST_ORDER.forEach(post => {
+                const grade = stock[post] || { alreadyInPost: 0, expected: 0 };
+                grade.total = (grade.alreadyInPost || 0) + (grade.expected || 0);
+                finalStock[post] = grade;
+            });
+
+            finalStock.totals.total = finalStock.totals.alreadyInPost + finalStock.totals.expected + finalStock.grandTotalFinished + finalStock.unclassifiedBags;
+            
+            console.log("--- DEBUG: Theoretical Stock Calculation ---");
+            const debugData = {
+                finished_total: finalStock.grandTotalFinished,
+                unclassified_pending_total: finalStock.unclassifiedBags,
+                post_grades_already_in_post_total: finalStock.totals.alreadyInPost,
+                post_grades_expected_total: finalStock.totals.expected,
+                FINAL_GRAND_TOTAL: finalStock.totals.total,
+                calculation_check: `(${finalStock.totals.alreadyInPost.toFixed(2)} [POST Already In] + ${finalStock.totals.expected.toFixed(2)} [POST Expected] + ${finalStock.grandTotalFinished.toFixed(2)} [Finished] + ${finalStock.unclassifiedBags.toFixed(2)} [Unclassified/Pending])`
+            };
+            console.log(JSON.stringify(debugData, null, 2));
+            console.log("--- End of Debug ---");
+
+            return finalStock;
+        }
+
+        function renderForecastSection(statusData) {
+            if (allDataRows.length === 0) { forecastContainer.innerHTML = ''; return; }
+            const matrixData = processMatrixData(allDataRows);
+            const theoreticalStock = calculateTheoreticalStock(matrixData, statusData);
+            
+            let matrixHTML = `<div id="matrix-section"><h2 class="text-xl font-bold mb-2 text-gray-700">Processing Forecast</h2><p class="text-sm text-gray-600 mb-4">Enter percentages as whole numbers (e.g., 95 for 95%). Rows will turn green when percentages for a grade sum to 100%.</p><div class="overflow-auto relative max-h-[70vh]"><table class="w-full text-left border-collapse text-sm"><thead><tr><th class="sticky top-0 left-0 z-20 p-1 bg-gray-100 border-b-2 w-48">Input Grade</th><th class="sticky top-0 z-10 p-1 bg-gray-100 border-b-2 w-24">Batch Prefix</th><th class="sticky top-0 z-10 p-1 bg-gray-100 border-b-2 w-28 text-right">Input Bags</th>${POST_ORDER.map(post => `<th class="sticky top-0 z-10 p-1 bg-gray-100 border-b-2 text-right">${post.replace('POST ', '')}</th>`).join('')}</tr></thead><tbody>${matrixData.map(row => { const rowKey = `${row.strategy}|${row.batchPrefix}`; if (!percentages[rowKey]) percentages[rowKey] = {}; const sum = Object.values(percentages[rowKey] || {}).reduce((acc, val) => acc + parseFloat(val || 0), 0); const highlightClass = (Math.abs(sum - 100) < 0.01) ? 'bg-green-50' : ''; return `<tr class="${highlightClass}"><td class="sticky left-0 z-10 p-1 bg-white border-b">${row.strategy}</td><td class="p-1 bg-white border-b">${row.batchPrefix}</td><td class="p-1 bg-white border-b text-right">${(row.totalKgs / 60).toFixed(2)}</td>${POST_ORDER.map(post => { const value = percentages[rowKey][post] || ''; return `<td class="border-b p-1"><input type="number" class="forecast-input" min="0" max="100" placeholder="0" data-row-key="${rowKey}" data-post-key="${post}" value="${value}"></td>`; }).join('')}</tr>`; }).join('')}</tbody></table></div></div>`;
+            
+            let summaryHTML = `<div id="summary-section" class="mt-8"><h2 class="text-xl font-bold mb-2 text-gray-700">Theoretical Stock</h2><table class="w-full text-left border-collapse"><thead><tr><th class="border-b-2 p-2 bg-gray-50">POST Grade</th><th class="border-b-2 p-2 bg-gray-50 text-right">Already in POST (Bags)</th><th class="border-b-2 p-2 bg-gray-50 text-right">Expected from Processing (Bags)</th><th class="border-b-2 p-2 bg-gray-50 text-right">Total Theoretical Stock (Bags)</th></tr></thead><tbody><tr class="bg-gray-100"><td class="p-2 font-bold border-b">FINISHED</td><td class="p-2 text-right border-b">-</td><td class="p-2 text-right border-b">-</td><td class="p-2 text-right font-bold border-b">${theoreticalStock.grandTotalFinished.toFixed(2)}</td></tr>${POST_ORDER.map(post => { const stock = theoreticalStock[post] || { alreadyInPost: 0, expected: 0, total: 0 }; return `<tr><td class="border-b p-2 font-medium">${post}</td><td class="border-b p-2 text-right">${stock.alreadyInPost.toFixed(2)}</td><td class="border-b p-2 text-right">${stock.expected.toFixed(2)}</td><td class="border-b p-2 text-right font-bold">${stock.total.toFixed(2)}</td></tr>`; }).join('')}<tr><td class="border-b p-2 font-medium">Unclassified/Pending Alignment</td><td class="border-b p-2 text-right">-</td><td class="border-b p-2 text-right">-</td><td class="border-b p-2 text-right font-bold">${theoreticalStock.unclassifiedBags.toFixed(2)}</td></tr></tbody><tfoot><tr class="font-bold border-t-4"><td class="p-2">TOTALS</td><td class="p-2 text-right">${theoreticalStock.totals.alreadyInPost.toFixed(2)}</td><td class="p-2 text-right">${theoreticalStock.totals.expected.toFixed(2)}</td><td class="p-2 text-right">${theoreticalStock.totals.total.toFixed(2)}</td></tr></tfoot></table></div>`;
+            
+            forecastContainer.innerHTML = matrixHTML + summaryHTML;
+        }
+
+        async function handleFileUpload(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+            statusMessage.textContent = `Processing ${files.length} file(s)...`;
+            statusMessage.classList.remove('text-red-600');
+            statusMessage.classList.add('text-green-600');
+            table1Container.innerHTML = '';
+            table2Container.innerHTML = '';
+            forecastContainer.innerHTML = '';
+            allDataRows = [];
+            currentStatusData = [];
+            try {
+                const parsePromises = Array.from(files).map(parseFile);
+                const results = await Promise.all(parsePromises);
+                allDataRows = results.flat();
+                
+                const locationData = processInventoryLocation(allDataRows);
+                renderTable1(locationData);
+                
+                const statusData = processWarehouseStatus(allDataRows);
+                currentStatusData = statusData;
+                renderTable2(statusData);
+                
+                renderForecastSection(statusData);
+                
+                statusMessage.textContent = `Success! ${allDataRows.length} total rows processed.`;
+            } catch (error) {
+                console.error("Error processing files:", error);
+                statusMessage.textContent = 'Error: Could not process one or more files.';
+                statusMessage.classList.add('text-red-600');
+            }
+        }
+        
+        forecastContainer.addEventListener('input', (event) => {
+            if (event.target.classList.contains('forecast-input')) {
+                const { rowKey, postKey } = event.target.dataset;
+                const value = event.target.value;
+                if (!percentages[rowKey]) percentages[rowKey] = {};
+                percentages[rowKey][postKey] = value;
+                savePercentagesToStorage();
+                const sum = Object.values(percentages[rowKey]).reduce((acc, val) => acc + parseFloat(val || 0), 0);
+                event.target.closest('tr').classList.toggle('bg-green-50', Math.abs(sum - 100) < 0.01);
+                
+                const matrixData = processMatrixData(allDataRows);
+                const theoreticalStock = calculateTheoreticalStock(matrixData, currentStatusData);
+                
+                let summaryBodyHTML = `<tr class="bg-gray-100"><td class="p-2 font-bold border-b">FINISHED</td><td class="p-2 text-right border-b">-</td><td class="p-2 text-right border-b">-</td><td class="p-2 text-right font-bold border-b">${theoreticalStock.grandTotalFinished.toFixed(2)}</td></tr>`;
+                summaryBodyHTML += POST_ORDER.map(post => { const stock = theoreticalStock[post] || { alreadyInPost: 0, expected: 0, total: 0 }; return `<tr><td class="border-b p-2 font-medium">${post}</td><td class="border-b p-2 text-right">${stock.alreadyInPost.toFixed(2)}</td><td class="border-b p-2 text-right">${stock.expected.toFixed(2)}</td><td class="border-b p-2 text-right font-bold">${stock.total.toFixed(2)}</td></tr>`; }).join('');
+                summaryBodyHTML += `<tr><td class="border-b p-2 font-medium">Unclassified/Pending Alignment</td><td class="border-b p-2 text-right">-</td><td class="border-b p-2 text-right">-</td><td class="border-b p-2 text-right font-bold">${theoreticalStock.unclassifiedBags.toFixed(2)}</td></tr>`;
+                
+                const summaryFooterHTML = `<tr class="font-bold border-t-4"><td class="p-2">TOTALS</td><td class="p-2 text-right">${theoreticalStock.totals.alreadyInPost.toFixed(2)}</td><td class="p-2 text-right">${theoreticalStock.totals.expected.toFixed(2)}</td><td class="p-2 text-right">${theoreticalStock.totals.total.toFixed(2)}</td></tr>`;
+                
+                document.querySelector("#summary-section tbody").innerHTML = summaryBodyHTML;
+                document.querySelector("#summary-section tfoot").innerHTML = summaryFooterHTML;
+            }
+        });
+        
+        function handleTableClick(event) {
+            const row = event.target.closest('tr');
+            if (row && row.parentElement.tagName === 'TBODY') {
+                const { filterType, filterValue } = row.dataset;
+                if (filterType && filterValue) {
+                    showDetailsModal(filterType, filterValue);
+                }
+            }
+        }
+
+        // Event listeners
+        fileInput.addEventListener('change', handleFileUpload);
+        modalCloseBtn.addEventListener('click', () => detailsModal.close());
+        table1Container.addEventListener('click', handleTableClick);
+        table2Container.addEventListener('click', handleTableClick);
+        
+        downloadAssumptionsBtn.addEventListener('click', exportPercentages);
+        
+        // Trigger hidden input on button click
+        importAssumptionsBtn.addEventListener('click', () => {
+            importAssumptionsInput.click();
+        });
+        // Handle file selection
+        importAssumptionsInput.addEventListener('change', importPercentages);
+
+        percentages = loadPercentagesFromStorage();
+    </script>
+</body>
+</html>
