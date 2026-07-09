@@ -271,7 +271,8 @@ class ShipmentStatusTool implements LuaTool {
       byMonth: status.byMonth,
       shipments: status.shipments,
       caveats: [
-        '"Booked" = a preshipment exists in SOL; a split contract can carry several bookings on one sailing (IDs joined with " / ").',
+        'Three states — unbooked, preshipment-only (booked, no vessel yet: see stage), vessel-assigned. Never call a preshipment-only contract "unbooked".',
+        'A split contract can carry several bookings on one sailing (IDs joined with " / ").',
         'ETD/ETA exist only on vessel-assigned bookings; ETA on a subset of those.',
         'Not in this export (do not guess): B/L numbers, containers, invoices/due dates, warehouses, consignees.',
       ],
@@ -287,7 +288,7 @@ export const querySkill = new LuaSkill({
 - what-if for "can I sell N bags of X for month M" — report netAfter and, if it goes short, the first month it happens. Never turn this into trade advice; state the numbers.
 - price-analytics for "at what price level am I short", "average differential on grinders", "how much is fixed vs to-be-fixed". "Price level" on this desk = differential vs the NY KC futures in USc/lb. ALWAYS present the contract differential and the FOB-equivalent side by side — neither is the headline. State the fixed vs price-to-be-fixed split and any excluded (unpriced) sales. It covers the unallocated shorts book only: no purchase cost basis, no P&L or mark-to-market (no market prices exist in the data), no price history — say so when asked.
 - client-exposure for "who am I most short to", "my exposure to Nestle", "what does client X buy". Volumes are forward commitments by counterparty; combine with price-analytics (dimension=client) when they also want the price level.
-- shipment-status for "what's booked/unbooked", "what's shipping this month", "when does X's coffee leave". It reports BOOKING state of the forward book (preshipment, vessel, POL→POD, ETD/ETA) — the export has no B/L, container, invoice, due-date, or warehouse data, so decline those plainly instead of approximating.
+- shipment-status for "what's booked/unbooked", "what's shipping this month", "when does X's coffee leave". Three states, keep them distinct: unbooked / preshipment-only (booked, no vessel yet) / vessel-assigned — a contract with a preshipment but no vessel is BOOKED. The export has no B/L, container, invoice, due-date, or warehouse data, so decline those plainly instead of approximating.
 - Grades are matched fuzzily ("AB FAQ" → POST 16 FAQ); confirm the resolved grade in the answer.
 - Quote bags by default; add MT when the trader asks or the number is hedge-related.
 - Never label net values as "longs": longs = theoretical stock, net = longs + shorts. Say which one you're quoting.`,

@@ -69,6 +69,8 @@ export interface ShipmentDetail {
   client: string | null;
   month: string | null;
   smt: number;
+  /** Booking stage: preshipment exists but no vessel yet, or vessel assigned. */
+  stage: 'preshipment-only' | 'vessel-assigned';
   vessel: string | null;
   voyage: string | null;
   line: string | null;
@@ -118,6 +120,7 @@ export function computeShipmentStatus(sales: Sale[]): ShipmentStatus {
       client: s.client,
       month: s.month,
       smt: round(s.smt, 4),
+      stage: s.booking!.vessel != null ? 'vessel-assigned' : 'preshipment-only',
       vessel: s.booking!.vessel,
       voyage: s.booking!.voyage,
       line: s.booking!.line,
