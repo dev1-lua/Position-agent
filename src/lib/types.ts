@@ -63,6 +63,16 @@ export interface ForwardSalesResult {
   matches: BlendMatch[];
 }
 
+/** A row of the SOL DailyNetPosition export (the columns the hedge maths uses). */
+export interface DnpRow {
+  quality: string;   // "Hedgeable" / "Non Hedgeable"
+  state: string;     // e.g. "0-In Store Origin unsold"
+  company: string;   // supplier/customer, e.g. "KENYACOF", "RABOBANK IN"
+  pMt: number;       // P.MT (col O)
+  sMt: number;       // S.MT (col P)
+  totLine: number;   // TotLine (col S)
+}
+
 /** Net position result. */
 export interface NetPositionResult {
   /** grade → { theoretical (longs, +), forwardSales (shorts, −), net }. */

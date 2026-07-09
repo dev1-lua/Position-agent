@@ -1,0 +1,133 @@
+import { DnpRow, Sale } from './types';
+
+/**
+ * Parsers for the SOL exports. Despite their `.xls` extension these are
+ * tab-separated text files: DailyNetPosition is UTF-16LE, ReportLogistic is
+ * ASCII with quoted headers/cells. The real XBS stock report is a genuine
+ * .xlsx and is parsed with SheetJS at the source-adapter layer, not here.
+ */
+
+/** Decode an export's bytes, sniffing UTF-16LE (BOM or NUL density) vs 8-bit text. */
+export function decodeExportText(data: ArrayBuffer | Uint8Array): string {
+  const bytes = data instanceof Uint8Array ? data : new Uint8Array(data);
+  const utf16 =
+    (bytes.length >= 2 && bytes[0] === 0xff && bytes[1] === 0xfe) ||
+    // no BOM: UTF-16LE ASCII text has a NUL in every other byte
+    bytes.slice(0, Math.min(bytes.length, 512)).filter((b) => b === 0).length >
+      Math.min(bytes.length, 512) / 4;
+  return new TextDecoder(utf16 ? 'utf-16le' : 'utf-8').decode(bytes);
+}
+
+const stripQuotes = (s: string): string => {
+  const t = s.trim();
+  return t.startsWith('"') && t.endsWith('"') ? t.slice(1, -1) : t;
+};
+
+/** Parse TSV text into a header row and data rows (quotes stripped, blank lines dropped). */
+export function parseTsv(text: string): { header: string[]; rows: string[][] } {
+  const lines = text.replace(/^﻿/, '').split(/\r?\n/).filter((l) => l.trim() !== '');
+  if (lines.length === 0) return { header: [], rows: [] };
+  const header = lines[0].split('\t').map(stripQuotes);
+  const rows = lines.slice(1).map((l) => l.split('\t').map(stripQuotes));
+  return { header, rows };
+}
+
+const toNum = (s: string | undefined): number => {
+  const n = parseFloat(String(s ?? '').replace(/,/g, ''));
+  return Number.isNaN(n) ? 0 : n;
+};
+
+const columnIndex = (header: string[], names: string[]): number => {
+  for (const name of names) {
+    const i = header.findIndex((h) => h.trim() === name);
+    if (i !== -1) return i;
+  }
+  throw new Error(`Column not found: ${names.join(' / ')} (header: ${header.slice(0, 10).join(', ')}…)`);
+};
+
+/** Parse the DailyNetPosition export into the rows the Futs+Spread maths needs. */
+export function parseDailyNetPosition(text: string): DnpRow[] {
+  const { header, rows } = parseTsv(text);
+  if (header.length === 0) return [];
+  const col = {
+    quality: columnIndex(header, ['Quality']),
+    state: columnIndex(header, ['State']),
+    company: columnIndex(header, ['Company']),
+    pMt: columnIndex(header, ['P.MT']),
+    sMt: columnIndex(header, ['S.MT']),
+    totLine: columnIndex(header, ['TotLine']),
+  };
+  return rows.map((r) => ({
+    quality: r[col.quality] ?? '',
+    state: r[col.state] ?? '',
+    company: r[col.company] ?? '',
+    pMt: toNum(r[col.pMt]),
+    sMt: toNum(r[col.sMt]),
+    totLine: toNum(r[col.totLine]),
+  }));
+}
+
+/**
+ * Parse the ReportLogistic export into forward sales. Delivery month is
+ * `LEFT(S.Ship., 7)` → `YYYY/MM`, matching the BASE FILE. Only rows whose
+ * Status is in `statuses` are kept (default: unallocated sales — the shorts).
+ */
+export function parseLogisticsReport(
+  text: string,
+  statuses: string[] = ['6-Sales Unallocated']
+): Sale[] {
+  const { header, rows } = parseTsv(text);
+  if (header.length === 0) return [];
+  const col = {
+    status: columnIndex(header, ['Status']),
+    saleCtr: columnIndex(header, ['Sale Ctr.']),
+    client: columnIndex(header, ['Client']),
+    sGrade: columnIndex(header, ['S.Grade']),
+    cupProfile: columnIndex(header, ['S.Cup Profile']),
+    sStrategy: columnIndex(header, ['S.strategy']),
+    smt: columnIndex(header, ['SMT']),
+    sbags: columnIndex(header, ['S.bags']),
+    ship: columnIndex(header, ['S.Ship.']),
+    sFixDte: columnIndex(header, ['sFixDte']),
+  };
+  const wanted = new Set(statuses);
+  const sales: Sale[] = [];
+  for (const r of rows) {
+    if (!wanted.has(r[col.status] ?? '')) continue;
+    const ship = (r[col.ship] ?? '').trim();
+    sales.push({
+      saleCtr: r[col.saleCtr] || null,
+      client: r[col.client] || null,
+      sGrade: r[col.sGrade] || null,
+      cupProfile: r[col.cupProfile] || null,
+      sStrategy: r[col.sStrategy] || null,
+      smt: toNum(r[col.smt]),
+      sbags: r[col.sbags] ? toNum(r[col.sbags]) : null,
+      month: ship ? ship.substring(0, 7) : null,
+      sFixDte: r[col.sFixDte] || null,
+      blendNo: null,
+    });
+  }
+  return sales;
+}
+
+/**
+ * Merge logistics rows belonging to the same sale contract + delivery month
+ * (a contract split across shipment lines), summing SMT and bags — the BASE
+ * FILE carries one row per contract. Splits across different months are kept
+ * apart so the forward-sales month buckets stay correct.
+ */
+export function aggregateSales(sales: Sale[]): Sale[] {
+  const byKey = new Map<string, Sale>();
+  for (const s of sales) {
+    const key = `${s.saleCtr ?? ''}|${s.month ?? ''}`;
+    const prev = byKey.get(key);
+    if (!prev) {
+      byKey.set(key, { ...s });
+    } else {
+      prev.smt += s.smt;
+      if (prev.sbags != null || s.sbags != null) prev.sbags = (prev.sbags ?? 0) + (s.sbags ?? 0);
+    }
+  }
+  return [...byKey.values()];
+}

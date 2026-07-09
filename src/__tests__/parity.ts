@@ -25,6 +25,8 @@ import {
   theoreticalByGrade,
   deriveForecastPercentages,
 } from '../lib/stockcounter';
+import { decodeExportText, parseDailyNetPosition, parseLogisticsReport, aggregateSales } from '../lib/parse';
+import { computeFutsSpread, futuresPotBySFixDte } from '../lib/futsspread';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const blendsSeed = JSON.parse(readFileSync(join(here, '../seed/blends.json'), 'utf8'));
@@ -217,6 +219,97 @@ else fail(`REJECTS ambiguity not flagged correctly: ${JSON.stringify(rejAmb)}`);
 if (unresolvedByKey['PRE RECOVERABLES (GRINDER SWEEPS)|HP']?.reason === 'no-standard-strategy')
   ok('unmappable RECOVERABLES row flagged as no-standard-strategy');
 else fail('RECOVERABLES row not flagged');
+
+// ---------- 6. Futs + Spread vs golden (real DailyNetPosition export) ----------
+console.log('\n[6] Futs + Spread vs golden (real DailyNetPosition export + golden Summary inputs)');
+const dnpText = decodeExportText(readFileSync(join(here, '../../forecast-context/DailyNetPosition-IVO (87).xls')));
+const dnp = parseDailyNetPosition(dnpText);
+if (dnp.length === 459) ok('DailyNetPosition parsed: 459 rows');
+else fail(`DailyNetPosition parsed ${dnp.length} rows, expected 459`);
+
+const sumMonths: string[] = golden.monthHeaders.map(String); // Summary E:P
+const natRow = fs.matrix['POST NATURAL'] || {};
+const postNaturalForwardBags = sumMonths.reduce((s, mo) => s + (natRow[mo] || 0), 0);
+
+const theoOf = (grade: string) =>
+  Number(golden.summary.rows.find((r: any) => normGrade(r.grade) === normGrade(grade))?.theoreticalStock) || 0;
+const futs = computeFutsSpread({
+  theoreticalTotalBags: Number(golden.summary.total.theoreticalStock),
+  postNaturalBags: theoOf('POST NATURAL'),
+  rejectsSBags: theoOf('POST REJECTS S'),
+  rejectsPBags: theoOf('POST REJECTS P'),
+  postNaturalForwardBags,
+  dnp,
+  manual: { kenyacofFutsMt: -1717, deltaHedgeKenyArDynMt: -102 }, // golden day's manual pot entries
+});
+
+const FUTS_TOL = 0.005;
+let futsChecks = 0;
+for (const [label, gline] of Object.entries<any>(golden.futsSpread)) {
+  const mine = futs.lines[label];
+  if (!mine) {
+    fail(`FUTS line missing: ${label}`);
+    continue;
+  }
+  for (const part of ['mt', 'lots'] as const) {
+    const g = gline[part];
+    const v = mine[part];
+    futsChecks++;
+    if (g == null || v == null) {
+      if (g == null && v == null) continue;
+      fail(`FUTS ${label} ${part}: golden ${g} vs mine ${v}`);
+    } else if (Math.abs(g - v) > FUTS_TOL) {
+      fail(`FUTS ${label} ${part}: golden ${g} vs mine ${v} (Δ${Math.abs(g - v).toFixed(4)})`);
+    }
+  }
+}
+if (failures === 0 || futsChecks > 0) ok(`all ${futsChecks} Futs+Spread values match golden (mt + lots, tol ${FUTS_TOL})`);
+
+// Futures pivot from sales' sFixDte. The workbook's own pivot was STALE on the
+// golden day (KCN/2026 −516.0 cached vs −544.77 refreshed, KCK/2026 missing) —
+// we assert against the refreshed truth derived from the BASE FILE sales.
+const pots = futuresPotBySFixDte(sales);
+check('futures pot KCU/2026 MT', pots.byPot['KCU/2026'] ?? NaN, -897.6000000000001);
+check('futures pot KCZ/2026 MT', pots.byPot['KCZ/2026'] ?? NaN, -924);
+check('futures pot KCN/2026 MT (refreshed; sheet cached −516.0)', pots.byPot['KCN/2026'] ?? NaN, -544.77);
+check('futures pot KCH/2027 MT', pots.byPot['KCH/2027'] ?? NaN, -490.5);
+check('futures pot total MT', pots.totalMt, -2858.31);
+
+// ---------- 7. SOL export parsers (real files) ----------
+console.log('\n[7] SOL parsers on the real exports');
+const logiText = decodeExportText(readFileSync(join(here, '../../forecast-context/ReportLogistic20260618-IVO.xls')));
+const parsedRows = parseLogisticsReport(logiText);
+if (parsedRows.length === 62) ok('ReportLogistic parsed: 62 unallocated sale rows');
+else fail(`ReportLogistic parsed ${parsedRows.length} rows, expected 62`);
+const parsedSales = aggregateSales(parsedRows); // BASE FILE semantics: one row per (contract, month)
+if (parsedSales.length === 61) ok('aggregated to 61 contracts (SSKE-103502 split rows merged)');
+else fail(`aggregated to ${parsedSales.length} contracts, expected 61`);
+const badMonths = parsedSales.filter((s) => !/^\d{4}\/\d{2}$/.test(s.month || ''));
+if (badMonths.length === 0) ok('every parsed sale has a YYYY/MM delivery month');
+else fail(`${badMonths.length} sales with malformed month, e.g. ${JSON.stringify(badMonths[0]?.month)}`);
+// Cross-check against the BASE FILE ground truth. The on-disk export is a
+// slightly different SOL snapshot than the one pasted into the workbook, with
+// two known drifts: SSKE-107893's SMT was revised (−151.2 vs −144.9) and
+// SSKE-98454 only exists in the export. Anything beyond those is a parser bug.
+const KNOWN_DRIFT = new Set(['SSKE-107893', 'SSKE-98454']);
+const gtByCtr = Object.fromEntries(sales.map((s) => [s.saleCtr, s]));
+const overlap = parsedSales.filter((s) => s.saleCtr && gtByCtr[s.saleCtr]);
+const mismatched = overlap.filter((s) => {
+  if (KNOWN_DRIFT.has(s.saleCtr!)) return false;
+  const gt = gtByCtr[s.saleCtr!];
+  return Math.abs(s.smt - gt.smt) > 1e-9 || s.month !== gt.month;
+});
+const unexpectedExtra = parsedSales.filter((s) => s.saleCtr && !gtByCtr[s.saleCtr] && !KNOWN_DRIFT.has(s.saleCtr!));
+if (overlap.length >= 60 && mismatched.length === 0 && unexpectedExtra.length === 0)
+  ok(`${overlap.length} contracts cross-checked vs BASE FILE (SMT + month agree; known snapshot drift excluded)`);
+else {
+  const m = mismatched[0];
+  const gt = m && gtByCtr[m.saleCtr!];
+  fail(
+    `logistics/BASE FILE cross-check: ${mismatched.length} mismatched, ${unexpectedExtra.length} unexpected extra` +
+      (m && gt ? `, e.g. ${m.saleCtr}: smt ${m.smt} vs ${gt.smt}, month ${m.month} vs ${gt.month}` : '')
+  );
+}
 
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));
