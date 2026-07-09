@@ -1,0 +1,1007 @@
+{
+  "gradeNames": [
+    "FINISHED",
+    "POST NATURAL",
+    "POST 17 UP TOP",
+    "POST 16 TOP",
+    "POST 15 TOP",
+    "POST PB - TOP",
+    "POST 17 UP PLUS",
+    "POST 16 PLUS",
+    "POST 15 PLUS",
+    "POST 14 PLUS",
+    "POST PB - PLUS",
+    "POST 17 UP FAQ",
+    "POST 16 FAQ",
+    "POST 15 FAQ",
+    "POST 14 FAQ",
+    "POST PB - FAQ",
+    "POST FAQ MINUS",
+    "POST GRINDER BOLD",
+    "POST GRINDER LIGHT",
+    "POST MH",
+    "POST ML",
+    "POST REJECTS S",
+    "POST REJECTS P"
+  ],
+  "sales": [
+    {
+      "saleCtr": "SSGP-105409-2",
+      "client": "32CUP",
+      "sGrade": "NAT.SPECIALTY",
+      "cupProfile": null,
+      "sStrategy": "Specialty-X",
+      "smt": -0.24,
+      "sbags": -8,
+      "month": "2026/03",
+      "sFixDte": "KCK/2026",
+      "blendNo": 91,
+      "allocBags": {
+        "POST NATURAL": -4.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107613",
+      "client": "SOBHY",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -38.4,
+      "sbags": -1280,
+      "month": "2026/05",
+      "sFixDte": "KCN/2026",
+      "blendNo": 23,
+      "allocBags": {
+        "POST 17 UP FAQ": -640.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-106869",
+      "client": "LIDLGE",
+      "sGrade": "GRINDER",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -108,
+      "sbags": -1800,
+      "month": "2026/05",
+      "sFixDte": "KCN/2026",
+      "blendNo": 105,
+      "allocBags": {
+        "POST GRINDER BOLD": -450.0,
+        "POST GRINDER LIGHT": -1350.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107052",
+      "client": "SUKUNSHAN",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/05",
+      "sFixDte": "KCU/2026",
+      "blendNo": 31,
+      "allocBags": {
+        "POST 16 FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-103502",
+      "client": "NESTRADE",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": "KEMBA",
+      "smt": -38.4,
+      "sbags": -640,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 625,
+      "allocBags": {
+        "POST 17 UP TOP": -160.0,
+        "POST 17 UP PLUS": -224.0,
+        "POST 17 UP FAQ": -256.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107773",
+      "client": "GSIINTERNAT",
+      "sGrade": "AA",
+      "cupProfile": "FAQ",
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 23,
+      "allocBags": {
+        "POST 17 UP FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107774",
+      "client": "GSIINTERNAT",
+      "sGrade": "AA",
+      "cupProfile": "FAQ",
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 23,
+      "allocBags": {
+        "POST 17 UP FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107712",
+      "client": "CHINALIGHT",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 23,
+      "allocBags": {
+        "POST 17 UP FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107713",
+      "client": "CHINALIGHT",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -38.4,
+      "sbags": -1280,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 320425,
+      "allocBags": {
+        "POST 16 FAQ": -640.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107522",
+      "client": "KONINKLUJKE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -108,
+      "sbags": -1800,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 100,
+      "allocBags": {
+        "FINISHED": -1800.0
+      }
+    },
+    {
+      "saleCtr": "SSGP-107624-2",
+      "client": "ITOH",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -1.8,
+      "sbags": -60,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 100,
+      "allocBags": {
+        "FINISHED": -30.0
+      }
+    },
+    {
+      "saleCtr": "SSGP-107624-1",
+      "client": "ITOH",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -1.56,
+      "sbags": -52,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 100,
+      "allocBags": {
+        "FINISHED": -26.0
+      }
+    },
+    {
+      "saleCtr": "SSGP-107612-1",
+      "client": "RIDGE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": "Specialty",
+      "smt": -0.09,
+      "sbags": -3,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 91,
+      "allocBags": {
+        "POST NATURAL": -1.5
+      }
+    },
+    {
+      "saleCtr": "SSGP-107612-2",
+      "client": "RIDGE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": "Specialty",
+      "smt": -0.09,
+      "sbags": -3,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 91,
+      "allocBags": {
+        "POST NATURAL": -1.5
+      }
+    },
+    {
+      "saleCtr": "SSGP-107612-3",
+      "client": "RIDGE",
+      "sGrade": "KE.PB",
+      "cupProfile": null,
+      "sStrategy": "Specialty",
+      "smt": -0.12,
+      "sbags": -4,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 91,
+      "allocBags": {
+        "POST NATURAL": -2.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107744",
+      "client": "SINJYCDINC",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 320425,
+      "allocBags": {
+        "POST 16 FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-104428",
+      "client": "ITOH",
+      "sGrade": "AB/C",
+      "cupProfile": null,
+      "sStrategy": "KEMBA",
+      "smt": -50.4,
+      "sbags": -840,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 100,
+      "allocBags": {
+        "FINISHED": -840.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107943",
+      "client": "DEESPREZZA",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 18,
+      "allocBags": {
+        "POST 17 UP TOP": -160.0,
+        "POST 17 UP FAQ": -160.0
+      }
+    },
+    {
+      "saleCtr": "SSGP-107959-1",
+      "client": "SUCAHK",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": "Specialty",
+      "smt": -0.96,
+      "sbags": -32,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 100,
+      "allocBags": {
+        "FINISHED": -16.0
+      }
+    },
+    {
+      "saleCtr": "SSGP-107959-2",
+      "client": "SUCAHK",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": "Specialty",
+      "smt": -0.96,
+      "sbags": -32,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 100,
+      "allocBags": {
+        "FINISHED": -16.0
+      }
+    },
+    {
+      "saleCtr": "SSGP-107959-5",
+      "client": "SUCAHK",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": "Specialty",
+      "smt": -3,
+      "sbags": -100,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 91,
+      "allocBags": {
+        "POST NATURAL": -50.0
+      }
+    },
+    {
+      "saleCtr": "SSGP-107959-3",
+      "client": "SUCAHK",
+      "sGrade": "KE.PB",
+      "cupProfile": null,
+      "sStrategy": "Specialty",
+      "smt": -0.36,
+      "sbags": -12,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 100,
+      "allocBags": {
+        "FINISHED": -6.0
+      }
+    },
+    {
+      "saleCtr": "SSGP-107959-4",
+      "client": "SUCAHK",
+      "sGrade": "KE.PB",
+      "cupProfile": null,
+      "sStrategy": "Specialty",
+      "smt": -0.72,
+      "sbags": -24,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 100,
+      "allocBags": {
+        "FINISHED": -12.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108133",
+      "client": "SUCAFINA NA",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": "Specialty",
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 18,
+      "allocBags": {
+        "POST 17 UP TOP": -160.0,
+        "POST 17 UP FAQ": -160.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108500",
+      "client": "32CUP",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": "Specialty",
+      "smt": -18.9,
+      "sbags": -315,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 91,
+      "allocBags": {
+        "POST NATURAL": -315.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108536",
+      "client": "32CUP",
+      "sGrade": "NAT.SPECIALTY",
+      "cupProfile": null,
+      "sStrategy": "Specialty-X",
+      "smt": -0.21,
+      "sbags": -7,
+      "month": "2026/06",
+      "sFixDte": "KCN/2026",
+      "blendNo": 100,
+      "allocBags": {
+        "FINISHED": -3.5
+      }
+    },
+    {
+      "saleCtr": "SSKE-103503",
+      "client": "NESTRADE",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": "KEMBA",
+      "smt": -134.4,
+      "sbags": -2240,
+      "month": "2026/07",
+      "sFixDte": "KCU/2026",
+      "blendNo": 625,
+      "allocBags": {
+        "POST 17 UP TOP": -560.0,
+        "POST 17 UP PLUS": -784.0,
+        "POST 17 UP FAQ": -896.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-104927",
+      "client": "NESTLE SVE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": "KEMBA",
+      "smt": -64.8,
+      "sbags": -1080,
+      "month": "2026/07",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 34,
+      "allocBags": {
+        "POST 16 TOP": -356.4,
+        "POST 17 UP PLUS": -75.6,
+        "POST 16 PLUS": -216.0,
+        "POST 14 PLUS": -162.0,
+        "POST PB - PLUS": -21.6,
+        "POST 16 FAQ": -216.0,
+        "POST PB - FAQ": -32.4
+      }
+    },
+    {
+      "saleCtr": "SSKE-104936",
+      "client": "NESTLE SVE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": "KEMBA",
+      "smt": -43.2,
+      "sbags": -720,
+      "month": "2026/07",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 34,
+      "allocBags": {
+        "POST 16 TOP": -237.6,
+        "POST 17 UP PLUS": -50.4,
+        "POST 16 PLUS": -144.0,
+        "POST 14 PLUS": -108.0,
+        "POST PB - PLUS": -14.4,
+        "POST 16 FAQ": -144.0,
+        "POST PB - FAQ": -21.6
+      }
+    },
+    {
+      "saleCtr": "SSKE-107775",
+      "client": "GSIINTERNAT",
+      "sGrade": "AA",
+      "cupProfile": "FAQ",
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/07",
+      "sFixDte": "KCU/2026",
+      "blendNo": 23,
+      "allocBags": {
+        "POST 17 UP FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107245",
+      "client": "GSIINTERNAT",
+      "sGrade": "AB",
+      "cupProfile": "FAQ",
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/07",
+      "sFixDte": "KCU/2026",
+      "blendNo": 320425,
+      "allocBags": {
+        "POST 16 FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107937",
+      "client": "NANJINGECO",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/07",
+      "sFixDte": "KCN/2026",
+      "blendNo": 100,
+      "allocBags": {
+        "FINISHED": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108289",
+      "client": "AHOLD COFFE",
+      "sGrade": "AB/C",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -21.6,
+      "sbags": -360,
+      "month": "2026/07",
+      "sFixDte": "KCU/2026",
+      "blendNo": 55,
+      "allocBags": {
+        "POST 14 FAQ": -180.0,
+        "POST GRINDER BOLD": -180.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-103498",
+      "client": "NESTRADE",
+      "sGrade": "AA",
+      "cupProfile": "Top",
+      "sStrategy": "CAFEXPORT",
+      "smt": -172.8,
+      "sbags": -2880,
+      "month": "2026/07",
+      "sFixDte": "KCU/2026",
+      "blendNo": 91,
+      "allocBags": {
+        "POST NATURAL": -2880.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108297",
+      "client": "NANJINGECO",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/07",
+      "sFixDte": "KCU/2026",
+      "blendNo": 31,
+      "allocBags": {
+        "POST 16 FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-103499",
+      "client": "NESTRADE",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": "KEMBA",
+      "smt": -134.4,
+      "sbags": -2240,
+      "month": "2026/08",
+      "sFixDte": "KCU/2026",
+      "blendNo": 625,
+      "allocBags": {
+        "POST 17 UP TOP": -560.0,
+        "POST 17 UP PLUS": -784.0,
+        "POST 17 UP FAQ": -896.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-103504",
+      "client": "NESTRADE",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": "KEMBA",
+      "smt": -153.6,
+      "sbags": -2560,
+      "month": "2026/08",
+      "sFixDte": "KCU/2026",
+      "blendNo": 625,
+      "allocBags": {
+        "POST 17 UP TOP": -640.0,
+        "POST 17 UP PLUS": -896.0,
+        "POST 17 UP FAQ": -1024.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-104928",
+      "client": "NESTLE SVE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": "KEMBA",
+      "smt": -64.8,
+      "sbags": -1080,
+      "month": "2026/08",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 34,
+      "allocBags": {
+        "POST 16 TOP": -356.4,
+        "POST 17 UP PLUS": -75.6,
+        "POST 16 PLUS": -216.0,
+        "POST 14 PLUS": -162.0,
+        "POST PB - PLUS": -21.6,
+        "POST 16 FAQ": -216.0,
+        "POST PB - FAQ": -32.4
+      }
+    },
+    {
+      "saleCtr": "SSKE-104937",
+      "client": "NESTLE SVE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": "KEMBA",
+      "smt": -64.8,
+      "sbags": -1080,
+      "month": "2026/08",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 34,
+      "allocBags": {
+        "POST 16 TOP": -356.4,
+        "POST 17 UP PLUS": -75.6,
+        "POST 16 PLUS": -216.0,
+        "POST 14 PLUS": -162.0,
+        "POST PB - PLUS": -21.6,
+        "POST 16 FAQ": -216.0,
+        "POST PB - FAQ": -32.4
+      }
+    },
+    {
+      "saleCtr": "SSKE-105761",
+      "client": "M.ICOFFEE",
+      "sGrade": "AA",
+      "cupProfile": "FAQ",
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/08",
+      "sFixDte": "KCU/2026",
+      "blendNo": 23,
+      "allocBags": {
+        "POST 17 UP FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-107620",
+      "client": "TOSTADORES",
+      "sGrade": "MH",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -38.4,
+      "sbags": -640,
+      "month": "2026/08",
+      "sFixDte": "KCU/2026",
+      "blendNo": 107,
+      "allocBags": {
+        "POST MH": -640.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108412",
+      "client": "SUKUNSHAN",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/08",
+      "sFixDte": "KCU/2026",
+      "blendNo": 18,
+      "allocBags": {
+        "POST 17 UP TOP": -160.0,
+        "POST 17 UP FAQ": -160.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108570",
+      "client": "NANJINGECO",
+      "sGrade": "AA",
+      "cupProfile": "Top",
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/08",
+      "sFixDte": "KCU/2026",
+      "blendNo": 91,
+      "allocBags": {
+        "POST NATURAL": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108572",
+      "client": "KONINKLUJKE",
+      "sGrade": "AB",
+      "cupProfile": "Minus",
+      "sStrategy": null,
+      "smt": -108,
+      "sbags": -1800,
+      "month": "2026/08",
+      "sFixDte": "KCU/2026",
+      "blendNo": 32,
+      "allocBags": {
+        "POST 16 FAQ": -450.0,
+        "POST GRINDER BOLD": -1350.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-104929",
+      "client": "NESTLE SVE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -64.8,
+      "sbags": -1080,
+      "month": "2026/09",
+      "sFixDte": "KCH/2027",
+      "blendNo": 34,
+      "allocBags": {
+        "POST 16 TOP": -356.4,
+        "POST 17 UP PLUS": -75.6,
+        "POST 16 PLUS": -216.0,
+        "POST 14 PLUS": -162.0,
+        "POST PB - PLUS": -21.6,
+        "POST 16 FAQ": -216.0,
+        "POST PB - FAQ": -32.4
+      }
+    },
+    {
+      "saleCtr": "SSKE-104938",
+      "client": "NESTLE SVE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -64.8,
+      "sbags": -1080,
+      "month": "2026/09",
+      "sFixDte": "KCH/2027",
+      "blendNo": 34,
+      "allocBags": {
+        "POST 16 TOP": -356.4,
+        "POST 17 UP PLUS": -75.6,
+        "POST 16 PLUS": -216.0,
+        "POST 14 PLUS": -162.0,
+        "POST PB - PLUS": -21.6,
+        "POST 16 FAQ": -216.0,
+        "POST PB - FAQ": -32.4
+      }
+    },
+    {
+      "saleCtr": "SSKE-107893",
+      "client": "NESTLE SVE",
+      "sGrade": "GRINDER",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -144.9,
+      "sbags": -2415,
+      "month": "2026/09",
+      "sFixDte": "KCH/2027",
+      "blendNo": 105,
+      "allocBags": {
+        "POST GRINDER BOLD": -603.75,
+        "POST GRINDER LIGHT": -1811.25
+      }
+    },
+    {
+      "saleCtr": "SSKE-108405",
+      "client": "GSIINTERNAT",
+      "sGrade": "AA",
+      "cupProfile": "FAQ",
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/09",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 23,
+      "allocBags": {
+        "POST 17 UP FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108406",
+      "client": "GSIINTERNAT",
+      "sGrade": "AA",
+      "cupProfile": "FAQ",
+      "sStrategy": null,
+      "smt": -19.2,
+      "sbags": -320,
+      "month": "2026/09",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 23,
+      "allocBags": {
+        "POST 17 UP FAQ": -320.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108571",
+      "client": "KONINKLUJKE",
+      "sGrade": "AB",
+      "cupProfile": "FAQ",
+      "sStrategy": null,
+      "smt": -108,
+      "sbags": -1800,
+      "month": "2026/09",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 31,
+      "allocBags": {
+        "POST 16 FAQ": -1800.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108573",
+      "client": "KONINKLUJKE",
+      "sGrade": "AB",
+      "cupProfile": "Minus",
+      "sStrategy": null,
+      "smt": -108,
+      "sbags": -1800,
+      "month": "2026/09",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 32,
+      "allocBags": {
+        "POST 16 FAQ": -450.0,
+        "POST GRINDER BOLD": -1350.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108574",
+      "client": "KONINKLUJKE",
+      "sGrade": "GRINDER",
+      "cupProfile": "14+",
+      "sStrategy": null,
+      "smt": -108,
+      "sbags": -1800,
+      "month": "2026/09",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 104,
+      "allocBags": {
+        "POST GRINDER BOLD": -1800.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108576",
+      "client": "KONINKLUJKE",
+      "sGrade": "GRINDER",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -108,
+      "sbags": -1800,
+      "month": "2026/09",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 105,
+      "allocBags": {
+        "POST GRINDER BOLD": -450.0,
+        "POST GRINDER LIGHT": -1350.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-104930",
+      "client": "NESTLE SVE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -64.8,
+      "sbags": -1080,
+      "month": "2026/10",
+      "sFixDte": "KCH/2027",
+      "blendNo": 34,
+      "allocBags": {
+        "POST 16 TOP": -356.4,
+        "POST 17 UP PLUS": -75.6,
+        "POST 16 PLUS": -216.0,
+        "POST 14 PLUS": -162.0,
+        "POST PB - PLUS": -21.6,
+        "POST 16 FAQ": -216.0,
+        "POST PB - FAQ": -32.4
+      }
+    },
+    {
+      "saleCtr": "SSKE-104939",
+      "client": "NESTLE SVE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -64.8,
+      "sbags": -1080,
+      "month": "2026/10",
+      "sFixDte": "KCH/2027",
+      "blendNo": 34,
+      "allocBags": {
+        "POST 16 TOP": -356.4,
+        "POST 17 UP PLUS": -75.6,
+        "POST 16 PLUS": -216.0,
+        "POST 14 PLUS": -162.0,
+        "POST PB - PLUS": -21.6,
+        "POST 16 FAQ": -216.0,
+        "POST PB - FAQ": -32.4
+      }
+    },
+    {
+      "saleCtr": "SSKE-108575",
+      "client": "KONINKLUJKE",
+      "sGrade": "GRINDER",
+      "cupProfile": "14+",
+      "sStrategy": null,
+      "smt": -108,
+      "sbags": -1800,
+      "month": "2026/10",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 104,
+      "allocBags": {
+        "POST GRINDER BOLD": -1800.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-108577",
+      "client": "KONINKLUJKE",
+      "sGrade": "GRINDER",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -108,
+      "sbags": -1800,
+      "month": "2026/10",
+      "sFixDte": "KCZ/2026",
+      "blendNo": 105,
+      "allocBags": {
+        "POST GRINDER BOLD": -450.0,
+        "POST GRINDER LIGHT": -1350.0
+      }
+    },
+    {
+      "saleCtr": "SSWW-96188B",
+      "client": "SUCAFINA NA",
+      "sGrade": "AA",
+      "cupProfile": null,
+      "sStrategy": "Repo Commercial",
+      "smt": -1.2,
+      "sbags": -1200,
+      "month": "2024/10",
+      "sFixDte": "KCH/2025",
+      "blendNo": 91,
+      "allocBags": {
+        "POST NATURAL": -20.0
+      }
+    },
+    {
+      "saleCtr": "SSKE-104931",
+      "client": "NESTLE SVE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -43.2,
+      "sbags": -720,
+      "month": "2026/11",
+      "sFixDte": "KCH/2027",
+      "blendNo": 34,
+      "allocBags": {
+        "POST 16 TOP": -237.6,
+        "POST 17 UP PLUS": -50.4,
+        "POST 16 PLUS": -144.0,
+        "POST 14 PLUS": -108.0,
+        "POST PB - PLUS": -14.4,
+        "POST 16 FAQ": -144.0,
+        "POST PB - FAQ": -21.6
+      }
+    },
+    {
+      "saleCtr": "SSKE-104940",
+      "client": "NESTLE SVE",
+      "sGrade": "AB",
+      "cupProfile": null,
+      "sStrategy": null,
+      "smt": -43.2,
+      "sbags": -720,
+      "month": "2026/11",
+      "sFixDte": "KCH/2027",
+      "blendNo": 34,
+      "allocBags": {
+        "POST 16 TOP": -237.6,
+        "POST 17 UP PLUS": -50.4,
+        "POST 16 PLUS": -144.0,
+        "POST 14 PLUS": -108.0,
+        "POST PB - PLUS": -14.4,
+        "POST 16 FAQ": -144.0,
+        "POST PB - FAQ": -21.6
+      }
+    }
+  ]
+}

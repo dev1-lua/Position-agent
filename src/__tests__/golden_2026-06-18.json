@@ -1,0 +1,993 @@
+{
+  "date": "2026-06-18",
+  "monthHeaders": [
+    "2025/12",
+    "2026/01",
+    "2026/02",
+    "2026/03",
+    "2026/04",
+    "2026/05",
+    "2026/06",
+    "2026/07",
+    "2026/08",
+    "2026/09",
+    "2026/10",
+    "2026/11"
+  ],
+  "summary": {
+    "rows": [
+      {
+        "grade": "FINISHED",
+        "theoreticalStock": 5783.01,
+        "forwardSalesTotal": -3069.5,
+        "netPosition": 2713.51,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -2749.5,
+          -320,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST NATURAL",
+        "theoreticalStock": 3158.01,
+        "forwardSalesTotal": -3574,
+        "netPosition": -415.9899999999998,
+        "months": [
+          0,
+          0,
+          0,
+          -4,
+          0,
+          0,
+          -370,
+          -2880,
+          -320,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 17 UP TOP",
+        "theoreticalStock": 2752.19,
+        "forwardSalesTotal": -2400,
+        "netPosition": 352.19000000000005,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -480,
+          -560,
+          -1360,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 16 TOP",
+        "theoreticalStock": 122.57,
+        "forwardSalesTotal": -2019.6,
+        "netPosition": -1897.03,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -594,
+          -712.8,
+          -712.8,
+          -712.8,
+          -475.20000000000005
+        ]
+      },
+      {
+        "grade": "POST 15 TOP",
+        "theoreticalStock": 69.07,
+        "forwardSalesTotal": 0,
+        "netPosition": 69.07,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST PB - TOP",
+        "theoreticalStock": 0,
+        "forwardSalesTotal": 0,
+        "netPosition": 0,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 17 UP PLUS",
+        "theoreticalStock": 5308.88,
+        "forwardSalesTotal": -3116.3999999999996,
+        "netPosition": 2192.4800000000005,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -224,
+          -910,
+          -1831.1999999999998,
+          -151.20000000000002,
+          -151.20000000000002,
+          -100.80000000000001
+        ]
+      },
+      {
+        "grade": "POST 16 PLUS",
+        "theoreticalStock": 1056.37,
+        "forwardSalesTotal": -1224,
+        "netPosition": -167.6300000000001,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -360,
+          -432,
+          -432,
+          -432,
+          -288
+        ]
+      },
+      {
+        "grade": "POST 15 PLUS",
+        "theoreticalStock": 781.57,
+        "forwardSalesTotal": 0,
+        "netPosition": 781.57,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 14 PLUS",
+        "theoreticalStock": 0.12,
+        "forwardSalesTotal": -918,
+        "netPosition": -917.88,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -270,
+          -323.99999999999994,
+          -323.99999999999994,
+          -323.99999999999994,
+          -216
+        ]
+      },
+      {
+        "grade": "POST PB - PLUS",
+        "theoreticalStock": 240.84,
+        "forwardSalesTotal": -122.4,
+        "netPosition": 118.44,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -36,
+          -43.2,
+          -43.2,
+          -43.2,
+          -28.800000000000004
+        ]
+      },
+      {
+        "grade": "POST 17 UP FAQ",
+        "theoreticalStock": 5378.19,
+        "forwardSalesTotal": -6432,
+        "netPosition": -1053.8100000000004,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -640,
+          -1536,
+          -1216,
+          -2400,
+          -640,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 16 FAQ",
+        "theoreticalStock": 1835.83,
+        "forwardSalesTotal": -5844,
+        "netPosition": -4008.17,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -320,
+          -960,
+          -1000,
+          -882,
+          -2682,
+          -432,
+          -288
+        ]
+      },
+      {
+        "grade": "POST 15 FAQ",
+        "theoreticalStock": 516.5,
+        "forwardSalesTotal": 0,
+        "netPosition": 516.5,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 14 FAQ",
+        "theoreticalStock": 1496.37,
+        "forwardSalesTotal": -180,
+        "netPosition": 1316.37,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -180,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST PB - FAQ",
+        "theoreticalStock": 475.9,
+        "forwardSalesTotal": -183.6,
+        "netPosition": 292.29999999999995,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -54,
+          -64.8,
+          -64.8,
+          -64.8,
+          -43.2
+        ]
+      },
+      {
+        "grade": "POST GRINDER BOLD",
+        "theoreticalStock": 2536.47,
+        "forwardSalesTotal": -6183.75,
+        "netPosition": -3647.28,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -450,
+          0,
+          -180,
+          -1350,
+          -4203.75,
+          -2250,
+          0
+        ]
+      },
+      {
+        "grade": "POST GRINDER LIGHT",
+        "theoreticalStock": 373.54,
+        "forwardSalesTotal": -4511.25,
+        "netPosition": -4137.71,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1350,
+          0,
+          0,
+          0,
+          -3161.25,
+          -1350,
+          0
+        ]
+      },
+      {
+        "grade": "POST MH",
+        "theoreticalStock": 348.81,
+        "forwardSalesTotal": -640,
+        "netPosition": -291.19,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -640,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST ML",
+        "theoreticalStock": 10.57,
+        "forwardSalesTotal": 0,
+        "netPosition": 10.57,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST REJECTS S",
+        "theoreticalStock": 1558.27,
+        "forwardSalesTotal": 0,
+        "netPosition": 1558.27,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST REJECTS P",
+        "theoreticalStock": 813.41,
+        "forwardSalesTotal": 0,
+        "netPosition": 813.41,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "Unclassified/Pending Alignment",
+        "theoreticalStock": 951.8,
+        "forwardSalesTotal": 0,
+        "netPosition": 951.8,
+        "months": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    ],
+    "total": {
+      "theoreticalStock": 35568.29,
+      "forwardSalesTotal": -47618.5,
+      "netPosition": -4850.21
+    }
+  },
+  "forwardSales": {
+    "monthHeaders": [
+      "2025/11",
+      "2025/12",
+      "2026/01",
+      "2026/02",
+      "2026/03",
+      "2026/04",
+      "2026/05",
+      "2026/06",
+      "2026/07",
+      "2026/08",
+      "2026/09",
+      "2026/10",
+      "2026/11"
+    ],
+    "rows": [
+      {
+        "grade": "FINISHED",
+        "total": -3069.5,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -2749.5,
+          -320,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST NATURAL",
+        "total": -3574,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          -4,
+          0,
+          0,
+          -370,
+          -2880,
+          -320,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 17 UP TOP",
+        "total": -2400,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -480,
+          -560,
+          -1360,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 16 TOP",
+        "total": -3207.5999999999995,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -594,
+          -712.8,
+          -712.8,
+          -712.8,
+          -475.20000000000005
+        ]
+      },
+      {
+        "grade": "POST 15 TOP",
+        "total": 0,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST PB - TOP",
+        "total": 0,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 17 UP PLUS",
+        "total": -3368.3999999999996,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -224,
+          -910,
+          -1831.1999999999998,
+          -151.20000000000002,
+          -151.20000000000002,
+          -100.80000000000001
+        ]
+      },
+      {
+        "grade": "POST 16 PLUS",
+        "total": -1944,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -360,
+          -432,
+          -432,
+          -432,
+          -288
+        ]
+      },
+      {
+        "grade": "POST 15 PLUS",
+        "total": 0,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 14 PLUS",
+        "total": -1458,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -270,
+          -323.99999999999994,
+          -323.99999999999994,
+          -323.99999999999994,
+          -216
+        ]
+      },
+      {
+        "grade": "POST PB - PLUS",
+        "total": -194.40000000000003,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -36,
+          -43.2,
+          -43.2,
+          -43.2,
+          -28.800000000000004
+        ]
+      },
+      {
+        "grade": "POST 17 UP FAQ",
+        "total": -6432,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -640,
+          -1536,
+          -1216,
+          -2400,
+          -640,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 16 FAQ",
+        "total": -6564,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -320,
+          -960,
+          -1000,
+          -882,
+          -2682,
+          -432,
+          -288
+        ]
+      },
+      {
+        "grade": "POST 15 FAQ",
+        "total": 0,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST 14 FAQ",
+        "total": -180,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -180,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST PB - FAQ",
+        "total": -291.59999999999997,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -54,
+          -64.8,
+          -64.8,
+          -64.8,
+          -43.2
+        ]
+      },
+      {
+        "grade": "POST GRINDER BOLD",
+        "total": -8433.75,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -450,
+          0,
+          -180,
+          -1350,
+          -4203.75,
+          -2250,
+          0
+        ]
+      },
+      {
+        "grade": "POST GRINDER LIGHT",
+        "total": -5861.25,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1350,
+          0,
+          0,
+          0,
+          -3161.25,
+          -1350,
+          0
+        ]
+      },
+      {
+        "grade": "POST MH",
+        "total": -640,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -640,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST ML",
+        "total": 0,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST REJECTS S",
+        "total": 0,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "grade": "POST REJECTS P",
+        "total": 0,
+        "months": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "futsSpread": {
+    "Stock": {
+      "mt": 2134.0974,
+      "lots": 125.46134038800705
+    },
+    "Stock when all DS arrives": {
+      "mt": 2134.0974,
+      "lots": 125.46134038800705
+    },
+    "Contracted, not in stock, no hedge assigned": {
+      "mt": 0,
+      "lots": 0
+    },
+    "Contracted, not in stock, hedges assigned": {
+      "mt": 0,
+      "lots": 0
+    },
+    "Not contracted, not in stock, no hedges assigned": {
+      "mt": 0,
+      "lots": 0
+    },
+    "Direct Sales Stock": {
+      "mt": -66.26000000000003,
+      "lots": -3.8953556731334524
+    },
+    "LG Non hedgeable": {
+      "mt": -28.46016,
+      "lots": -1.6731428571428568
+    },
+    "Specialty Coffee": {
+      "mt": 189.4806,
+      "lots": 11.13936507936508
+    },
+    "Stock hedgeable": {
+      "mt": 1849.8966399999997,
+      "lots": 108.75347677836564
+    },
+    "Kenyacof futs": {
+      "mt": -1717,
+      "lots": -100.94062316284537
+    },
+    "KenyaZZ": {
+      "mt": null,
+      "lots": null
+    },
+    "Kenyacof Net": {
+      "mt": 132.8966399999997,
+      "lots": 7.812853615520265
+    },
+    "Sucafina": {
+      "mt": -4.5599999999999925,
+      "lots": -0.2680776014109343
+    },
+    "True_Net_Excl_Specialty": {
+      "mt": null,
+      "lots": 7.54477601410933
+    },
+    "Expected Specialty Sales": {
+      "mt": -214.44,
+      "lots": -12.606701940035272
+    },
+    "Net Specialty": {
+      "mt": -24.959399999999988,
+      "lots": -1.467336860670193
+    },
+    "\u0394 Hedge (KENY_AR_DYN)": {
+      "mt": -102,
+      "lots": -5.996472663139329
+    }
+  }
+}
