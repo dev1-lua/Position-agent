@@ -363,6 +363,69 @@ check('demo Stock mt', Math.round((demoFuts.lines['Stock'].mt ?? 0) * 10000) / 1
 check('demo Direct Sales Stock mt', Math.round((demoFuts.lines['Direct Sales Stock'].mt ?? 0) * 100) / 100, -66.26);
 check('demo Sucafina mt', Math.round((demoFuts.lines['Sucafina'].mt ?? 0) * 100) / 100, -4.56);
 
+// ---------- 9. Pricing analytics ----------
+// Expected values were hand-computed independently (python over the raw TSV,
+// SMT-weighted by contract+month aggregate) — see the pricing-pack spec.
+console.log('\n[9] Pricing analytics vs hand-computed constants (real ReportLogistic)');
+const { computePricing } = await import('../lib/pricing');
+const priceTol = 0.01;
+const nearPx = (label: string, actual: number | null, expected: number) => {
+  if (actual != null && Math.abs(actual - expected) <= priceTol) ok(`${label}: ${actual}`);
+  else fail(`${label}: got ${actual}, expected ${expected}`);
+};
+const pricing = computePricing(parsedSales, { dimension: 'fixMonth' });
+if (pricing.coverage.priced === 61 && pricing.coverage.unpriced === 0)
+  ok('coverage: 61/61 aggregated sales carry differentials');
+else fail(`coverage: priced ${pricing.coverage.priced}, unpriced ${pricing.coverage.unpriced} (expected 61/0)`);
+nearPx('total SMT', pricing.overall.smt, -2907.81);
+nearPx('overall wavg contract dif (USc/lb)', pricing.overall.contractDifUscLb, 84.0236);
+nearPx('overall wavg FOB dif (USc/lb)', pricing.overall.fobDifUscLb, 72.4717);
+if (pricing.overall.fixed.contracts === 28 && pricing.overall.ptbf.contracts === 33)
+  ok('fixed/PTBF split: 28 fixed / 33 PTBF contracts');
+else fail(`fixed/PTBF split: ${pricing.overall.fixed.contracts}/${pricing.overall.ptbf.contracts}, expected 28/33`);
+nearPx('fixed volume SMT', pricing.overall.fixed.smt, -639.81);
+nearPx('PTBF volume SMT', pricing.overall.ptbf.smt, -2268.0);
+nearPx('fixed wavg flat price (USc/lb, unit-normalized)', pricing.overall.fixed.flatUscLb, 326.9371);
+const FIX_EXPECT: Record<string, [number, number]> = {
+  'KCH/2025': [34.29, -1.2],
+  'KCH/2027': [94.2174, -496.8],
+  'KCK/2026': [451.3, -0.24],
+  'KCN/2026': [51.7728, -506.37],
+  'KCU/2025': [-19.0, -43.2],
+  'KCU/2026': [130.6236, -936.0],
+  'KCZ/2026': [53.7974, -924.0],
+};
+let fixBad = 0;
+for (const [mo, [dif, smt]] of Object.entries(FIX_EXPECT)) {
+  const b = pricing.byBucket?.[mo];
+  if (!b || Math.abs((b.contractDifUscLb ?? NaN) - dif) > priceTol || Math.abs(b.smt - smt) > priceTol) {
+    fixBad++;
+    fail(`fix month ${mo}: got dif ${b?.contractDifUscLb} smt ${b?.smt}, expected ${dif}/${smt}`);
+  }
+}
+if (fixBad === 0) ok('fix-month ladder: all 7 buckets exact (dif + SMT)');
+const byClient = computePricing(parsedSales, { dimension: 'client' });
+nearPx('NESTRADE wavg contract dif', byClient.byBucket?.['NESTRADE']?.contractDifUscLb ?? null, 144.5596);
+
+// Demo-seed enrichment: bundled sales must carry the export's prices so the
+// demo day can answer pricing questions; postGrade attribution must work off
+// the seeded blend numbers.
+const exportByKey = Object.fromEntries(parsedSales.map((s) => [`${s.saleCtr}|${s.month}`, s]));
+const demoSeedSales: Sale[] = (await import('../seed/demo')).DEMO_SALES;
+const enriched = demoSeedSales.filter((s) => s.sDif != null);
+const wrongPrice = enriched.filter((s) => {
+  const ex = exportByKey[`${s.saleCtr}|${s.month}`];
+  return !ex || Math.abs((s.sDif ?? NaN) - (ex.sDif ?? NaN)) > 1e-9 || Math.abs((s.sFobDif ?? NaN) - (ex.sFobDif ?? NaN)) > 1e-9;
+});
+if (enriched.length >= 55 && wrongPrice.length === 0)
+  ok(`demo seed: ${enriched.length}/${demoSeedSales.length} sales price-enriched, all matching the export`);
+else fail(`demo seed enrichment: ${enriched.length} enriched, ${wrongPrice.length} mismatched vs export`);
+const demoPost = computePricing(demoSeedSales, { dimension: 'postGrade', blends });
+const grinderBold = demoPost.byBucket?.['POST GRINDER BOLD'];
+if (grinderBold?.contractDifUscLb != null && grinderBold?.fobDifUscLb != null)
+  ok(`postGrade dim: POST GRINDER BOLD dif ${grinderBold.contractDifUscLb} / FOB ${grinderBold.fobDifUscLb} (blend-weighted)`);
+else fail('postGrade dim: no differential computed for POST GRINDER BOLD');
+
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));
 

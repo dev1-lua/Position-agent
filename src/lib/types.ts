@@ -27,6 +27,16 @@ export interface Sale {
   sFixDte?: string | null;
   /** Blend number if already assigned (BASE FILE ground truth); otherwise resolved by the matcher. */
   blendNo?: number | null;
+  /** Flat sale price in `sPriceUnit`; 0/null = price-to-be-fixed (differential-only). */
+  sPrice?: number | null;
+  /** Unit of `sPrice`: 'USC/LB' | 'USD/KG' | 'USD/MT'. */
+  sPriceUnit?: string | null;
+  /** Contract differential vs the NY KC futures, USc/lb. */
+  sDif?: number | null;
+  /** FOB-equivalent differential, USc/lb (comparable across Incoterms). */
+  sFobDif?: number | null;
+  /** Sale Incoterm, e.g. FOB / CIF / DAP — explains sDif vs sFobDif gaps. */
+  sTerm?: string | null;
 }
 
 /** A raw stock lot parsed from the XBS stock report (stock-counter input). */

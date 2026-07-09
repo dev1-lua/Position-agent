@@ -89,6 +89,11 @@ export function parseLogisticsReport(
     sbags: columnIndex(header, ['S.bags']),
     ship: columnIndex(header, ['S.Ship.']),
     sFixDte: columnIndex(header, ['sFixDte']),
+    sPrice: columnIndex(header, ['S. Price']),
+    sPriceUnit: columnIndex(header, ['S. Unit']),
+    sDif: columnIndex(header, ['S.Dif']),
+    sFobDif: columnIndex(header, ['S.Fob dif']),
+    sTerm: columnIndex(header, ['S.Term']),
   };
   const wanted = new Set(statuses);
   const sales: Sale[] = [];
@@ -106,6 +111,11 @@ export function parseLogisticsReport(
       month: ship ? ship.substring(0, 7) : null,
       sFixDte: r[col.sFixDte] || null,
       blendNo: null,
+      sPrice: toNum(r[col.sPrice]),
+      sPriceUnit: r[col.sPriceUnit] || null,
+      sDif: r[col.sDif]?.trim() ? toNum(r[col.sDif]) : null,
+      sFobDif: r[col.sFobDif]?.trim() ? toNum(r[col.sFobDif]) : null,
+      sTerm: r[col.sTerm] || null,
     });
   }
   return sales;
@@ -118,16 +128,32 @@ export function parseLogisticsReport(
  * apart so the forward-sales month buckets stay correct.
  */
 export function aggregateSales(sales: Sale[]): Sale[] {
-  const byKey = new Map<string, Sale>();
+  // Price fields are SMT-weighted-averaged across split rows, each field over
+  // the rows where it is present. Mixed price units across splits → unit null.
+  type Acc = { sale: Sale; w: Record<string, number>; s: Record<string, number> };
+  const PRICE_FIELDS = ['sPrice', 'sDif', 'sFobDif'] as const;
+  const byKey = new Map<string, Acc>();
   for (const s of sales) {
     const key = `${s.saleCtr ?? ''}|${s.month ?? ''}`;
-    const prev = byKey.get(key);
-    if (!prev) {
-      byKey.set(key, { ...s });
+    let acc = byKey.get(key);
+    if (!acc) {
+      acc = { sale: { ...s }, w: {}, s: {} };
+      byKey.set(key, acc);
     } else {
-      prev.smt += s.smt;
-      if (prev.sbags != null || s.sbags != null) prev.sbags = (prev.sbags ?? 0) + (s.sbags ?? 0);
+      acc.sale.smt += s.smt;
+      if (acc.sale.sbags != null || s.sbags != null) acc.sale.sbags = (acc.sale.sbags ?? 0) + (s.sbags ?? 0);
+      if ((acc.sale.sPriceUnit ?? null) !== (s.sPriceUnit ?? null)) acc.sale.sPriceUnit = null;
+      if ((acc.sale.sTerm ?? null) !== (s.sTerm ?? null)) acc.sale.sTerm = null;
+    }
+    for (const f of PRICE_FIELDS) {
+      const v = s[f];
+      if (v == null) continue;
+      acc.w[f] = (acc.w[f] ?? 0) + s.smt;
+      acc.s[f] = (acc.s[f] ?? 0) + v * s.smt;
     }
   }
-  return [...byKey.values()];
+  return [...byKey.values()].map(({ sale, w, s }) => {
+    for (const f of PRICE_FIELDS) sale[f] = w[f] ? s[f] / w[f] : null;
+    return sale;
+  });
 }

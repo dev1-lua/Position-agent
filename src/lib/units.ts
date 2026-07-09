@@ -14,6 +14,23 @@ export const KG_PER_BAG = 60;
 export const MT_PER_BAG = 0.06;
 export const MT_PER_LOT = 17.01;
 
+/** 1 USc/lb = 22.0462… USD/MT (1 MT = 2,204.6226 lb; 1 USc = 0.01 USD). */
+export const USD_MT_PER_USC_LB = 22.046226218487757;
+
+/** Normalize a flat price to USc/lb. Returns null for unknown units. */
+export const priceToUscLb = (price: number, unit: string | null | undefined): number | null => {
+  switch ((unit ?? '').toUpperCase()) {
+    case 'USC/LB':
+      return price;
+    case 'USD/MT':
+      return price / USD_MT_PER_USC_LB;
+    case 'USD/KG':
+      return (price * 1000) / USD_MT_PER_USC_LB;
+    default:
+      return null;
+  }
+};
+
 export const bagsToMt = (bags: number): number => bags * MT_PER_BAG;
 export const mtToBags = (mt: number): number => (mt * 1000) / KG_PER_BAG;
 export const mtToLots = (mt: number): number => mt / MT_PER_LOT;
