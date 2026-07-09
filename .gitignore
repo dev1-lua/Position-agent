@@ -1,3 +1,5 @@
 node_modules/   
 .env
 dist-v2/
+.DS_Store
+.lua/
