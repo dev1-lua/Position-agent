@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { normGrade, POST_GRADES_SUMMARY } from '../lib/grades';
 import { bagsToMt, round } from '../lib/units';
 import { computePricing, PriceDimension } from '../lib/pricing';
+import { computeClientExposure, computeShipmentStatus } from '../lib/book';
 import { getSnapshot, loadBlendRecipes } from './store';
 
 /**
@@ -163,14 +164,8 @@ class PriceAnalytics implements LuaTool {
     month?: string;
     fixMonth?: string;
   }) {
-    const snap = await getSnapshot(input.positionDate);
-    if (!snap) throw new Error('No position snapshot exists yet — ingest the exports first.');
-    const d = snap.data;
-    let sales: any[] = d.sales ?? [];
-    if (sales.length === 0) throw new Error('This snapshot has no sales — ingest the logistics report first.');
-
-    if (input.client) sales = sales.filter((s) => (s.client ?? '').toUpperCase().includes(input.client!.toUpperCase()));
-    if (input.month) sales = sales.filter((s) => s.month === input.month);
+    const { data: d, sales: base } = await snapshotSales(input.positionDate, { client: input.client, month: input.month });
+    let sales = base;
     if (input.fixMonth) sales = sales.filter((s) => (s.sFixDte ?? '').toUpperCase() === input.fixMonth!.toUpperCase());
     if (sales.length === 0) return { positionDate: d.positionDate, note: 'No sales match that filter.' };
 
@@ -215,6 +210,75 @@ class PriceAnalytics implements LuaTool {
   }
 }
 
+/** Shared: load snapshot sales with the standard error messages, optionally filtered. */
+async function snapshotSales(positionDate?: string, filter?: { client?: string; month?: string }) {
+  const snap = await getSnapshot(positionDate);
+  if (!snap) throw new Error('No position snapshot exists yet — ingest the exports first.');
+  let sales: any[] = snap.data.sales ?? [];
+  if (sales.length === 0) throw new Error('This snapshot has no sales — ingest the logistics report first.');
+  if (filter?.client) sales = sales.filter((s) => (s.client ?? '').toUpperCase().includes(filter.client!.toUpperCase()));
+  if (filter?.month) sales = sales.filter((s) => s.month === filter.month);
+  return { data: snap.data, sales };
+}
+
+class ClientExposureTool implements LuaTool {
+  name = 'client-exposure';
+  description =
+    'Counterparty exposure of the shorts book: per client — contracts, SMT/bags, share of book, delivery-month ladder, sold grades, destination countries, payment terms, desk trader. For a client\'s price level use price-analytics.';
+  inputSchema = z.object({
+    positionDate: dateField,
+    client: z.string().optional().describe('Filter to clients whose name contains this (case-insensitive)'),
+    top: z.number().int().positive().optional().describe('Return only the N largest counterparties'),
+  });
+
+  async execute(input: { positionDate?: string; client?: string; top?: number }) {
+    const { data, sales } = await snapshotSales(input.positionDate, { client: input.client });
+    if (sales.length === 0) return { positionDate: data.positionDate, note: `No sales for a client matching "${input.client}".` };
+    const exposure = computeClientExposure(sales);
+    return {
+      positionDate: data.positionDate,
+      demo: data.demo === true || undefined,
+      scope: 'unallocated shorts book only',
+      total: exposure.total,
+      clients: input.top ? exposure.clients.slice(0, input.top) : exposure.clients,
+      caveats: [
+        'Share % is of the filtered set shown, by |SMT|.',
+        'Volumes are contract commitments (negative = sold forward), not shipped quantities.',
+      ],
+    };
+  }
+}
+
+class ShipmentStatusTool implements LuaTool {
+  name = 'shipment-status';
+  description =
+    'Booking status of the forward book: booked vs unbooked contracts (counts + MT) overall and per delivery month, plus booked-shipment detail (vessel, voyage, booking line/number, POL→POD, ETD/ETA). The export has no B/L, container, invoice, or warehouse data.';
+  inputSchema = z.object({
+    positionDate: dateField,
+    month: z.string().regex(/^\d{4}\/\d{2}$/).optional().describe('Filter to one delivery month YYYY/MM'),
+    client: z.string().optional().describe('Filter to clients whose name contains this (case-insensitive)'),
+  });
+
+  async execute(input: { positionDate?: string; month?: string; client?: string }) {
+    const { data, sales } = await snapshotSales(input.positionDate, { client: input.client, month: input.month });
+    if (sales.length === 0) return { positionDate: data.positionDate, note: 'No sales match that filter.' };
+    const status = computeShipmentStatus(sales);
+    return {
+      positionDate: data.positionDate,
+      demo: data.demo === true || undefined,
+      scope: 'unallocated shorts book — booking state of forward sales, not voyage tracking',
+      overall: status.overall,
+      byMonth: status.byMonth,
+      shipments: status.shipments,
+      caveats: [
+        '"Booked" = a preshipment exists in SOL; a split contract can carry several bookings on one sailing (IDs joined with " / ").',
+        'ETD/ETA exist only on vessel-assigned bookings; ETA on a subset of those.',
+        'Not in this export (do not guess): B/L numbers, containers, invoices/due dates, warehouses, consignees.',
+      ],
+    };
+  }
+}
+
 export const querySkill = new LuaSkill({
   name: 'position-query',
   description: 'Answer position questions and what-ifs from the computed snapshots.',
@@ -222,8 +286,10 @@ export const querySkill = new LuaSkill({
 - query-position for "what's my net position", "how short am I on AB FAQ", "shorts by month for grinders". Always mention the position date and any pending blend confirmations.
 - what-if for "can I sell N bags of X for month M" — report netAfter and, if it goes short, the first month it happens. Never turn this into trade advice; state the numbers.
 - price-analytics for "at what price level am I short", "average differential on grinders", "how much is fixed vs to-be-fixed". "Price level" on this desk = differential vs the NY KC futures in USc/lb. ALWAYS present the contract differential and the FOB-equivalent side by side — neither is the headline. State the fixed vs price-to-be-fixed split and any excluded (unpriced) sales. It covers the unallocated shorts book only: no purchase cost basis, no P&L or mark-to-market (no market prices exist in the data), no price history — say so when asked.
+- client-exposure for "who am I most short to", "my exposure to Nestle", "what does client X buy". Volumes are forward commitments by counterparty; combine with price-analytics (dimension=client) when they also want the price level.
+- shipment-status for "what's booked/unbooked", "what's shipping this month", "when does X's coffee leave". It reports BOOKING state of the forward book (preshipment, vessel, POL→POD, ETD/ETA) — the export has no B/L, container, invoice, due-date, or warehouse data, so decline those plainly instead of approximating.
 - Grades are matched fuzzily ("AB FAQ" → POST 16 FAQ); confirm the resolved grade in the answer.
 - Quote bags by default; add MT when the trader asks or the number is hedge-related.
 - Never label net values as "longs": longs = theoretical stock, net = longs + shorts. Say which one you're quoting.`,
-  tools: [new QueryPosition(), new WhatIf(), new PriceAnalytics()],
+  tools: [new QueryPosition(), new WhatIf(), new PriceAnalytics(), new ClientExposureTool(), new ShipmentStatusTool()],
 });
