@@ -182,10 +182,14 @@ export async function persistAssignment(key: string, blendNo: number): Promise<v
 // Chat-upload fallback
 // ---------------------------------------------------------------------------
 
+/** Matches the manifest the spreadsheet-intake preprocessor injects (`fileId=<id>;`). */
+const MANIFEST_FILE_ID = /\bfileId=([^;\s\]]+);/;
+
 /**
  * Resolve a file reference: use the explicit id when given, else scan the
- * chat history for the most recent uploaded file (LuaPop upload → CDN;
- * exact wiring is a docs gap — see HANDOVER §7 — so both paths are kept).
+ * chat history for the most recent upload — either a raw file part or the
+ * `[Spreadsheet received … fileId=…;]` manifest the spreadsheet-intake
+ * preprocessor swaps in for spreadsheet attachments.
  */
 export async function resolveFileId(fileId?: string): Promise<string> {
   if (fileId && fileId.trim()) return fileId.trim();
@@ -197,6 +201,10 @@ export async function resolveFileId(fileId?: string): Promise<string> {
       if (part?.type === 'file' || part?.type === 'image') {
         const ref = part.data ?? part.fileId ?? part.url ?? part.file;
         if (typeof ref === 'string' && ref) return ref;
+      }
+      if (part?.type === 'text' && typeof part.text === 'string') {
+        const m = MANIFEST_FILE_ID.exec(part.text);
+        if (m) return m[1];
       }
     }
   }

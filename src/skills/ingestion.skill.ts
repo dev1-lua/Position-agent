@@ -249,6 +249,7 @@ export const ingestionSkill = new LuaSkill({
   name: 'position-ingestion',
   description: 'Ingest the three desk exports (XBS stock, SOL DailyNetPosition, SOL ReportLogistic) into daily position snapshots.',
   context: `Use these tools when the trader uploads position exports.
+- Uploaded spreadsheets arrive as a "[Spreadsheet received and stored: fileId=…]" manifest (a preprocessor stores the raw file on the CDN and detects the export type). Pass that fileId to the ingest tool the manifest names. If it says the file was not recognized, ask the trader what it is instead of guessing.
 - Each export type has its own tool; ask which file is which if unclear (stock is the XBS "Current Stock" export, raw .csv or .xlsx; the two SOL exports are .xls).
 - ingest-stock-report returns a coverage report: blocked stock, WIP lots (no warehouse), crop years, XBS cert tags, and unbucketed strategy tags ALL COUNT toward the total (validated against the 2026-06-18 golden day). Relay any warnings to the trader verbatim — they signal export-format drift.
 - All three write into the snapshot for the position date (default: today, Nairobi). Pass positionDate when the trader says the export is for another day.
