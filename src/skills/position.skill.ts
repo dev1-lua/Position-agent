@@ -6,6 +6,7 @@ import { sumOverMonths } from '../lib/shorts';
 import { computeFutsSpread, futuresPotBySFixDte, FutsManualInputs } from '../lib/futsspread';
 import { round } from '../lib/units';
 import { COLLECTIONS, getSnapshot, saveSnapshot, upsert, getAll } from './store';
+import { runComputeChain, defaultHorizon } from './pipeline';
 
 /**
  * Assembly: net position (longs + shorts over the horizon), offer roll-ups,
@@ -15,25 +16,18 @@ import { COLLECTIONS, getSnapshot, saveSnapshot, upsert, getAll } from './store'
 
 const dateField = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('Defaults to the latest snapshot');
 
-/**
- * Netting horizon as a rolling window anchored on the position date. The
- * golden workbook nets Summary E:N = 2025/12..2026/09 against a 2026-06-18
- * position — i.e. position month −6 through +3, ten consecutive calendar
- * months. Anchoring on the position date (not on whatever months the sales
- * happen to cover) keeps the horizon stable when the data has stray old
- * ship months or gaps.
- */
-function defaultHorizon(positionDate: string, count = 10, backMonths = 6): string[] {
-  let [y, m] = positionDate.slice(0, 7).split('-').map(Number);
-  m -= backMonths;
-  while (m < 1) { m += 12; y--; }
-  const out: string[] = [];
-  for (let i = 0; i < count; i++) {
-    out.push(`${y}/${String(m).padStart(2, '0')}`);
-    m++;
-    if (m > 12) { m = 1; y++; }
+// Netting-horizon rationale lives with defaultHorizon in ./pipeline (rolling
+// window anchored on the position date: month −6 through +3, ten months).
+
+class ComputePosition implements LuaTool {
+  name = 'compute-position';
+  description =
+    'Run the ENTIRE compute chain in one call: blend assignment (flagging ambiguous sales) → forward-sales matrix → net position + offers → futs/hedge (when the DNP is on file). Use this for "compute my position" — never chain the individual compute tools for that.';
+  inputSchema = z.object({ positionDate: dateField });
+
+  async execute(input: { positionDate?: string }) {
+    return runComputeChain(input.positionDate, { tool: this.name });
   }
-  return out;
 }
 
 class ComputeNetPosition implements LuaTool {
@@ -166,9 +160,10 @@ class ComputeFutsSpread implements LuaTool {
 export const positionSkill = new LuaSkill({
   name: 'position-net',
   description: 'Assemble the position: net by grade (longs + shorts over the horizon), offer roll-ups, and the Futs+Spread hedge view.',
-  context: `Assembly step, after longs and shorts are computed.
-- compute-net-position nets theoretical stock against forward sales over the workbook horizon (10 months, oldest month dropped); pass horizonMonths to override. Offers are the commercial roll-ups (TOP/PLUS/AA FAQ/AB FAQ/ABC FAQ/GRINDER) in bags and MT.
-- compute-futs-spread is the hedge view. It needs the trader's manual pot figures (set-manual-inputs) — always state the caveat when they're missing or stale.
+  context: `Assembly step, after the exports are ingested.
+- compute-position is THE tool for "compute my position" / "run the numbers": ONE call runs blend assignment → forward sales → net + offers → hedge. NEVER chain the individual compute tools for a full run — make the single call and answer only from its result. If it returns pendingConfirmation sales, relay them and ask the trader for blend numbers (confirm-blend), then re-run compute-position.
+- compute-net-position / compute-futs-spread are for targeted re-runs only (e.g. custom horizonMonths, or refreshing the hedge after set-manual-inputs).
+- compute-futs-spread needs the trader's manual pot figures (set-manual-inputs) — always state the caveat when they're missing or stale.
 - Certificate positions are manual passthrough until the cert workbooks are wired; say so when asked about certs.`,
-  tools: [new ComputeNetPosition(), new SetManualInputs(), new ComputeFutsSpread()],
+  tools: [new ComputePosition(), new ComputeNetPosition(), new SetManualInputs(), new ComputeFutsSpread()],
 });
