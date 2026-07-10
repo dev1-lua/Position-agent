@@ -1,7 +1,7 @@
 import { LuaSkill, LuaTool } from 'lua-cli';
 import { z } from 'zod';
 import { normGrade, POST_GRADES_SUMMARY } from '../lib/grades';
-import { monthTotals } from '../lib/shorts';
+import { monthTotals, explainGradeContributions } from '../lib/shorts';
 import { resolveOfferQuery } from '../lib/netposition';
 import { bagsToMt, round } from '../lib/units';
 import { computePricing, distinctContractsForGrades, PriceDimension } from '../lib/pricing';
@@ -12,11 +12,13 @@ import { citeLine } from '../lib/cite';
 import { getSnapshot, loadBlendRecipes } from './store';
 
 /** Provenance line for a tool result — the agent must quote it verbatim. */
-function cite(tool: string, d: any, sources: string[]): string {
-  return citeLine({ tool, positionDate: d.positionDate, demo: d.demo === true, updatedAt: d.updatedAt, sources });
+function cite(tool: string, d: any, sources: string[], derivation?: string): string {
+  return citeLine({ tool, positionDate: d.positionDate, demo: d.demo === true, updatedAt: d.updatedAt, sources, derivation });
 }
 const SRC_POSITION = ['XBS Current Stock (longs)', 'SOL ReportLogistic (shorts)'];
 const SRC_LOGISTICS = ['SOL ReportLogistic'];
+/** The shorts allocation formula, quoted in derivations (BASE FILE col AW). */
+const SHORTS_FORMULA = 'Σ "S.MT" × blend fraction × 1000/60';
 
 /**
  * Q&A over computed snapshots: position lookups and what-if checks. These
@@ -82,7 +84,12 @@ class QueryPosition implements LuaTool {
             : Object.fromEntries(Object.entries(monthRow).map(([m, v]) => [m, round(v as number)])),
           horizon: d.net.horizon,
           notes: [horizonNote],
-          cite: cite(this.name, d, SRC_POSITION),
+          cite: cite(
+            this.name,
+            d,
+            SRC_POSITION,
+            `Forward Sales row "${key}": ${SHORTS_FORMULA} per delivery month; longs = stock-counter theoretical for "${key}" (Summary!C)`
+          ),
         };
       }
       // not a grade — maybe an offer name (AB FAQ = 16 FAQ ×1 + 15 FAQ ×0.5 …)
@@ -114,7 +121,12 @@ class QueryPosition implements LuaTool {
           `"${offer.offer}" is an offer roll-up, not a single grade: ${offer.members.map(([g, w]) => `${g} ×${w}`).join(' + ')}.`,
           horizonNote,
         ],
-        cite: cite(this.name, d, SRC_POSITION),
+        cite: cite(
+          this.name,
+          d,
+          SRC_POSITION,
+          `Offers block: ${offer.offer} = ${offer.members.map(([g, w]) => `${w}×net["${g}"]`).join(' + ')}; member shorts = ${SHORTS_FORMULA}`
+        ),
       };
       return result;
     }
@@ -137,7 +149,12 @@ class QueryPosition implements LuaTool {
         ...(known.includes(input.month) ? {} : { note: `No shorts in ${input.month}. Months with shorts: ${known.join(', ')}.` }),
         horizon: d.net.horizon,
         notes: [horizonNote],
-        cite: cite(this.name, d, SRC_LOGISTICS),
+        cite: cite(
+          this.name,
+          d,
+          SRC_LOGISTICS,
+          `Forward Sales column "${input.month}" summed per grade; each cell = ${SHORTS_FORMULA}`
+        ),
       };
     }
 
@@ -166,7 +183,12 @@ class QueryPosition implements LuaTool {
           )
         : undefined,
       notes: [horizonNote],
-      cite: cite(this.name, d, d.futs ? [...SRC_POSITION, 'SOL DailyNetPosition (hedge)'] : SRC_POSITION),
+      cite: cite(
+        this.name,
+        d,
+        d.futs ? [...SRC_POSITION, 'SOL DailyNetPosition (hedge)'] : SRC_POSITION,
+        `net[grade] = stock-counter theoretical (Summary!C) + ${SHORTS_FORMULA} over the horizon`
+      ),
     };
   }
 }
@@ -218,7 +240,12 @@ class WhatIf implements LuaTool {
         ...((d.pendingBlends ?? []).length ? [`${d.pendingBlends.length} sale(s) still pending blend confirmation are excluded.`] : []),
         'Timeline assumes stock is fully available today (theoretical stock, no per-month production phasing).',
       ],
-      cite: cite(this.name, d, SRC_POSITION),
+      cite: cite(
+        this.name,
+        d,
+        SRC_POSITION,
+        `netAfter = net["${key}"] − ${input.bags} bags; committed months from Forward Sales row "${key}"`
+      ),
     };
   }
 }
@@ -304,7 +331,12 @@ class PriceAnalytics implements LuaTool {
           ? [`${result.coverage.unpriced} sale(s) carry no differential and are excluded: ${result.coverage.unpricedContracts.join(', ')}`]
           : []),
       ],
-      cite: cite(this.name, d, SRC_LOGISTICS),
+      cite: cite(
+        this.name,
+        d,
+        SRC_LOGISTICS,
+        'difs = SMT-weighted avg of "S.Dif" (contract) and "S.Fob dif" (FOB-equiv), USc/lb vs NY KC; flat = "S. Price" normalized to USc/lb; fixed ⇔ "S. Price" set'
+      ),
     };
   }
 }
@@ -358,7 +390,7 @@ class ClientExposureTool implements LuaTool {
           ? ['A month/soldGrade filter is active — totals and shares cover the filtered slice, not the whole book.']
           : []),
       ],
-      cite: cite(this.name, data, SRC_LOGISTICS),
+      cite: cite(this.name, data, SRC_LOGISTICS, 'per client: Σ "S.MT" (and bags "S.Bags") over unallocated sales; share % by |SMT| of the shown set'),
     };
   }
 }
@@ -403,7 +435,7 @@ class ShipmentStatusTool implements LuaTool {
         'ETD/ETA exist only on vessel-assigned bookings; ETA on a subset of those.',
         'Not in this export (do not guess): B/L numbers, containers, invoices/due dates, warehouses, consignees.',
       ],
-      cite: cite(this.name, data, SRC_LOGISTICS),
+      cite: cite(this.name, data, SRC_LOGISTICS, 'states from booking columns "PreshipID"/"Vessel"/"ETD"/"ETA" per contract (\'0\' = empty)'),
     };
   }
 }
@@ -442,7 +474,12 @@ class CertExposureTool implements LuaTool {
           ? ['client/month filters apply to the SALES side only — the stock rollup is always the whole unsold inventory.']
           : []),
       ],
-      cite: cite(this.name, data, ['SOL ReportLogistic (sales certs)', 'SOL DailyNetPosition (stock certs)']),
+      cite: cite(
+        this.name,
+        data,
+        ['SOL ReportLogistic (sales certs)', 'SOL DailyNetPosition (stock certs)'],
+        'sales tags from "S.Cert" (Σ "S.MT"); stock tags from DNP "certification" (Σ "P.MT" on unsold in-store/to-be-shipped rows)'
+      ),
     };
   }
 }
@@ -461,11 +498,17 @@ class StockAnalyticsTool implements LuaTool {
     if (!snap?.data?.stock) throw new Error('No ingested stock report found — run ingest-stock-report first.');
     const stock = snap.data.stock;
     const result = computeStockAnalytics(input.dimension, { location: stock.location, coverage: stock.coverage });
+    const DERIV: Record<StockDimension, string> = {
+      warehouse: 'Σ XBS "Qty."(kg)/60 by "Warehouse"; intake age weighted by kg from "Intake Date"',
+      cropYear: 'Σ XBS "Qty."(kg)/60 by "Inventory Type" (crop year)',
+      blocked: 'Σ XBS "Qty."(kg)/60 split on "Blocked"=Yes/No',
+      cert: 'Σ XBS "Qty."(kg)/60 by "Certification" tag (XBS vocabulary)',
+    };
     const base = {
       positionDate: snap.data.positionDate,
       demo: snap.data.demo === true || undefined,
       dimension: input.dimension,
-      cite: cite(this.name, snap.data, ['XBS Current Stock']),
+      cite: cite(this.name, snap.data, ['XBS Current Stock'], DERIV[input.dimension]),
     };
     if (!result)
       return {
@@ -535,6 +578,52 @@ class StockAnalyticsTool implements LuaTool {
   }
 }
 
+class ExplainFigure implements LuaTool {
+  name = 'explain-figure';
+  description =
+    'Trace a shorts/net figure to its exact source rows: the sales contracts feeding one POST grade (or offer), each with contract number, client, S.MT, blend fraction, and allocated bags — the total ties to the quoted figure. Use when the trader asks "where does that number come from / which contracts are behind it".';
+  inputSchema = z.object({
+    positionDate: dateField,
+    grade: z.string().describe('POST grade or offer name whose figure to explain (fuzzy, e.g. "16 FAQ", "AB FAQ")'),
+    month: z.string().regex(/^\d{4}\/\d{2}$/).optional().describe('Narrow to one delivery month YYYY/MM (traces that exact matrix cell)'),
+  });
+
+  async execute(input: { positionDate?: string; grade?: string; month?: string }) {
+    const { data, sales } = await snapshotSales(input.positionDate);
+    const blends = await loadBlendRecipes();
+    const target = normGrade(input.grade ?? '');
+    const gradeKey =
+      POST_GRADES_SUMMARY.find((g) => normGrade(g) === target) ??
+      POST_GRADES_SUMMARY.find((g) => normGrade(g).includes(target));
+    const members: Array<[string, number]> = gradeKey
+      ? [[gradeKey, 1]]
+      : (resolveOfferQuery(input.grade ?? '')?.members ?? []);
+    if (members.length === 0)
+      return {
+        positionDate: data.positionDate,
+        error: `No grade or offer matching "${input.grade}". Grades: ${POST_GRADES_SUMMARY.join(', ')}. Offers: TOP, PLUS, AA FAQ, AB FAQ, ABC FAQ, GRINDER 14+, GRINDER 13-.`,
+      };
+
+    const perGrade = members.map(([grade, weight]) => {
+      const ex = explainGradeContributions(sales, blends, grade, input.month);
+      return { grade, weight, totalBags: ex.totalBags, weightedBags: round(ex.totalBags * weight), contracts: ex.rows };
+    });
+    return {
+      positionDate: data.positionDate,
+      demo: data.demo === true || undefined,
+      figure: { grade: input.grade, resolved: members.map(([g, w]) => `${g} ×${w}`).join(' + '), month: input.month ?? 'all months' },
+      totalBags: round(perGrade.reduce((s, g) => s + g.weightedBags, 0)),
+      perGrade,
+      caveats: [
+        'allocatedBags = "S.MT" × blend fraction × 1000/60 — the exact allocation the shorts matrix uses; the total ties to the quoted cell.',
+        'Shorts side only. Longs (theoretical stock) drill down to XBS rows, which are summarized at ingest — re-open the XBS export itself for lot-level detail.',
+        ...((data.pendingBlends ?? []).length ? [`${data.pendingBlends.length} sale(s) pending blend confirmation are NOT in any grade figure.`] : []),
+      ],
+      cite: cite(this.name, data, SRC_LOGISTICS, `each row: "Sale Ctr.", client, "S.MT", blend fraction → allocated bags (${SHORTS_FORMULA})`),
+    };
+  }
+}
+
 export const querySkill = new LuaSkill({
   name: 'position-query',
   description: 'Answer position questions and what-ifs from the computed snapshots.',
@@ -547,9 +636,10 @@ export const querySkill = new LuaSkill({
 - cert-exposure for "how much of my book is EUDR", "certified stock", "what's sold as Rainforest Alliance". ALWAYS lead with the coverage caveat: only a minority of contracts/lots carry a cert tag, so figures are floors ("at least X"), and UNTAGGED volume is UNKNOWN — never "not certified". EUDR-flagged = tag contains EUDR (RA.EUDR, CP.EUDR, AAA.EUDR…). Filters: tag, client, month — client/month narrow the SALES side only; the stock rollup stays whole-inventory.
 - price-analytics postGrade answers: bucket contract counts overlap across grades (a contract counts in every grade its blend touches) — NEVER sum bucket counts; quote the result's distinctContracts for "how many contracts".
 - stock-analytics for "stock by warehouse", "how old is the stock", "how much is blocked", "old-crop stock", "certified physical stock" — one flat dimension per call (warehouse | cropYear | blocked | cert). Blocked, WIP (no warehouse) and old-crop stock all COUNT toward the total: quote the full total and the carve-out ("35,568 bags, of which 339 blocked"), NEVER a total net of them. Its cert tags are XBS vocabulary — a different tag set from cert-exposure's SOL tags; never merge the two. Cross-dimension splits (warehouse × crop year) are not available — say so.
-- Every result carries a \`cite\` line (tool · snapshot · sources · ingested) — end the answer with it verbatim, prefixed "— ". Numbers not present in a tool result must never be stated.
+- Every result carries a \`cite\` line (tool · snapshot · sources · ingested · derivation) — end the answer with it verbatim, prefixed "— ". Numbers not present in a tool result must never be stated.
+- explain-figure for "where does that number come from", "which contracts are behind the 16 FAQ shorts", "break that −960 down" — it lists the exact contracts (Sale Ctr., client, S.MT, blend fraction, allocated bags) whose sum ties to the quoted figure. Shorts side only; XBS lot-level detail isn't stored — say so.
 - Grades are matched fuzzily ("AB FAQ" → POST 16 FAQ); confirm the resolved grade in the answer.
 - Quote bags by default; add MT when the trader asks or the number is hedge-related.
 - Never label net values as "longs": longs = theoretical stock, net = longs + shorts. Say which one you're quoting.`,
-  tools: [new QueryPosition(), new WhatIf(), new PriceAnalytics(), new ClientExposureTool(), new ShipmentStatusTool(), new CertExposureTool(), new StockAnalyticsTool()],
+  tools: [new QueryPosition(), new WhatIf(), new PriceAnalytics(), new ClientExposureTool(), new ShipmentStatusTool(), new CertExposureTool(), new StockAnalyticsTool(), new ExplainFigure()],
 });

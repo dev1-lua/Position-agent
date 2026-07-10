@@ -50,6 +50,55 @@ export function computeForwardSales(
   };
 }
 
+/**
+ * Figure drill-down: the exact sales contracts feeding one POST grade's
+ * shorts (optionally one delivery month) — each with its blend fraction and
+ * allocated bags, so a quoted matrix cell can be traced to source rows.
+ * Same allocation formula as computeForwardSales; the total MUST tie to the
+ * corresponding matrix cell / grade total.
+ */
+export function explainGradeContributions(
+  sales: Sale[],
+  blends: Blend[],
+  grade: string,
+  month?: string
+): {
+  totalBags: number;
+  rows: Array<{
+    saleCtr: string | null;
+    client: string | null;
+    month: string | null;
+    smt: number;
+    blendNo: number | null;
+    fraction: number;
+    allocatedBags: number;
+  }>;
+} {
+  const byNo = new Map(blends.map((b) => [b.blendNo, b]));
+  const rows: ReturnType<typeof explainGradeContributions>['rows'] = [];
+  let total = 0;
+  for (const s of sales) {
+    if (month && s.month !== month) continue;
+    const blend = s.blendNo != null ? byNo.get(s.blendNo) : undefined;
+    const fraction = blend?.recipe[grade] || 0;
+    if (!fraction) continue;
+    const bags = round(saleMtToBags(s.smt, fraction), 4);
+    if (bags === 0) continue;
+    total = round(total + bags, 4);
+    rows.push({
+      saleCtr: s.saleCtr ?? null,
+      client: s.client ?? null,
+      month: s.month ?? null,
+      smt: s.smt,
+      blendNo: s.blendNo ?? null,
+      fraction,
+      allocatedBags: bags,
+    });
+  }
+  rows.sort((a, b) => a.allocatedBags - b.allocatedBags); // biggest short first
+  return { totalBags: total, rows };
+}
+
 /** Column-sum a forward-sales matrix → delivery month → total short bags (all grades). */
 export function monthTotals(matrix: Record<string, Record<string, number>>): Record<string, number> {
   const out: Record<string, number> = {};

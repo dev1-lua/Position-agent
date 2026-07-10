@@ -20,6 +20,12 @@ export interface CiteInput {
   updatedAt?: string;
   /** Source export(s) the figures derive from, e.g. `['SOL ReportLogistic']`. */
   sources: string[];
+  /**
+   * The exact data points behind the headline figure: source column(s),
+   * formula, and workbook location, e.g.
+   * `blocked = Σ XBS "Qty."(kg)/60 over rows where Blocked=Yes (68 rows)`.
+   */
+  derivation?: string;
 }
 
 export function citeLine(c: CiteInput): string {
@@ -29,5 +35,6 @@ export function citeLine(c: CiteInput): string {
     // 2026-07-10T01:48:43.154Z → 2026-07-10T01:48Z (minute precision reads better in chat)
     parts.push(`ingested ${c.updatedAt.replace(/:\d{2}(\.\d+)?Z$/, 'Z')}`);
   }
+  if (c.derivation) parts.push(`derivation: ${c.derivation}`);
   return parts.join(' · ');
 }

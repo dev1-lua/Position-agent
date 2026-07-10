@@ -16,7 +16,7 @@ import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { loadBlends, matchBlend, buildAssignmentMemory, globallyAmbiguousKeys } from '../lib/blends';
-import { computeForwardSales, sumOverMonths, monthTotals } from '../lib/shorts';
+import { computeForwardSales, sumOverMonths, monthTotals, explainGradeContributions } from '../lib/shorts';
 import { computeNetPosition, computeOffers, resolveOfferQuery } from '../lib/netposition';
 import { normGrade } from '../lib/grades';
 import { Sale, StockRow } from '../lib/types';
@@ -935,6 +935,32 @@ if (citeLive === 'source: stock-analytics · snapshot 2026-07-11 · XBS Current 
 else fail(`live cite: got "${citeLive}"`);
 if (citeLine({ tool: 't', positionDate: '2026-01-01', sources: ['A', 'B'] }).includes('A + B')) ok('multi-source joined with " + "');
 else fail('multi-source join');
+const citeDeriv = citeLine({
+  tool: 'stock-analytics',
+  positionDate: '2026-06-18',
+  sources: ['XBS Current Stock'],
+  derivation: 'blocked = Σ "Qty."(kg)/60 where Blocked=Yes (68 rows)',
+});
+if (citeDeriv.endsWith(' · derivation: blocked = Σ "Qty."(kg)/60 where Blocked=Yes (68 rows)'))
+  ok('derivation clause appended as final segment');
+else fail(`derivation clause: got "${citeDeriv}"`);
+
+// ---------- 16. Figure drill-down (explain-figure provenance) ----------
+// Hand-computed (python over basefile + blends): POST 16 FAQ × 2026/06 is fed
+// by exactly SSKE-107713 (CHINALIGHT, −38.4 SMT ×1.0 → −640 bags) and
+// SSKE-107744 (SINJYCDINC, −19.2 ×1.0 → −320); the list must tie to the
+// forward-sales matrix cell (−960) and the grade total (−6,564 all months).
+console.log('\n[16] explainGradeContributions vs hand-computed contributors');
+const ex = explainGradeContributions(sales, blends, 'POST 16 FAQ', '2026/06');
+check('explain: contributor count', ex.rows.length, 2);
+const exByCtr = Object.fromEntries(ex.rows.map((r) => [r.saleCtr, r]));
+check('explain: SSKE-107713 bags', r2(exByCtr['SSKE-107713']?.allocatedBags ?? 0), -640);
+check('explain: SSKE-107744 bags', r2(exByCtr['SSKE-107744']?.allocatedBags ?? 0), -320);
+check('explain: total ties to matrix cell', r2(ex.totalBags), r2(fs.matrix['POST 16 FAQ']['2026/06']));
+const exAll = explainGradeContributions(sales, blends, 'POST 16 FAQ');
+check('explain: grade total (all months)', r2(exAll.totalBags), -6564);
+if (exAll.rows.every((r) => r.fraction > 0 && r.allocatedBags !== 0)) ok('explain: only non-zero allocations listed');
+else fail('explain: zero-allocation rows leaked into the list');
 
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));
