@@ -1,8 +1,10 @@
 import { LuaSkill, LuaTool } from 'lua-cli';
 import { z } from 'zod';
 import { normGrade, POST_GRADES_SUMMARY } from '../lib/grades';
+import { monthTotals } from '../lib/shorts';
+import { resolveOfferQuery } from '../lib/netposition';
 import { bagsToMt, round } from '../lib/units';
-import { computePricing, PriceDimension } from '../lib/pricing';
+import { computePricing, distinctContractsForGrades, PriceDimension } from '../lib/pricing';
 import { computeClientExposure, computeShipmentStatus } from '../lib/book';
 import { computeCertExposure } from '../lib/cert';
 import { computeStockAnalytics, StockDimension } from '../lib/stockanalytics';
@@ -29,8 +31,15 @@ class QueryPosition implements LuaTool {
     'Read the computed position: total or per-grade net (longs/shorts/net bags + MT), shorts by delivery month, offers, hedge lines, and data freshness.';
   inputSchema = z.object({
     positionDate: dateField,
-    grade: z.string().optional().describe('POST grade (fuzzy, e.g. "AB FAQ" → POST 16 FAQ block) — omit for the full position'),
-    month: z.string().regex(/^\d{4}\/\d{2}$/).optional().describe('Delivery month filter for the shorts breakdown'),
+    grade: z
+      .string()
+      .optional()
+      .describe('POST grade or offer name (fuzzy: "16 FAQ", "AB FAQ", "GRINDER 14+") — omit for the full position'),
+    month: z
+      .string()
+      .regex(/^\d{4}\/\d{2}$/)
+      .optional()
+      .describe('Delivery month YYYY/MM. Alone → shorts by grade for that month; with grade → that grade-month cell.'),
   });
 
   async execute(input: { positionDate?: string; grade?: string; month?: string }) {
@@ -44,23 +53,80 @@ class QueryPosition implements LuaTool {
       pendingBlendCount: (d.pendingBlends ?? []).length,
     };
     if (!d.net) return { freshness, note: 'Net position not computed yet — run the compute chain first.' };
+    const matrix: Record<string, Record<string, number>> = d.forwardSales?.matrix ?? {};
+    const horizonNote =
+      'Net position sums shorts over the horizon months only; months outside it (e.g. 2026/10+) appear in shortsByMonth but are NOT netted.';
 
     if (input.grade) {
       const key = findGradeKey(d.net.byGrade, input.grade);
-      if (!key) return { freshness, error: `No grade matching "${input.grade}". Known: ${POST_GRADES_SUMMARY.join(', ')}` };
-      const g = d.net.byGrade[key];
-      const monthRow = (d.forwardSales?.matrix ?? {})[key] ?? {};
+      if (key) {
+        const g = d.net.byGrade[key];
+        const monthRow = matrix[key] ?? {};
+        return {
+          freshness,
+          grade: key,
+          longsBags: round(g.theoretical),
+          shortsBags: round(g.forwardSales),
+          netBags: round(g.net),
+          netMt: round(bagsToMt(g.net)),
+          shortsByMonth: input.month
+            ? { [input.month]: round(monthRow[input.month] || 0) }
+            : Object.fromEntries(Object.entries(monthRow).map(([m, v]) => [m, round(v as number)])),
+          horizon: d.net.horizon,
+          notes: [horizonNote],
+        };
+      }
+      // not a grade — maybe an offer name (AB FAQ = 16 FAQ ×1 + 15 FAQ ×0.5 …)
+      const offer = resolveOfferQuery(input.grade);
+      if (!offer)
+        return {
+          freshness,
+          error: `No grade or offer matching "${input.grade}". Grades: ${POST_GRADES_SUMMARY.join(', ')}. Offers: TOP, PLUS, AA FAQ, AB FAQ, ABC FAQ, GRINDER 14+, GRINDER 13-.`,
+        };
+      const members = offer.members.map(([grade, weight]) => {
+        const g = d.net.byGrade[grade] ?? { theoretical: 0, forwardSales: 0, net: 0 };
+        return { grade, weight, longsBags: round(g.theoretical), shortsBags: round(g.forwardSales), netBags: round(g.net) };
+      });
+      const weightedByMonth: Record<string, number> = {};
+      for (const [grade, weight] of offer.members)
+        for (const [mo, v] of Object.entries(matrix[grade] ?? {}))
+          weightedByMonth[mo] = round((weightedByMonth[mo] || 0) + (v as number) * weight, 2);
+      const sum = (f: (m: (typeof members)[0]) => number) => round(members.reduce((s, m) => s + f(m) * m.weight, 0));
+      const result: Record<string, unknown> = {
+        freshness,
+        offer: offer.offer,
+        offerBags: d.offers?.[offer.offer]?.bags ?? sum((m) => m.netBags),
+        offerMt: d.offers?.[offer.offer]?.mt,
+        weighted: { longsBags: sum((m) => m.longsBags), shortsBags: sum((m) => m.shortsBags), netBags: sum((m) => m.netBags) },
+        members,
+        shortsByMonth: input.month ? { [input.month]: weightedByMonth[input.month] ?? 0 } : weightedByMonth,
+        horizon: d.net.horizon,
+        notes: [
+          `"${offer.offer}" is an offer roll-up, not a single grade: ${offer.members.map(([g, w]) => `${g} ×${w}`).join(' + ')}.`,
+          horizonNote,
+        ],
+      };
+      return result;
+    }
+
+    if (input.month) {
+      // month alone → shorts by grade for that delivery month
+      const byGradeMonth = Object.fromEntries(
+        Object.entries(matrix)
+          .map(([g, row]) => [g, round((row as Record<string, number>)[input.month!] || 0)])
+          .filter(([, v]) => v !== 0)
+      );
+      const totalBags = round(Object.values(byGradeMonth).reduce((s: number, v) => s + (v as number), 0));
+      const known = Object.keys(monthTotals(matrix));
       return {
         freshness,
-        grade: key,
-        longsBags: round(g.theoretical),
-        shortsBags: round(g.forwardSales),
-        netBags: round(g.net),
-        netMt: round(bagsToMt(g.net)),
-        shortsByMonth: input.month
-          ? { [input.month]: round(monthRow[input.month] || 0) }
-          : Object.fromEntries(Object.entries(monthRow).map(([m, v]) => [m, round(v as number)])),
+        month: input.month,
+        shortsByGrade: byGradeMonth,
+        totalShortsBags: totalBags,
+        totalShortsMt: round(bagsToMt(totalBags)),
+        ...(known.includes(input.month) ? {} : { note: `No shorts in ${input.month}. Months with shorts: ${known.join(', ')}.` }),
         horizon: d.net.horizon,
+        notes: [horizonNote],
       };
     }
 
@@ -78,6 +144,7 @@ class QueryPosition implements LuaTool {
           .filter(([, v]) => v.theoretical !== 0 || v.forwardSales !== 0)
           .map(([g, v]) => [g, { longs: round(v.theoretical), shorts: round(v.forwardSales), net: round(v.net) }])
       ),
+      shortsByMonth: Object.fromEntries(Object.entries(monthTotals(matrix)).map(([m, v]) => [m, round(v)])),
       offers: d.offers,
       hedge: d.futs
         ? Object.fromEntries(
@@ -87,6 +154,7 @@ class QueryPosition implements LuaTool {
             ])
           )
         : undefined,
+      notes: [horizonNote],
     };
   }
 }
@@ -175,6 +243,7 @@ class PriceAnalytics implements LuaTool {
     const result = computePricing(sales, { dimension: input.dimension, blends });
 
     let byBucket: Record<string, any> | undefined = result.byBucket;
+    let distinctContracts: { contracts: number; fixed: number; ptbf: number } | undefined;
     if (byBucket && input.dimension === 'postGrade') {
       if (input.grade) {
         const target = normGrade(input.grade);
@@ -182,6 +251,9 @@ class PriceAnalytics implements LuaTool {
         if (Object.keys(byBucket).length === 0)
           return { positionDate: d.positionDate, note: `No POST grade matching "${input.grade}" carries priced shorts.` };
       }
+      // dedup: how many actual contracts stand behind the shown buckets
+      const priced = sales.filter((s) => s.sDif != null || s.sFobDif != null);
+      distinctContracts = distinctContractsForGrades(priced, blends!, Object.keys(byBucket));
       // postGrade buckets are weighted by blend-allocated BAGS, not MT — name the field accordingly
       byBucket = Object.fromEntries(
         Object.entries(byBucket).map(([g, b]: [string, any]) => [
@@ -204,12 +276,16 @@ class PriceAnalytics implements LuaTool {
       scope: 'unallocated shorts book only (differentials vs NY KC, USc/lb)',
       overall: result.overall,
       byBucket,
+      distinctContracts,
       coverage: result.coverage,
       caveats: [
         'Contract dif is on each sale\'s own Incoterm; FOB dif is the FOB-equivalent — present BOTH, never just one.',
         `Price-to-be-fixed volume: ${result.overall.ptbf.smt} MT across ${result.overall.ptbf.contracts} contracts (differential agreed, futures leg open).`,
         ...(input.dimension === 'postGrade'
-          ? ['POST-grade figures attribute each contract\'s differential across its blend grades (weighted by allocated bags).']
+          ? [
+              'POST-grade figures attribute each contract\'s differential across its blend grades (weighted by allocated bags).',
+              'postGrade bucket contract counts OVERLAP (a contract counts in every grade its blend touches) — NEVER sum them across buckets; quote distinctContracts for "how many contracts".',
+            ]
           : []),
         ...(result.coverage.unpriced > 0
           ? [`${result.coverage.unpriced} sale(s) carry no differential and are excluded: ${result.coverage.unpricedContracts.join(', ')}`]
@@ -220,13 +296,14 @@ class PriceAnalytics implements LuaTool {
 }
 
 /** Shared: load snapshot sales with the standard error messages, optionally filtered. */
-async function snapshotSales(positionDate?: string, filter?: { client?: string; month?: string }) {
+async function snapshotSales(positionDate?: string, filter?: { client?: string; month?: string; soldGrade?: string }) {
   const snap = await getSnapshot(positionDate);
   if (!snap) throw new Error('No position snapshot exists yet — ingest the exports first.');
   let sales: any[] = snap.data.sales ?? [];
   if (sales.length === 0) throw new Error('This snapshot has no sales — ingest the logistics report first.');
   if (filter?.client) sales = sales.filter((s) => (s.client ?? '').toUpperCase().includes(filter.client!.toUpperCase()));
   if (filter?.month) sales = sales.filter((s) => s.month === filter.month);
+  if (filter?.soldGrade) sales = sales.filter((s) => (s.sGrade ?? '').toUpperCase().includes(filter.soldGrade!.toUpperCase()));
   return { data: snap.data, sales };
 }
 
@@ -237,12 +314,22 @@ class ClientExposureTool implements LuaTool {
   inputSchema = z.object({
     positionDate: dateField,
     client: z.string().optional().describe('Filter to clients whose name contains this (case-insensitive)'),
+    month: z.string().regex(/^\d{4}\/\d{2}$/).optional().describe('Filter to one delivery month YYYY/MM before ranking'),
+    soldGrade: z.string().optional().describe('Filter to sales whose sold grade contains this (e.g. "GRINDER") — SOL sold grades, not POST grades'),
     top: z.number().int().positive().optional().describe('Return only the N largest counterparties'),
   });
 
-  async execute(input: { positionDate?: string; client?: string; top?: number }) {
-    const { data, sales } = await snapshotSales(input.positionDate, { client: input.client });
-    if (sales.length === 0) return { positionDate: data.positionDate, note: `No sales for a client matching "${input.client}".` };
+  async execute(input: { positionDate?: string; client?: string; month?: string; soldGrade?: string; top?: number }) {
+    const { data, sales } = await snapshotSales(input.positionDate, {
+      client: input.client,
+      month: input.month,
+      soldGrade: input.soldGrade,
+    });
+    if (sales.length === 0)
+      return {
+        positionDate: data.positionDate,
+        note: `No sales match that filter (client~"${input.client ?? ''}", month=${input.month ?? 'any'}, soldGrade~"${input.soldGrade ?? ''}").`,
+      };
     const exposure = computeClientExposure(sales);
     return {
       positionDate: data.positionDate,
@@ -253,6 +340,9 @@ class ClientExposureTool implements LuaTool {
       caveats: [
         'Share % is of the filtered set shown, by |SMT|.',
         'Volumes are contract commitments (negative = sold forward), not shipped quantities.',
+        ...(input.month || input.soldGrade
+          ? ['A month/soldGrade filter is active — totals and shares cover the filtered slice, not the whole book.']
+          : []),
       ],
     };
   }
@@ -266,19 +356,32 @@ class ShipmentStatusTool implements LuaTool {
     positionDate: dateField,
     month: z.string().regex(/^\d{4}\/\d{2}$/).optional().describe('Filter to one delivery month YYYY/MM'),
     client: z.string().optional().describe('Filter to clients whose name contains this (case-insensitive)'),
+    state: z
+      .enum(['unbooked', 'preshipment-only', 'vessel-assigned'])
+      .optional()
+      .describe('Filter the booked-shipment detail list to one booking state (counts always cover all three)'),
   });
 
-  async execute(input: { positionDate?: string; month?: string; client?: string }) {
+  async execute(input: { positionDate?: string; month?: string; client?: string; state?: string }) {
     const { data, sales } = await snapshotSales(input.positionDate, { client: input.client, month: input.month });
     if (sales.length === 0) return { positionDate: data.positionDate, note: 'No sales match that filter.' };
     const status = computeShipmentStatus(sales);
+    const shipments =
+      input.state === 'unbooked'
+        ? []
+        : input.state
+          ? status.shipments.filter((sh: any) => sh.stage === input.state)
+          : status.shipments;
     return {
       positionDate: data.positionDate,
       demo: data.demo === true || undefined,
       scope: 'unallocated shorts book — booking state of forward sales, not voyage tracking',
       overall: status.overall,
       byMonth: status.byMonth,
-      shipments: status.shipments,
+      shipments,
+      ...(input.state === 'unbooked'
+        ? { note: 'Unbooked contracts have no booking detail rows by definition — use overall/byMonth unbooked counts.' }
+        : {}),
       caveats: [
         'Three states — unbooked, preshipment-only (booked, no vessel yet: see stage), vessel-assigned. Never call a preshipment-only contract "unbooked".',
         'A split contract can carry several bookings on one sailing (IDs joined with " / ").',
@@ -296,10 +399,12 @@ class CertExposureTool implements LuaTool {
   inputSchema = z.object({
     positionDate: dateField,
     tag: z.string().optional().describe('Filter to cert tags containing this (case-insensitive), e.g. "EUDR", "RA"'),
+    client: z.string().optional().describe('Filter the SALES side to clients whose name contains this (stock side is not per-client)'),
+    month: z.string().regex(/^\d{4}\/\d{2}$/).optional().describe('Filter the SALES side to one delivery month YYYY/MM'),
   });
 
-  async execute(input: { positionDate?: string; tag?: string }) {
-    const { data, sales } = await snapshotSales(input.positionDate);
+  async execute(input: { positionDate?: string; tag?: string; client?: string; month?: string }) {
+    const { data, sales } = await snapshotSales(input.positionDate, { client: input.client, month: input.month });
     const result = computeCertExposure(sales, data.dnp ?? undefined);
     const filterTags = (byTag: Record<string, any>) =>
       input.tag ? Object.fromEntries(Object.entries(byTag).filter(([t]) => t.toUpperCase().includes(input.tag!.toUpperCase()))) : byTag;
@@ -317,6 +422,9 @@ class CertExposureTool implements LuaTool {
         'All sharePct figures are of the TOTAL volume (tagged + untagged), not of the tagged subset.',
         'Stock side = unsold purchase rows only (in-store origin / to-be-shipped), purchase MT.',
         'The full cert picture needs the 3 external cert workbooks (not yet provided); these are the tags SOL itself carries.',
+        ...(input.client || input.month
+          ? ['client/month filters apply to the SALES side only — the stock rollup is always the whole unsold inventory.']
+          : []),
       ],
     };
   }
@@ -409,12 +517,13 @@ export const querySkill = new LuaSkill({
   name: 'position-query',
   description: 'Answer position questions and what-ifs from the computed snapshots.',
   context: `Answering questions about the position.
-- query-position for "what's my net position", "how short am I on AB FAQ", "shorts by month for grinders". Always mention the position date and any pending blend confirmations.
+- query-position for "what's my net position", "how short am I on AB FAQ", "shorts by month for grinders". Always mention the position date and any pending blend confirmations. Filters: grade alone → that grade's block incl. its shorts-by-month row; month alone → shorts by grade for that delivery month; both → the single grade-month cell; neither → full position incl. a shortsByMonth total ladder. grade also accepts OFFER names (TOP, PLUS, AA FAQ, AB FAQ, ABC FAQ, GRINDER 14+, GRINDER 13-) and returns the weighted roll-up with its member grades — say it's a roll-up, not a single grade. Months outside the netting horizon (e.g. 2026/10+) show in shortsByMonth but are NOT in net figures — mention that when they carry volume.
 - what-if for "can I sell N bags of X for month M" — report netAfter and, if it goes short, the first month it happens. Never turn this into trade advice; state the numbers.
 - price-analytics for "at what price level am I short", "average differential on grinders", "how much is fixed vs to-be-fixed". "Price level" on this desk = differential vs the NY KC futures in USc/lb. ALWAYS present the contract differential and the FOB-equivalent side by side — neither is the headline. State the fixed vs price-to-be-fixed split and any excluded (unpriced) sales. Every bucket carries its own fixed/ptbf split — for "how much of my grinder book / August book re-rates if NY moves", quote that bucket's ptbf volume and share (price-to-be-fixed = futures leg open = re-rates with NY; fixed volume does not). It covers the unallocated shorts book only: no purchase cost basis, no P&L or mark-to-market (no market prices exist in the data), no price history — say so when asked.
-- client-exposure for "who am I most short to", "my exposure to Nestle", "what does client X buy". Volumes are forward commitments by counterparty; combine with price-analytics (dimension=client) when they also want the price level.
-- shipment-status for "what's booked/unbooked", "what's shipping this month", "when does X's coffee leave". Three states, keep them distinct: unbooked / preshipment-only (booked, no vessel yet) / vessel-assigned — a contract with a preshipment but no vessel is BOOKED. The export has no B/L, container, invoice, due-date, or warehouse data, so decline those plainly instead of approximating.
-- cert-exposure for "how much of my book is EUDR", "certified stock", "what's sold as Rainforest Alliance". ALWAYS lead with the coverage caveat: only a minority of contracts/lots carry a cert tag, so figures are floors ("at least X"), and UNTAGGED volume is UNKNOWN — never "not certified". EUDR-flagged = tag contains EUDR (RA.EUDR, CP.EUDR, AAA.EUDR…).
+- client-exposure for "who am I most short to", "my exposure to Nestle", "what does client X buy". Volumes are forward commitments by counterparty; combine with price-analytics (dimension=client) when they also want the price level. Filters: client, month (one delivery month), soldGrade ("who buys grinders") — when filtered, say the ranking covers that slice only.
+- shipment-status for "what's booked/unbooked", "what's shipping this month", "when does X's coffee leave". Three states, keep them distinct: unbooked / preshipment-only (booked, no vessel yet) / vessel-assigned — a contract with a preshipment but no vessel is BOOKED. Filters: month, client, state (narrows the shipment detail list to one booking state). The export has no B/L, container, invoice, due-date, or warehouse data, so decline those plainly instead of approximating.
+- cert-exposure for "how much of my book is EUDR", "certified stock", "what's sold as Rainforest Alliance". ALWAYS lead with the coverage caveat: only a minority of contracts/lots carry a cert tag, so figures are floors ("at least X"), and UNTAGGED volume is UNKNOWN — never "not certified". EUDR-flagged = tag contains EUDR (RA.EUDR, CP.EUDR, AAA.EUDR…). Filters: tag, client, month — client/month narrow the SALES side only; the stock rollup stays whole-inventory.
+- price-analytics postGrade answers: bucket contract counts overlap across grades (a contract counts in every grade its blend touches) — NEVER sum bucket counts; quote the result's distinctContracts for "how many contracts".
 - stock-analytics for "stock by warehouse", "how old is the stock", "how much is blocked", "old-crop stock", "certified physical stock" — one flat dimension per call (warehouse | cropYear | blocked | cert). Blocked, WIP (no warehouse) and old-crop stock all COUNT toward the total: quote the full total and the carve-out ("35,568 bags, of which 339 blocked"), NEVER a total net of them. Its cert tags are XBS vocabulary — a different tag set from cert-exposure's SOL tags; never merge the two. Cross-dimension splits (warehouse × crop year) are not available — say so.
 - Grades are matched fuzzily ("AB FAQ" → POST 16 FAQ); confirm the resolved grade in the answer.
 - Quote bags by default; add MT when the trader asks or the number is hedge-related.

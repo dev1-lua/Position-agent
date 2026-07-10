@@ -103,6 +103,31 @@ const bucketOf = (g: Group): PriceBucket => ({
   ptbf: { contracts: g.ptbf.contracts, smt: round(g.ptbf.smt, 4) },
 });
 
+/**
+ * Distinct sales contracts whose blend allocates into any of the given POST
+ * grades. postGrade buckets attribute one contract to EVERY grade its blend
+ * touches, so bucket contract counts overlap and must never be summed — this
+ * is the deduplicated rollup. fixed/ptbf follows computePricing's rule
+ * (sPrice set → fixed, else price-to-be-fixed).
+ */
+export function distinctContractsForGrades(
+  sales: Sale[],
+  blends: Blend[],
+  grades: string[]
+): { contracts: number; fixed: number; ptbf: number } {
+  const wanted = new Set(grades);
+  const out = { contracts: 0, fixed: 0, ptbf: 0 };
+  for (const s of sales) {
+    const blend = blends.find((b) => b.blendNo === s.blendNo);
+    if (!blend) continue;
+    if (!Object.entries(blend.recipe).some(([g, f]) => !!f && wanted.has(g))) continue;
+    out.contracts += 1;
+    if (s.sPrice) out.fixed += 1;
+    else out.ptbf += 1;
+  }
+  return out;
+}
+
 export function computePricing(
   sales: Sale[],
   opts: { dimension?: PriceDimension; blends?: Blend[] } = {}

@@ -50,6 +50,14 @@ export function computeForwardSales(
   };
 }
 
+/** Column-sum a forward-sales matrix → delivery month → total short bags (all grades). */
+export function monthTotals(matrix: Record<string, Record<string, number>>): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const byMonth of Object.values(matrix))
+    for (const [mo, v] of Object.entries(byMonth)) out[mo] = round((out[mo] || 0) + v, 4);
+  return Object.fromEntries(Object.entries(out).sort(([a], [b]) => a.localeCompare(b)));
+}
+
 /** Sum a forward-sales matrix over a specific set of delivery months → grade → bags. */
 export function sumOverMonths(
   matrix: Record<string, Record<string, number>>,

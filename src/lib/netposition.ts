@@ -44,6 +44,20 @@ const OFFER_SPEC: Record<string, Array<[string, number]>> = {
   'GRINDER 13-': [['POST GRINDER LIGHT', 1], ['POST MH', 1]],
 };
 
+/**
+ * Resolve a trader's offer-name query ("AB FAQ", "grinder 14+") to its offer
+ * group and weighted member grades. Returns null for anything that isn't an
+ * offer name — real POST grade names must keep resolving as grades.
+ */
+export function resolveOfferQuery(q: string): { offer: string; members: Array<[string, number]> } | null {
+  const norm = (s: string) => s.toUpperCase().replace(/\s+/g, ' ').trim();
+  const target = norm(q);
+  for (const [offer, members] of Object.entries(OFFER_SPEC)) {
+    if (norm(offer) === target) return { offer, members: members.map(([g, w]) => [g, w]) };
+  }
+  return null;
+}
+
 export function computeOffers(
   net: NetPositionResult
 ): Record<string, { bags: number; mt: number }> {

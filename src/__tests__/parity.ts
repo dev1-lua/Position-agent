@@ -16,8 +16,8 @@ import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { loadBlends, matchBlend, buildAssignmentMemory, globallyAmbiguousKeys } from '../lib/blends';
-import { computeForwardSales, sumOverMonths } from '../lib/shorts';
-import { computeNetPosition, computeOffers } from '../lib/netposition';
+import { computeForwardSales, sumOverMonths, monthTotals } from '../lib/shorts';
+import { computeNetPosition, computeOffers, resolveOfferQuery } from '../lib/netposition';
 import { normGrade } from '../lib/grades';
 import { Sale, StockRow } from '../lib/types';
 import {
@@ -27,6 +27,7 @@ import {
 } from '../lib/stockcounter';
 import { decodeExportText, parseDailyNetPosition, parseLogisticsReport, aggregateSales } from '../lib/parse';
 import { computeFutsSpread, futuresPotBySFixDte } from '../lib/futsspread';
+import { distinctContractsForGrades } from '../lib/pricing';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const blendsSeed = JSON.parse(readFileSync(join(here, '../seed/blends.json'), 'utf8'));
@@ -858,6 +859,60 @@ const demoCert = DEMO_STOCK
   : null;
 check('demo seed: cert tagged rows via stock-analytics', demoCert?.tagged?.rows ?? 0, 41);
 check('demo seed: cert tagged bags via stock-analytics', r2(demoCert?.tagged?.bags ?? 0), 1139.32);
+
+// ---------- 14. By-month shorts totals + offer-name query resolution ----------
+// Backs query-position's month filter and offer aliases ("AB FAQ").
+// Constants hand-computed in python by column-summing golden Forward Sales
+// (scratchpad; within-horizon sum cross-checks to the −40,418.5 shorts total).
+console.log('\n[14] Shorts by-month totals + offer-name resolution vs hand-computed golden sums');
+const mt14 = monthTotals(fs.matrix);
+const MT_EXPECT: Record<string, number> = {
+  // 2024/10: straggler SSWW-96188B (−1.2 SMT, blend 91 → POST NATURAL) — the
+  // golden Forward Sales sheet CLIPS it (columns start 2025/11); we keep it.
+  '2024/10': -20,
+  '2026/03': -4,
+  '2026/05': -2760,
+  '2026/06': -6319.5,
+  '2026/07': -8560,
+  '2026/08': -10360,
+  '2026/09': -12415,
+  '2026/10': -5760,
+  '2026/11': -1440,
+};
+check('monthTotals: month buckets', Object.keys(mt14).filter((m) => mt14[m] !== 0).length, Object.keys(MT_EXPECT).length);
+for (const [m, v] of Object.entries(MT_EXPECT)) check(`monthTotals ${m}`, r2(mt14[m] ?? 0), v);
+check(
+  'monthTotals horizon sum = shorts total',
+  r2(horizon.reduce((s, m) => s + (mt14[m] ?? 0), 0)),
+  -40418.5
+);
+
+const abFaq = resolveOfferQuery('ab faq');
+if (!abFaq) fail('resolveOfferQuery("ab faq") returned null');
+else {
+  if (abFaq.offer !== 'AB FAQ') fail(`resolveOfferQuery("ab faq") → ${abFaq.offer}`);
+  else ok('resolveOfferQuery("ab faq") → AB FAQ');
+  const expectMembers = JSON.stringify([['POST 16 FAQ', 1], ['POST 15 FAQ', 0.5]]);
+  if (JSON.stringify(abFaq.members) !== expectMembers) fail(`AB FAQ members: ${JSON.stringify(abFaq.members)}`);
+  else ok('AB FAQ members = 16 FAQ ×1 + 15 FAQ ×0.5 (workbook weights)');
+  // weighted shorts across ALL months, from the engine matrix
+  const weighted = abFaq.members.reduce((s, [g, w]) => s + (fs.byGrade[g] ?? 0) * w, 0);
+  check('AB FAQ weighted shorts (all months)', r2(weighted), -6564);
+}
+const g14 = resolveOfferQuery('GRINDER 14+');
+if (g14?.offer === 'GRINDER 14+' && g14.members.length === 1 && g14.members[0][0] === 'POST GRINDER BOLD')
+  ok('resolveOfferQuery("GRINDER 14+") → POST GRINDER BOLD ×1');
+else fail(`resolveOfferQuery("GRINDER 14+") → ${JSON.stringify(g14)}`);
+if (resolveOfferQuery('POST 16 FAQ') === null) ok('a real grade name does not resolve as an offer');
+else fail('resolveOfferQuery must not hijack real grade names');
+
+// distinct-contract rollup: postGrade price buckets attribute one contract to
+// every grade its blend touches, so bucket counts overlap (demo grinders: 13
+// bucket rows from 9 contracts — the agent summed them in prod QA 2026-07-10).
+// Hand-computed: 9 basefile sales carry a blend allocating >0 to a grinder grade.
+const dc = distinctContractsForGrades(sales, blends, ['POST GRINDER BOLD', 'POST GRINDER LIGHT']);
+check('distinctContracts: grinder-allocating basefile contracts', dc.contracts, 9);
+check('distinctContracts: fixed+ptbf = contracts identity', dc.fixed + dc.ptbf, dc.contracts);
 
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));
