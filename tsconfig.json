@@ -14,5 +14,5 @@
       "@/services/*": ["src/services/*"]
     }
   },
-  "exclude": ["dist", "dist-v2", "node_modules", "Sucafina", "sucafina"]
+  "exclude": ["dist", "dist-v2", "node_modules", "Sucafina", "sucafina", "dashboard", "file-types"]
 }
