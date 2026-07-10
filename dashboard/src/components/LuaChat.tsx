@@ -97,8 +97,49 @@ function buildSrcDoc(sessionId: string): string {
     try { window.LuaPop && window.LuaPop.init(${cfgJson}); }
     catch (e) { console.error('LuaPop init failed', e); }
   };
+  // Load the bundle via fetch so we can PATCH its attachment handling before
+  // it runs (verified against the UMD source, 2026-07-10):
+  //  1. The file input's accept list is hardcoded WITHOUT spreadsheet types,
+  //     so .csv/.xls/.xlsx are greyed out in the OS file picker — the desk's
+  //     XBS/SOL exports can't even be selected.
+  //  2. matchesAccept() then re-validates by comparing file.type (a MIME
+  //     type) against each accept pattern with ===, so extension patterns
+  //     like ".pdf" NEVER match — every non-media file is rejected with
+  //     "No files match the accepted types" even after passing the picker.
+  // Both patches are exact-string; if the bundle changes upstream they no-op
+  // harmlessly and we're back to stock behavior (warned in the console).
+  (function () {
+    var SRC = ${JSON.stringify(LUA_POP_SRC)};
+    function loadRaw() {
+      var s = document.createElement('script');
+      s.src = SRC;
+      s.onload = window.__LUA_BOOT;
+      document.body.appendChild(s);
+    }
+    fetch(SRC)
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(function (code) {
+        var ACCEPT = 'image/*,video/*,audio/*,.pdf,.doc,.docx,.txt';
+        var VALIDATE = 'return f2.type === pattern;';
+        if (code.indexOf(ACCEPT) === -1 || code.indexOf(VALIDATE) === -1) {
+          console.warn('LuaPop bundle changed upstream - attachment patches skipped');
+        }
+        var patched = code
+          .split(ACCEPT).join(ACCEPT + ',.csv,.xls,.xlsx')
+          .split(VALIDATE).join(
+            'return f2.type === pattern || (pattern.charAt(0) === "." && f2.name.toLowerCase().endsWith(pattern.toLowerCase()));'
+          );
+        var s = document.createElement('script');
+        s.src = URL.createObjectURL(new Blob([patched], { type: 'text/javascript' }));
+        s.onload = window.__LUA_BOOT;
+        document.body.appendChild(s);
+      })
+      .catch(function (e) {
+        console.warn('LuaPop fetch-patch failed, loading stock bundle', e);
+        loadRaw();
+      });
+  })();
 </script>
-<script src="${LUA_POP_SRC}" onload="window.__LUA_BOOT()"></script>
 </body>
 </html>`;
 }
