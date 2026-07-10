@@ -66,6 +66,49 @@ function buildSrcDoc(sessionId: string): string {
   body { background: transparent; }
   #lua-chat-embedded-root { height: 100%; width: 100%; }
 </style>
+<style id="lua-cite-css">
+  /* Citation footer — decorates the agent's machine-built "— source: …" line
+     (Twenty language: hairline top border, 11px muted text, chip + badge).
+     Kept in its own tag: the decorator clones it into the widget's shadow
+     root, where page-level CSS cannot reach. */
+  p.lua-cite {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 7px;
+    margin-top: 10px !important;
+    padding-top: 8px !important;
+    border-top: 1px solid #EBEBEB;
+    font-size: 11px !important;
+    line-height: 16px !important;
+    color: #999 !important;
+  }
+  p.lua-cite .cite-ic { flex: none; width: 12px; height: 12px; stroke: #999; }
+  p.lua-cite .cite-tool {
+    padding: 0 6px;
+    border: 1px solid #EBEBEB;
+    border-radius: 4px;
+    background: #F4F4F4;
+    color: #666;
+    font-weight: 500;
+  }
+  p.lua-cite .cite-badge {
+    padding: 0 6px;
+    border: 1px solid #FDE68A;
+    border-radius: 4px;
+    background: #FEF3C7;
+    color: #92400E;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  p.lua-cite .cite-dot { color: #D6D6D6; }
+  p.lua-cite .cite-deriv {
+    flex-basis: 100%;
+    margin-top: 2px;
+    color: #999;
+    font-style: italic;
+  }
+</style>
 </head>
 <body>
 <div id="lua-chat-embedded-root"></div>
@@ -92,6 +135,79 @@ function buildSrcDoc(sessionId: string): string {
         );
       } catch (_) {}
     });
+  })();
+  // Citation decorator: the agent ends numeric answers with a machine-built
+  // provenance line ("— source: <tool> · snapshot <date> [(DEMO …)] ·
+  // <exports> · ingested <ts>"). Restyle that paragraph into a citation
+  // footer. The widget renders inside an OPEN SHADOW ROOT, so the decorator
+  // walks shadow roots, injects its CSS into each, and observes each for
+  // changes. Streaming-safe: re-runs debounced on every render pass; a
+  // reverted node simply matches again and is re-decorated (idempotent).
+  (function () {
+    var RE = /^[\\u2014\\u2013-]\\s*source:\\s*(.+)$/;
+    var CITE_CSS = document.getElementById('lua-cite-css').textContent;
+    var ICON =
+      '<svg class="cite-ic" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+      '<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>' +
+      '<path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>' +
+      '<path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>';
+    function esc(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function decorateIn(root) {
+      var ps = root.querySelectorAll('p');
+      for (var i = 0; i < ps.length; i++) {
+        var p = ps[i];
+        var m = RE.exec((p.textContent || '').trim());
+        if (!m) continue;
+        var segs = m[1].split('\\u00b7');
+        if (segs.length < 3) continue; // cite still streaming — wait for more
+        var parts = [ICON];
+        for (var j = 0; j < segs.length; j++) {
+          var seg = segs[j].trim();
+          if (!seg) continue;
+          if (j === 0) {
+            parts.push('<span class="cite-tool">' + esc(seg) + '</span>');
+          } else if (seg.indexOf('snapshot ') === 0) {
+            var demo = /DEMO/i.test(seg);
+            var date = seg.replace('snapshot ', '').split('(')[0].trim();
+            parts.push('<span>snapshot ' + esc(date) + '</span>');
+            if (demo) parts.push('<span class="cite-badge">DEMO DATA</span>');
+          } else if (seg.indexOf('ingested ') === 0) {
+            parts.push('<span class="cite-dot">&middot;</span><span>' + esc(seg.replace('T', ' ')) + '</span>');
+          } else if (seg.indexOf('derivation: ') === 0) {
+            parts.push('<span class="cite-deriv">' + esc(seg.slice(12)) + '</span>');
+          } else {
+            parts.push('<span class="cite-dot">&middot;</span><span>' + esc(seg) + '</span>');
+          }
+        }
+        p.className = 'lua-cite';
+        p.innerHTML = parts.join('');
+      }
+    }
+    var observed = []; // roots we already style + observe (can't tag ShadowRoot with attrs)
+    function attach(root) {
+      if (observed.indexOf(root) !== -1) return;
+      observed.push(root);
+      if (root !== document) {
+        var st = document.createElement('style');
+        st.textContent = CITE_CSS;
+        root.appendChild(st);
+      }
+      new MutationObserver(schedule).observe(root, { childList: true, subtree: true, characterData: true });
+    }
+    function sweep(root) {
+      attach(root);
+      decorateIn(root);
+      var els = root.querySelectorAll('*');
+      for (var i = 0; i < els.length; i++) if (els[i].shadowRoot) sweep(els[i].shadowRoot);
+    }
+    var pending;
+    function schedule() {
+      clearTimeout(pending);
+      pending = setTimeout(function () { sweep(document); }, 250);
+    }
+    schedule();
   })();
   window.__LUA_BOOT = function () {
     try { window.LuaPop && window.LuaPop.init(${cfgJson}); }
