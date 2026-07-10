@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Position Assistant — Sucafina Kenya Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --espresso: #201713;
+    --espresso-2: #2b201a;
+    --crema: #f6f1e7;
+    --crema-2: #efe7d8;
+    --leaf: #1f8a4c;
+    --leaf-dim: #17693a;
+    --ink: #241c16;
+    --ink-soft: #7a6f63;
+    --line: #e2d8c6;
+    --sidebar-w: 248px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Archivo", sans-serif;
+    background: var(--crema);
+    color: var(--ink);
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ---------- sidebar ---------- */
+  aside {
+    width: var(--sidebar-w);
+    flex: none;
+    background:
+      radial-gradient(120% 60% at 0% 0%, #33261d 0%, transparent 60%),
+      var(--espresso);
+    color: #d9cfc0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #120d0a;
+  }
+  .brand {
+    padding: 22px 20px 18px;
+    border-bottom: 1px solid #3a2d23;
+  }
+  .brand .mark {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .brand .mark b {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 0.01em;
+    color: var(--crema);
+  }
+  .brand .mark span {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    color: var(--leaf);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .brand .desk {
+    margin-top: 4px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8d7f6e;
+  }
+  nav { padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; }
+  nav .nav-label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6f6153;
+    padding: 8px 10px 6px;
+  }
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: #b7aa97;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+  nav a .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #55483b; flex: none;
+  }
+  nav a.active {
+    background: #362a20;
+    color: var(--crema);
+  }
+  nav a.active .dot { background: var(--leaf); box-shadow: 0 0 0 3px rgba(31,138,76,.18); }
+  nav a.disabled { opacity: .45; cursor: default; }
+  .sidebar-foot {
+    margin-top: auto;
+    padding: 16px 20px 18px;
+    border-top: 1px solid #3a2d23;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    line-height: 1.7;
+    color: #8d7f6e;
+  }
+  .sidebar-foot .ok { color: var(--leaf); }
+
+  /* ---------- main ---------- */
+  main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  header {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 24px;
+    background: var(--crema);
+    border-bottom: 1px solid var(--line);
+  }
+  header h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.005em;
+  }
+  header .tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--leaf-dim);
+    background: rgba(31, 138, 76, 0.1);
+    border: 1px solid rgba(31, 138, 76, 0.25);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  header .hint {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .chat-wrap {
+    flex: 1;
+    min-height: 0;
+    padding: 18px 24px 22px;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 31px, rgba(36, 28, 22, 0.035) 31px 32px),
+      var(--crema-2);
+  }
+  #chat-container {
+    height: 100%;
+    background: #fffdf8;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 18px 40px -24px rgba(32, 23, 19, 0.45);
+    overflow: hidden;
+  }
+  .fallback {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    text-align: center;
+    padding: 24px;
+  }
+  .fallback b { font-family: "Fraunces", serif; font-size: 16px; color: var(--ink); }
+  .fallback code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    background: var(--crema-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 2px 7px;
+  }
+  @media (max-width: 760px) {
+    aside { display: none; }
+    .chat-wrap { padding: 10px; }
+  }
+</style>
+</head>
+<body>
+  <aside>
+    <div class="brand">
+      <div class="mark"><b>Sucafina</b><span>Lua</span></div>
+      <div class="desk">Kenya Trading Desk</div>
+    </div>
+    <nav>
+      <div class="nav-label">Workspace</div>
+      <a class="active" href="#"><span class="dot"></span>Position Assistant</a>
+      <a class="disabled" href="#" onclick="return false"><span class="dot"></span>Morning Report</a>
+      <a class="disabled" href="#" onclick="return false"><span class="dot"></span>Uploads (XBS · SOL)</a>
+    </nav>
+    <div class="sidebar-foot">
+      agent <span class="ok">v5</span> · production<br />
+      longs − shorts = net<br />
+      numbers, never trade advice
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <h1>Position Assistant</h1>
+      <span class="tag">LuaPop · embedded</span>
+      <span class="hint">Upload the day's XBS / SOL exports here, or ask against the last snapshot.</span>
+    </header>
+    <div class="chat-wrap">
+      <div id="chat-container">
+        <div class="fallback" id="widget-fallback">
+          <b>Chat widget not loaded</b>
+          <span>Serve this page over http (e.g. <code>python3 -m http.server</code> in <code>widget/</code>)<br />
+          and check the browser console. The embed script comes from the LuaPop CDN.</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://lua-ai-global.github.io/lua-pop/lua-pop.umd.js"></script>
+  <script>
+    if (window.LuaPop) {
+      document.getElementById("widget-fallback").remove();
+      window.LuaPop.init({
+        agentId: "baseAgent_agent_1783605834540_m15tfg10k",
+        // inline config + explicit production env = works on localhost
+        // (localhost can't be domain-whitelisted; see docs/chat-widget/installation)
+        environment: "production",
+        displayMode: "embedded",
+        embeddedDisplayConfig: {
+          targetContainerId: "chat-container",
+          useContainerHeight: true,
+          conversationStarters: [
+            "Load the demo day (2026-06-18)",
+            "What's my net position?",
+            "How much of my stock is blocked?",
+            "Stock by warehouse — and how old is it?",
+          ],
+        },
+        chatTitle: "Position Assistant",
+        chatInputPlaceholder: "Ask about longs, shorts, net, prices, stock…",
+        welcomeMessage:
+          "Morning. I can compute the desk position from the XBS/SOL exports, or answer against the last snapshot — which day are we looking at?",
+        attachmentsEnabled: true,
+        microphoneEnabled: false,
+        voiceModeEnabled: false,
+      });
+    }
+  </script>
+</body>
+</html>
