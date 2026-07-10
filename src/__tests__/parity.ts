@@ -28,6 +28,7 @@ import {
 import { decodeExportText, parseDailyNetPosition, parseLogisticsReport, aggregateSales } from '../lib/parse';
 import { computeFutsSpread, futuresPotBySFixDte } from '../lib/futsspread';
 import { distinctContractsForGrades } from '../lib/pricing';
+import { citeLine } from '../lib/cite';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const blendsSeed = JSON.parse(readFileSync(join(here, '../seed/blends.json'), 'utf8'));
@@ -913,6 +914,27 @@ else fail('resolveOfferQuery must not hijack real grade names');
 const dc = distinctContractsForGrades(sales, blends, ['POST GRINDER BOLD', 'POST GRINDER LIGHT']);
 check('distinctContracts: grinder-allocating basefile contracts', dc.contracts, 9);
 check('distinctContracts: fixed+ptbf = contracts identity', dc.fixed + dc.ptbf, dc.contracts);
+
+// ---------- 15. Citation line ----------
+// Every query tool attaches a machine-built `cite` so the agent never has to
+// compose provenance by hand (user mandate 2026-07-10: proper citation, always).
+console.log('\n[15] Citation line formatting');
+const citeDemo = citeLine({
+  tool: 'price-analytics',
+  positionDate: '2026-06-18',
+  demo: true,
+  updatedAt: '2026-07-10T01:48:43.154Z',
+  sources: ['SOL ReportLogistic'],
+});
+const CITE_EXPECT =
+  'source: price-analytics · snapshot 2026-06-18 (DEMO seed, not live data) · SOL ReportLogistic · ingested 2026-07-10T01:48Z';
+if (citeDemo === CITE_EXPECT) ok('demo cite exact');
+else fail(`demo cite: got "${citeDemo}"`);
+const citeLive = citeLine({ tool: 'stock-analytics', positionDate: '2026-07-11', sources: ['XBS Current Stock'] });
+if (citeLive === 'source: stock-analytics · snapshot 2026-07-11 · XBS Current Stock') ok('live cite exact (no demo tag, no timestamp)');
+else fail(`live cite: got "${citeLive}"`);
+if (citeLine({ tool: 't', positionDate: '2026-01-01', sources: ['A', 'B'] }).includes('A + B')) ok('multi-source joined with " + "');
+else fail('multi-source join');
 
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));

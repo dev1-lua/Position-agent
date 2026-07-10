@@ -1,5 +1,6 @@
 import { LuaSkill, LuaTool } from 'lua-cli';
 import { z } from 'zod';
+import { citeLine } from '../lib/cite';
 import { computeNetPosition, computeOffers } from '../lib/netposition';
 import { sumOverMonths } from '../lib/shorts';
 import { computeFutsSpread, futuresPotBySFixDte, FutsManualInputs } from '../lib/futsspread';
@@ -68,6 +69,13 @@ class ComputeNetPosition implements LuaTool {
       ),
       offers,
       pendingBlendCount: snap.data.forwardSales.pendingCount ?? 0,
+      cite: citeLine({
+        tool: this.name,
+        positionDate: snap.data.positionDate,
+        demo: snap.data.demo === true,
+        updatedAt: snap.data.updatedAt,
+        sources: ['XBS Current Stock (longs)', 'SOL ReportLogistic (shorts)'],
+      }),
     };
   }
 }
@@ -144,6 +152,13 @@ class ComputeFutsSpread implements LuaTool {
       caveat: missingManual.length
         ? `Manual inputs not set for this date (${missingManual.join(', ')}) — those lines assume 0. Use set-manual-inputs.`
         : 'Includes trader-provided manual pot figures.',
+      cite: citeLine({
+        tool: this.name,
+        positionDate: d.positionDate,
+        demo: d.demo === true,
+        updatedAt: d.updatedAt,
+        sources: ['SOL DailyNetPosition (hedge rows)', 'SOL ReportLogistic (pots)', 'trader manual inputs'],
+      }),
     };
   }
 }

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { UploadedFileSource } from '../sources/UploadedFileSource';
 import { processInventoryLocation, processWarehouseStatus, processMatrixData, groupForecastRows } from '../lib/stockcounter';
 import { computeStockCoverage } from '../lib/stockcoverage';
+import { citeLine } from '../lib/cite';
 import { COLLECTIONS, saveSnapshot, resolveFileId, defaultPositionDate, upsert, loadBatchMappings } from './store';
 import {
   BLENDS_SEED,
@@ -81,6 +82,7 @@ class IngestStockReport implements LuaTool {
       },
       warnings: coverage.warnings,
       nextStep: 'Run compute-theoretical-stock to get theoretical stock by POST grade.',
+      cite: citeLine({ tool: this.name, positionDate, sources: ['uploaded XBS Current Stock export'] }),
     };
   }
 }
@@ -99,6 +101,7 @@ class IngestDailyNetPosition implements LuaTool {
       rowCount: dnp.length,
       hedgeableRows: dnp.filter((r) => r.quality.toUpperCase() === 'HEDGEABLE').length,
       nextStep: 'Run compute-futs-spread once theoretical stock and forward sales are computed.',
+      cite: citeLine({ tool: this.name, positionDate, sources: ['uploaded SOL DailyNetPosition export'] }),
     };
   }
 }
@@ -135,6 +138,7 @@ class IngestLogisticsReport implements LuaTool {
         ...(oddUnits.length ? [`Unknown price unit(s) ${oddUnits.join(', ')} — flat-price averages will skip those sales.`] : []),
       ],
       nextStep: 'Run assign-blends to allocate each sale to a blend recipe.',
+      cite: citeLine({ tool: this.name, positionDate, sources: ['uploaded SOL ReportLogistic export'] }),
     };
   }
 }
@@ -213,6 +217,7 @@ class LoadDemoSnapshot implements LuaTool {
       },
       manualInputs: DEMO_MANUAL_INPUTS,
       note: 'Demo day loaded (theoretical stock is pre-computed; the stock summaries come from the real 2026-06-18 XBS export, so stock-analytics works). Next: assign-blends → compute-forward-sales → compute-net-position → compute-futs-spread. Expected net ≈ −4,850 bags.',
+      cite: citeLine({ tool: this.name, positionDate: DEMO_POSITION_DATE, demo: true, sources: ['bundled demo seed (real 2026-06-18 desk exports)'] }),
     };
   }
 }

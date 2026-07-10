@@ -1,5 +1,6 @@
 import { LuaSkill, LuaTool, Data } from 'lua-cli';
 import { z } from 'zod';
+import { citeLine } from '../lib/cite';
 import { matchBlend, globallyAmbiguousKeys, assignmentKey } from '../lib/blends';
 import { computeForwardSales } from '../lib/shorts';
 import { Sale } from '../lib/types';
@@ -150,6 +151,13 @@ class ComputeForwardSales implements LuaTool {
       note: result.pending.length
         ? `${result.pending.length} sale(s) without a confirmed blend are EXCLUDED from the matrix — confirm them for full parity.`
         : undefined,
+      cite: citeLine({
+        tool: this.name,
+        positionDate: snap.data.positionDate,
+        demo: snap.data.demo === true,
+        updatedAt: snap.data.updatedAt,
+        sources: ['SOL ReportLogistic + blend recipes'],
+      }),
     };
   }
 }

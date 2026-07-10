@@ -1,5 +1,6 @@
 import { LuaSkill, LuaTool } from 'lua-cli';
 import { z } from 'zod';
+import { citeLine } from '../lib/cite';
 import {
   calculateTheoreticalStock,
   derivePercentagesFromGroups,
@@ -85,6 +86,13 @@ class ComputeTheoreticalStock implements LuaTool {
       note: unresolved.length
         ? 'Some PRE/IN rows lack yield percentages — totals exclude their expected output until the trader sets them via set-forecast-percentages.'
         : undefined,
+      cite: citeLine({
+        tool: this.name,
+        positionDate: snap.data.positionDate,
+        demo: snap.data.demo === true,
+        updatedAt: snap.data.updatedAt,
+        sources: ['XBS Current Stock + yield percentages'],
+      }),
     };
   }
 }
