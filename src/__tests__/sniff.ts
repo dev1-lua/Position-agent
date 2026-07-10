@@ -32,6 +32,23 @@ for (const [file, expected] of cases) {
   console.log(`  manifest: ${manifestText('demo-file-id', r)}`);
 }
 
+// The REAL raw XBS export: comma-separated, but its header row embeds a
+// literal tab ("Outturn / Factor\t,Warrant No") — this must NOT flip the
+// delimiter detection to TSV (it did, in production, on 2026-07-10).
+const realCsv = sniffExport(
+  new Uint8Array(
+    readFileSync(
+      join(DEMO_DIR, '../forecast-context/XBS - Current Stock -ivo-2026-06-18 (2).csv')
+    )
+  )
+);
+check('real XBS CSV (tab embedded in header)', realCsv.kind, 'xbs-stock', `, rows=${realCsv.dataRows}`);
+// 808 = python csv.reader census (§11); 8 raw lines are quoted-cell continuations.
+if (realCsv.dataRows !== 808) {
+  failed++;
+  console.log(`FAIL real XBS CSV dataRows: ${realCsv.dataRows} (expected 808)`);
+}
+
 // The raw XBS export is a CSV (quoted cells) rather than an xlsx — synthesize
 // one from the demo workbook to cover the text/csv path.
 const wb = XLSX.read(new Uint8Array(readFileSync(join(DEMO_DIR, 'XBS_Stock_2026-06-18.xlsx'))), { type: 'array' });

@@ -43,10 +43,15 @@ export function sniffExport(data: ArrayBuffer | Uint8Array): SniffResult {
     // real workbook container (.xlsx / legacy binary .xls)
     meta = fromWorkbook(XLSX.read(bytes, { type: 'array' }));
   } else {
-    // text export: SOL TSVs (possibly UTF-16LE) or the raw XBS CSV
+    // text export: SOL TSVs (possibly UTF-16LE) or the raw XBS CSV.
+    // Pick the delimiter by COUNT, not presence: the real XBS CSV embeds a
+    // stray tab inside one header cell ("Outturn / Factor\t,Warrant No"),
+    // so "contains a tab" would misroute a 33-column CSV to the TSV parser.
     const text = decodeExportText(bytes);
     const firstLine = text.slice(0, (text + '\n').indexOf('\n'));
-    if (firstLine.includes('\t')) {
+    const tabs = (firstLine.match(/\t/g) ?? []).length;
+    const commas = (firstLine.match(/,/g) ?? []).length;
+    if (tabs > commas) {
       const { header, rows } = parseTsv(text);
       meta = { headers: header, dataRows: rows.length };
     } else {
