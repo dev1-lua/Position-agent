@@ -11,7 +11,7 @@ import {
   BATCH_MAPPINGS_SEED,
   ASSIGNMENT_HISTORY_SEED,
 } from '../seed';
-import { DEMO_POSITION_DATE, DEMO_SALES, DEMO_DNP, DEMO_THEORETICAL, DEMO_MANUAL_INPUTS } from '../seed/demo';
+import { DEMO_POSITION_DATE, DEMO_SALES, DEMO_DNP, DEMO_THEORETICAL, DEMO_STOCK, DEMO_MANUAL_INPUTS } from '../seed/demo';
 
 /**
  * Ingestion: turn the three uploaded exports into a compact snapshot for a
@@ -197,6 +197,7 @@ class LoadDemoSnapshot implements LuaTool {
       sales: DEMO_SALES,
       dnp: DEMO_DNP,
       theoretical: DEMO_THEORETICAL,
+      stock: DEMO_STOCK,
     });
     await upsert(COLLECTIONS.manualInputs, { positionDate: DEMO_POSITION_DATE }, {
       positionDate: DEMO_POSITION_DATE,
@@ -204,9 +205,14 @@ class LoadDemoSnapshot implements LuaTool {
     });
     return {
       positionDate: DEMO_POSITION_DATE,
-      loaded: { sales: DEMO_SALES.length, dnpRows: DEMO_DNP.length, theoreticalTotalBags: DEMO_THEORETICAL.totals.total },
+      loaded: {
+        sales: DEMO_SALES.length,
+        dnpRows: DEMO_DNP.length,
+        theoreticalTotalBags: DEMO_THEORETICAL.totals.total,
+        stockRows: DEMO_STOCK.rowCount,
+      },
       manualInputs: DEMO_MANUAL_INPUTS,
-      note: 'Demo day loaded (theoretical stock is pre-computed — no raw XBS export exists for this day). Next: assign-blends → compute-forward-sales → compute-net-position → compute-futs-spread. Expected net ≈ −4,850 bags.',
+      note: 'Demo day loaded (theoretical stock is pre-computed; the stock summaries come from the real 2026-06-18 XBS export, so stock-analytics works). Next: assign-blends → compute-forward-sales → compute-net-position → compute-futs-spread. Expected net ≈ −4,850 bags.',
     };
   }
 }

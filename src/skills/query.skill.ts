@@ -5,6 +5,7 @@ import { bagsToMt, round } from '../lib/units';
 import { computePricing, PriceDimension } from '../lib/pricing';
 import { computeClientExposure, computeShipmentStatus } from '../lib/book';
 import { computeCertExposure } from '../lib/cert';
+import { computeStockAnalytics, StockDimension } from '../lib/stockanalytics';
 import { getSnapshot, loadBlendRecipes } from './store';
 
 /**
@@ -321,6 +322,89 @@ class CertExposureTool implements LuaTool {
   }
 }
 
+class StockAnalyticsTool implements LuaTool {
+  name = 'stock-analytics';
+  description =
+    'Physical stock (XBS) by one flat dimension: warehouse (bags + avg intake-age), cropYear, blocked, or cert (XBS tag vocabulary). Blocked / WIP / old-crop stock COUNTS toward the total — these are carve-outs, never exclusions. Cross-dimension splits (e.g. warehouse × crop year) are not available.';
+  inputSchema = z.object({
+    positionDate: dateField,
+    dimension: z.enum(['warehouse', 'cropYear', 'blocked', 'cert']).describe('The one dimension to roll up by'),
+  });
+
+  async execute(input: { positionDate?: string; dimension: StockDimension }) {
+    const snap = await getSnapshot(input.positionDate);
+    if (!snap?.data?.stock) throw new Error('No ingested stock report found — run ingest-stock-report first.');
+    const stock = snap.data.stock;
+    const result = computeStockAnalytics(input.dimension, { location: stock.location, coverage: stock.coverage });
+    const base = { positionDate: snap.data.positionDate, demo: snap.data.demo === true || undefined, dimension: input.dimension };
+    if (!result)
+      return {
+        ...base,
+        note: `This snapshot's stock report predates ${input.dimension} capture — re-ingest the XBS export (ingest-stock-report) to enable it. Do not estimate.`,
+      };
+
+    const rDim = (b: { rows: number; bags: number; sharePct: number }) => ({ rows: b.rows, bags: round(b.bags), sharePct: round(b.sharePct) });
+    const commonCaveat = 'Physical XBS stock only (bag-equivalents = kg/60) — not the net position, not sold/unsold state.';
+    const totals = { rows: result.totals.rows, bags: round(result.totals.bags) };
+
+    switch (input.dimension) {
+      case 'warehouse':
+        return {
+          ...base,
+          totals,
+          warehouses: result.warehouses!.map((w) => ({
+            location: w.location,
+            originalName: w.originalName,
+            bags: round(w.bags),
+            avgIntakeAgeDays: round(w.avgDays),
+            sharePct: round(w.sharePct),
+          })),
+          caveats: [
+            commonCaveat,
+            '"No Warehouse Assigned" = work-in-progress lots — they COUNT toward the total; never subtract them.',
+            'avgIntakeAgeDays is intake-age weighted by kg; lots without a parseable intake date dilute the average.',
+          ],
+        };
+      case 'cropYear':
+        return {
+          ...base,
+          totals,
+          byCropYear: Object.fromEntries(Object.entries(result.byCropYear!).map(([y, b]) => [y, rDim(b)])),
+          caveats: [
+            commonCaveat,
+            'Old-crop stock COUNTS toward the total — report it as a carve-out, never subtract it silently.',
+          ],
+        };
+      case 'blocked':
+        return {
+          ...base,
+          totals,
+          blocked: rDim(result.blocked!),
+          notBlocked: { rows: result.notBlocked!.rows, bags: round(result.notBlocked!.bags) },
+          caveats: [
+            commonCaveat,
+            'Blocked stock COUNTS toward the total position — it is a carve-out ("of which blocked"), NOT an exclusion. Never report the total net of blocked.',
+            'sharePct is of the TOTAL stock.',
+          ],
+        };
+      case 'cert':
+        return {
+          ...base,
+          totals,
+          tagged: rDim(result.tagged!),
+          untagged: { rows: result.untagged!.rows, bags: round(result.untagged!.bags) },
+          byTag: Object.fromEntries(Object.entries(result.byTag!).map(([t, b]) => [t, rDim(b)])),
+          caveats: [
+            commonCaveat,
+            'UNTAGGED = certification UNKNOWN, never "not certified" — tagged figures are floors ("at least X").',
+            'These are XBS certification tags ("RAINFOREST ALLIANCE", "FAIRTRADE"…) — a DIFFERENT vocabulary from the SOL tags in cert-exposure ("RA", "RFA", "4C.RFA"). Do NOT merge or reconcile the two cert sources; the mapping is unconfirmed.',
+            'All sharePct figures are of the TOTAL stock (tagged + untagged), not of the tagged subset.',
+          ],
+        };
+    }
+  }
+}
+
 export const querySkill = new LuaSkill({
   name: 'position-query',
   description: 'Answer position questions and what-ifs from the computed snapshots.',
@@ -331,8 +415,9 @@ export const querySkill = new LuaSkill({
 - client-exposure for "who am I most short to", "my exposure to Nestle", "what does client X buy". Volumes are forward commitments by counterparty; combine with price-analytics (dimension=client) when they also want the price level.
 - shipment-status for "what's booked/unbooked", "what's shipping this month", "when does X's coffee leave". Three states, keep them distinct: unbooked / preshipment-only (booked, no vessel yet) / vessel-assigned — a contract with a preshipment but no vessel is BOOKED. The export has no B/L, container, invoice, due-date, or warehouse data, so decline those plainly instead of approximating.
 - cert-exposure for "how much of my book is EUDR", "certified stock", "what's sold as Rainforest Alliance". ALWAYS lead with the coverage caveat: only a minority of contracts/lots carry a cert tag, so figures are floors ("at least X"), and UNTAGGED volume is UNKNOWN — never "not certified". EUDR-flagged = tag contains EUDR (RA.EUDR, CP.EUDR, AAA.EUDR…).
+- stock-analytics for "stock by warehouse", "how old is the stock", "how much is blocked", "old-crop stock", "certified physical stock" — one flat dimension per call (warehouse | cropYear | blocked | cert). Blocked, WIP (no warehouse) and old-crop stock all COUNT toward the total: quote the full total and the carve-out ("35,568 bags, of which 339 blocked"), NEVER a total net of them. Its cert tags are XBS vocabulary — a different tag set from cert-exposure's SOL tags; never merge the two. Cross-dimension splits (warehouse × crop year) are not available — say so.
 - Grades are matched fuzzily ("AB FAQ" → POST 16 FAQ); confirm the resolved grade in the answer.
 - Quote bags by default; add MT when the trader asks or the number is hedge-related.
 - Never label net values as "longs": longs = theoretical stock, net = longs + shorts. Say which one you're quoting.`,
-  tools: [new QueryPosition(), new WhatIf(), new PriceAnalytics(), new ClientExposureTool(), new ShipmentStatusTool(), new CertExposureTool()],
+  tools: [new QueryPosition(), new WhatIf(), new PriceAnalytics(), new ClientExposureTool(), new ShipmentStatusTool(), new CertExposureTool(), new StockAnalyticsTool()],
 });

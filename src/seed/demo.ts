@@ -5763,4 +5763,881 @@ export const DEMO_THEORETICAL: any = {
 };
 
 /** Manual pot figures Ivo entered in the workbook that day. */
+export const DEMO_STOCK: any = {
+ "location": {
+  "results": [
+   {
+    "location": "In Our Warehouse",
+    "originalName": "KAHAWA BORA WAREHOUSE",
+    "kgs": 1539675.8800000113,
+    "bags": 25661.264666666855,
+    "avgDays": 48.04715633396782,
+    "percentOfTotal": 72.14647122365496
+   },
+   {
+    "location": "No Warehouse Assigned",
+    "originalName": "NO WAREHOUSE",
+    "kgs": 569746.4000000003,
+    "bags": 9495.773333333338,
+    "avgDays": 0,
+    "percentOfTotal": 26.69730219608345
+   },
+   {
+    "location": "Pending Arrival (BOLLORE WAREHOUSE)",
+    "originalName": "BOLLORE WAREHOUSE",
+    "kgs": 15113,
+    "bags": 251.88333333333333,
+    "avgDays": 411.7235492622246,
+    "percentOfTotal": 0.70816827993895
+   },
+   {
+    "location": "Pending Arrival (MITCHELL COTTS FREIGHT KENYA LIMITED)",
+    "originalName": "MITCHELL COTTS FREIGHT KENYA LIMITED",
+    "kgs": 5483,
+    "bags": 91.38333333333334,
+    "avgDays": 59.254969906985224,
+    "percentOfTotal": 0.25692362065144336
+   },
+   {
+    "location": "Pending Arrival (KPCU DANDORA)",
+    "originalName": "KPCU DANDORA",
+    "kgs": 2600,
+    "bags": 43.333333333333336,
+    "avgDays": 320.6307692307692,
+    "percentOfTotal": 0.12183137218561968
+   },
+   {
+    "location": "Pending Arrival (TATU CITY (COFFEE MANAGEMENT SERVICES LTD))",
+    "originalName": "TATU CITY (COFFEE MANAGEMENT SERVICES LTD)",
+    "kgs": 1330,
+    "bags": 22.166666666666668,
+    "avgDays": 557.1533834586467,
+    "percentOfTotal": 0.062321432694951606
+   },
+   {
+    "location": "Pending Arrival (KENBELT)",
+    "originalName": "KENBELT",
+    "kgs": 149,
+    "bags": 2.4833333333333334,
+    "avgDays": 223.68456375838926,
+    "percentOfTotal": 0.006981874790637436
+   }
+  ],
+  "totals": {
+   "bags": 35568.28800000019,
+   "avgDays": 38.48573562213602
+  }
+ },
+ "status": [
+  {
+   "stage": "Pre Processing",
+   "key": "PRE",
+   "bags": 10341.791666666664,
+   "percentOfTotal": 29.07587699094938
+  },
+  {
+   "stage": "In Processing",
+   "key": "IN",
+   "bags": 6803.930000000011,
+   "percentOfTotal": 19.129202957420876
+  },
+  {
+   "stage": "Post-Processing",
+   "key": "POST",
+   "bags": 11687.75516666667,
+   "percentOfTotal": 32.86004422441307
+  },
+  {
+   "stage": "FINISHED",
+   "key": "FINISHED",
+   "bags": 5783.007833333334,
+   "percentOfTotal": 16.258887223735094
+  },
+  {
+   "stage": "Pending Inbound processing alignment",
+   "key": "PENDING",
+   "bags": 178.1350000000001,
+   "percentOfTotal": 0.500825341945047
+  },
+  {
+   "stage": "Unclassified",
+   "key": "UNCLASSIFIED",
+   "bags": 773.6683333333332,
+   "percentOfTotal": 2.175163261536032
+  }
+ ],
+ "matrix": [
+  {
+   "strategy": "PRE AA - FAQ",
+   "batchPrefix": "20",
+   "totalKgs": 11240.399999999998
+  },
+  {
+   "strategy": "PRE AA - FAQ",
+   "batchPrefix": "BU",
+   "totalKgs": 93586.5
+  },
+  {
+   "strategy": "PRE AA - PLUS",
+   "batchPrefix": "20",
+   "totalKgs": 31854.399999999998
+  },
+  {
+   "strategy": "PRE AA - PLUS",
+   "batchPrefix": "BU",
+   "totalKgs": 39897.5
+  },
+  {
+   "strategy": "PRE AA - TOP",
+   "batchPrefix": "20",
+   "totalKgs": 80425.20000000001
+  },
+  {
+   "strategy": "PRE AA - TOP",
+   "batchPrefix": "BU",
+   "totalKgs": 19215.4
+  },
+  {
+   "strategy": "PRE AB - FAQ",
+   "batchPrefix": "20",
+   "totalKgs": 9624
+  },
+  {
+   "strategy": "PRE AB - PLUS",
+   "batchPrefix": "20",
+   "totalKgs": 46667.899999999994
+  },
+  {
+   "strategy": "PRE AB - PLUS",
+   "batchPrefix": "BU",
+   "totalKgs": 57541.2
+  },
+  {
+   "strategy": "PRE AB - TOP",
+   "batchPrefix": "20",
+   "totalKgs": 8019.299999999999
+  },
+  {
+   "strategy": "PRE ABC - FAQ",
+   "batchPrefix": "20",
+   "totalKgs": 1766
+  },
+  {
+   "strategy": "PRE GRINDER BOLD",
+   "batchPrefix": "20",
+   "totalKgs": 9040.5
+  },
+  {
+   "strategy": "PRE GRINDER LIGHT",
+   "batchPrefix": "20",
+   "totalKgs": 713.1
+  },
+  {
+   "strategy": "PRE MBUNIS",
+   "batchPrefix": "20",
+   "totalKgs": 1268.6999999999998
+  },
+  {
+   "strategy": "PRE PB - FAQ",
+   "batchPrefix": "20",
+   "totalKgs": 166.1
+  },
+  {
+   "strategy": "PRE PB - PLUS",
+   "batchPrefix": "20",
+   "totalKgs": 14960.199999999997
+  },
+  {
+   "strategy": "PRE PB-TOP",
+   "batchPrefix": "20",
+   "totalKgs": 2668.9
+  },
+  {
+   "strategy": "PRE REJECT",
+   "batchPrefix": "20",
+   "totalKgs": 2773.9
+  },
+  {
+   "strategy": "PRE SPECIALTY - WASHED",
+   "batchPrefix": "20",
+   "totalKgs": 75637.80000000003
+  },
+  {
+   "strategy": "PRE SPECIALTY - WASHED",
+   "batchPrefix": "BU",
+   "totalKgs": 80464.4
+  },
+  {
+   "strategy": "IN AA - FAQ",
+   "batchPrefix": "FB",
+   "totalKgs": 57876.5
+  },
+  {
+   "strategy": "IN AA - FAQ",
+   "batchPrefix": "RG",
+   "totalKgs": 29675.700000000004
+  },
+  {
+   "strategy": "IN AA - PLUS",
+   "batchPrefix": "RG",
+   "totalKgs": 34166.2
+  },
+  {
+   "strategy": "IN AA - TOP",
+   "batchPrefix": "RG",
+   "totalKgs": 33836.899999999994
+  },
+  {
+   "strategy": "IN AB - PLUS",
+   "batchPrefix": "CS",
+   "totalKgs": 4078.9
+  },
+  {
+   "strategy": "IN AB - TOP",
+   "batchPrefix": "RG",
+   "totalKgs": 9209
+  },
+  {
+   "strategy": "IN ABC - FAQ",
+   "batchPrefix": "RG",
+   "totalKgs": 17211.5
+  },
+  {
+   "strategy": "IN GRINDER BOLD",
+   "batchPrefix": "CS",
+   "totalKgs": 17742.899999999994
+  },
+  {
+   "strategy": "IN GRINDER BOLD",
+   "batchPrefix": "FB",
+   "totalKgs": 30.1
+  },
+  {
+   "strategy": "IN GRINDER BOLD",
+   "batchPrefix": "BU",
+   "totalKgs": 0.9
+  },
+  {
+   "strategy": "IN GRINDER LIGHT",
+   "batchPrefix": "CS",
+   "totalKgs": 4762.3
+  },
+  {
+   "strategy": "IN GRINDER LIGHT",
+   "batchPrefix": "PC",
+   "totalKgs": 679.2
+  },
+  {
+   "strategy": "IN MBUNIS",
+   "batchPrefix": "CS",
+   "totalKgs": 530.1000000000001
+  },
+  {
+   "strategy": "IN MBUNIS",
+   "batchPrefix": "FB",
+   "totalKgs": 0.9
+  },
+  {
+   "strategy": "IN REJECT",
+   "batchPrefix": "CS",
+   "totalKgs": 97286.99999999999
+  },
+  {
+   "strategy": "IN REJECT",
+   "batchPrefix": "GS",
+   "totalKgs": 575.1
+  },
+  {
+   "strategy": "IN REJECT",
+   "batchPrefix": "HP",
+   "totalKgs": 287.6
+  },
+  {
+   "strategy": "IN SPECIALTY - WASHED",
+   "batchPrefix": "CS",
+   "totalKgs": 6566.2
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (AA)",
+   "batchPrefix": "FB",
+   "totalKgs": 1330.3
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (AB)",
+   "batchPrefix": "FB",
+   "totalKgs": 357
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (AB)",
+   "batchPrefix": "CS",
+   "totalKgs": 1490.9
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (AB)",
+   "batchPrefix": "HP",
+   "totalKgs": 1696.3
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (C)",
+   "batchPrefix": "CS",
+   "totalKgs": 40981.4
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (Elevator Balance)",
+   "batchPrefix": "FB",
+   "totalKgs": 11.1
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (GRINDER L)",
+   "batchPrefix": "CS",
+   "totalKgs": 12364.3
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (GT HEAVY)",
+   "batchPrefix": "CS",
+   "totalKgs": 4973.5
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (GT HEAVY)",
+   "batchPrefix": "GS",
+   "totalKgs": 5928
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (PB)",
+   "batchPrefix": "CS",
+   "totalKgs": 15899.1
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (UG1)",
+   "batchPrefix": "CS",
+   "totalKgs": 8686.9
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (AA)",
+   "batchPrefix": "20",
+   "totalKgs": 1722.1
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (AB)",
+   "batchPrefix": "20",
+   "totalKgs": 29010.100000000002
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (C)",
+   "batchPrefix": "20",
+   "totalKgs": 1089.2
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (PB)",
+   "batchPrefix": "20",
+   "totalKgs": 909.3000000000001
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (TT)",
+   "batchPrefix": "20",
+   "totalKgs": 107
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (UG)",
+   "batchPrefix": "20",
+   "totalKgs": 62.2
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (UG2)",
+   "batchPrefix": "20",
+   "totalKgs": 76.2
+  }
+ ],
+ "postBags": {
+  "POST SPECIALTY WASHED": 27700,
+  "POST 17 UP FAQ": 133901.11000000025,
+  "POST 17 UP TOP": 29724.899999999998,
+  "POST FAQ MINUS": 171.3,
+  "POST 17 UP PLUS": 215508.7,
+  "POST 14 PLUS": 7,
+  "POST 16 TOP": 504.2,
+  "POST 16 FAQ": 75576.1,
+  "POST 16 PLUS": 11277.8,
+  "POST 14 FAQ": 30716.700000000004,
+  "POST MBUNI HEAVY": 19285.900000000143,
+  "POST MH": 503.4,
+  "POST REJECTS P": 18243.3,
+  "POST GRINDER BOLD": 126820.9,
+  "POST GRINDER LIGHT": 45.1,
+  "POST PB - PLUS": 238.4,
+  "POST PB - FAQ": 11040.5
+ },
+ "groups": [
+  {
+   "strategy": "PRE REJECT",
+   "batchPrefix": "20",
+   "grades": [
+    "MH",
+    "ML",
+    "NH",
+    "SB",
+    "UG2",
+    "UG3"
+   ]
+  },
+  {
+   "strategy": "PRE MBUNIS",
+   "batchPrefix": "20",
+   "grades": [
+    "ML",
+    "NH",
+    "UG2"
+   ]
+  },
+  {
+   "strategy": "PRE SPECIALTY - WASHED",
+   "batchPrefix": "20",
+   "grades": [
+    "NH",
+    "AA",
+    "AB",
+    "PB"
+   ]
+  },
+  {
+   "strategy": "PRE GRINDER BOLD",
+   "batchPrefix": "20",
+   "grades": [
+    "AA",
+    "AB",
+    "C",
+    "HE",
+    "PB",
+    "TT",
+    "UG1",
+    "UG2"
+   ]
+  },
+  {
+   "strategy": "PRE AA - FAQ",
+   "batchPrefix": "20",
+   "grades": [
+    "AA"
+   ]
+  },
+  {
+   "strategy": "PRE AA - PLUS",
+   "batchPrefix": "20",
+   "grades": [
+    "AA",
+    "PB"
+   ]
+  },
+  {
+   "strategy": "PRE AA - TOP",
+   "batchPrefix": "20",
+   "grades": [
+    "AA"
+   ]
+  },
+  {
+   "strategy": "PRE AB - PLUS",
+   "batchPrefix": "20",
+   "grades": [
+    "AA",
+    "AB"
+   ]
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (AA)",
+   "batchPrefix": "20",
+   "grades": [
+    "AA"
+   ]
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (AA)",
+   "batchPrefix": "FB",
+   "grades": [
+    "AA"
+   ]
+  },
+  {
+   "strategy": "PRE AA - PLUS",
+   "batchPrefix": "BU",
+   "grades": [
+    "AA"
+   ]
+  },
+  {
+   "strategy": "PRE AA - FAQ",
+   "batchPrefix": "BU",
+   "grades": [
+    "AA"
+   ]
+  },
+  {
+   "strategy": "IN SPECIALTY - WASHED",
+   "batchPrefix": "CS",
+   "grades": [
+    "AA"
+   ]
+  },
+  {
+   "strategy": "PRE AB - FAQ",
+   "batchPrefix": "20",
+   "grades": [
+    "AB",
+    "C"
+   ]
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (AB)",
+   "batchPrefix": "20",
+   "grades": [
+    "AB"
+   ]
+  },
+  {
+   "strategy": "PRE AB - TOP",
+   "batchPrefix": "20",
+   "grades": [
+    "AB"
+   ]
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (AB)",
+   "batchPrefix": "FB",
+   "grades": [
+    "AB"
+   ]
+  },
+  {
+   "strategy": "PRE AB - PLUS",
+   "batchPrefix": "BU",
+   "grades": [
+    "AB"
+   ]
+  },
+  {
+   "strategy": "IN AB - PLUS",
+   "batchPrefix": "CS",
+   "grades": [
+    "AB"
+   ]
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (AB)",
+   "batchPrefix": "CS",
+   "grades": [
+    "AB"
+   ]
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (AB)",
+   "batchPrefix": "HP",
+   "grades": [
+    "AB"
+   ]
+  },
+  {
+   "strategy": "IN ABC - FAQ",
+   "batchPrefix": "RG",
+   "grades": []
+  },
+  {
+   "strategy": "IN AA - TOP",
+   "batchPrefix": "RG",
+   "grades": []
+  },
+  {
+   "strategy": "IN AB - TOP",
+   "batchPrefix": "RG",
+   "grades": []
+  },
+  {
+   "strategy": "PRE ABC - FAQ",
+   "batchPrefix": "20",
+   "grades": [
+    "C"
+   ]
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (C)",
+   "batchPrefix": "20",
+   "grades": [
+    "C"
+   ]
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (C)",
+   "batchPrefix": "CS",
+   "grades": [
+    "C"
+   ]
+  },
+  {
+   "strategy": "IN REJECT",
+   "batchPrefix": "CS",
+   "grades": []
+  },
+  {
+   "strategy": "IN GRINDER LIGHT",
+   "batchPrefix": "CS",
+   "grades": [
+    "GT LIGHTS"
+   ]
+  },
+  {
+   "strategy": "IN GRINDER BOLD",
+   "batchPrefix": "CS",
+   "grades": []
+  },
+  {
+   "strategy": "IN MBUNIS",
+   "batchPrefix": "CS",
+   "grades": []
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (Elevator Balance)",
+   "batchPrefix": "FB",
+   "grades": []
+  },
+  {
+   "strategy": "IN GRINDER BOLD",
+   "batchPrefix": "FB",
+   "grades": []
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (GRINDER L)",
+   "batchPrefix": "CS",
+   "grades": []
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (GT HEAVY)",
+   "batchPrefix": "CS",
+   "grades": [
+    "GT HEAVY"
+   ]
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (GT HEAVY)",
+   "batchPrefix": "GS",
+   "grades": [
+    "GT HEAVY"
+   ]
+  },
+  {
+   "strategy": "IN REJECT",
+   "batchPrefix": "GS",
+   "grades": [
+    "GT LIGHTS"
+   ]
+  },
+  {
+   "strategy": "PRE PB - FAQ",
+   "batchPrefix": "20",
+   "grades": [
+    "PB"
+   ]
+  },
+  {
+   "strategy": "PRE PB - PLUS",
+   "batchPrefix": "20",
+   "grades": [
+    "PB"
+   ]
+  },
+  {
+   "strategy": "PRE PB-TOP",
+   "batchPrefix": "20",
+   "grades": [
+    "PB"
+   ]
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (PB)",
+   "batchPrefix": "20",
+   "grades": [
+    "PB"
+   ]
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (PB)",
+   "batchPrefix": "CS",
+   "grades": [
+    "PB"
+   ]
+  },
+  {
+   "strategy": "IN REJECT",
+   "batchPrefix": "HP",
+   "grades": []
+  },
+  {
+   "strategy": "IN GRINDER LIGHT",
+   "batchPrefix": "PC",
+   "grades": [
+    "SWEEPINGS"
+   ]
+  },
+  {
+   "strategy": "PRE GRINDER LIGHT",
+   "batchPrefix": "20",
+   "grades": [
+    "T",
+    "UG",
+    "UG2"
+   ]
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (TT)",
+   "batchPrefix": "20",
+   "grades": [
+    "TT"
+   ]
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (UG)",
+   "batchPrefix": "20",
+   "grades": [
+    "UG"
+   ]
+  },
+  {
+   "strategy": "IN GRINDER RECOVERABLE (UG1)",
+   "batchPrefix": "CS",
+   "grades": [
+    "UG1"
+   ]
+  },
+  {
+   "strategy": "PRE GRINDER RECOVERABLE (UG2)",
+   "batchPrefix": "20",
+   "grades": [
+    "UG2"
+   ]
+  },
+  {
+   "strategy": "IN MBUNIS",
+   "batchPrefix": "FB",
+   "grades": [
+    "MH"
+   ]
+  },
+  {
+   "strategy": "PRE AA - TOP",
+   "batchPrefix": "BU",
+   "grades": [
+    "AA"
+   ]
+  },
+  {
+   "strategy": "PRE SPECIALTY - WASHED",
+   "batchPrefix": "BU",
+   "grades": [
+    "AA"
+   ]
+  },
+  {
+   "strategy": "IN AA - FAQ",
+   "batchPrefix": "FB",
+   "grades": [
+    "AA"
+   ]
+  },
+  {
+   "strategy": "IN AA - PLUS",
+   "batchPrefix": "RG",
+   "grades": []
+  },
+  {
+   "strategy": "IN AA - FAQ",
+   "batchPrefix": "RG",
+   "grades": []
+  },
+  {
+   "strategy": "IN GRINDER BOLD",
+   "batchPrefix": "BU",
+   "grades": []
+  }
+ ],
+ "rowCount": 808,
+ "coverage": {
+  "rowCount": 808,
+  "totalBags": 35568.28800000007,
+  "blocked": {
+   "rows": 68,
+   "bags": 338.55
+  },
+  "wip": {
+   "rows": 54,
+   "bags": 9495.773333333342
+  },
+  "byCropYear": {
+   "2023 / 2024": {
+    "rows": 17,
+    "bags": 102.40333333333332
+   },
+   "2025 / 2026": {
+    "rows": 775,
+    "bags": 35333.77800000008
+   },
+   "2024 / 2025": {
+    "rows": 16,
+    "bags": 132.10666666666665
+   }
+  },
+  "certTagged": {
+   "rows": 41,
+   "bags": 1139.3183333333332,
+   "tags": {
+    "RFA,AAA": {
+     "rows": 1,
+     "bags": 1.9
+    },
+    "FAIRTRADE": {
+     "rows": 4,
+     "bags": 122.96833333333333
+    },
+    "RAINFOREST ALLIANCE": {
+     "rows": 28,
+     "bags": 832.7099999999998
+    },
+    "RAINFOREST ALLIANCE, FAIRTRADE": {
+     "rows": 8,
+     "bags": 181.73999999999998
+    }
+   }
+  },
+  "intakeDates": {
+   "parsed": 754,
+   "missing": 54
+  },
+  "pendingTags": {
+   "MBUNIS": {
+    "rows": 1,
+    "bags": 1.0333333333333334
+   },
+   "Specialty - Washed": {
+    "rows": 2,
+    "bags": 2.285
+   },
+   "DUST": {
+    "rows": 24,
+    "bags": 172.66333333333327
+   },
+   "STONES": {
+    "rows": 1,
+    "bags": 2.1533333333333333
+   }
+  },
+  "unclassified": {
+   "rows": 7,
+   "bags": 773.6683333333333
+  },
+  "extraPostGrades": [
+   "POST MBUNI HEAVY",
+   "POST SPECIALTY WASHED"
+  ],
+  "zeroQtyRows": 0,
+  "warnings": []
+ }
+};
+
 export const DEMO_MANUAL_INPUTS = { kenyacofFutsMt: -1717, deltaHedgeKenyArDynMt: -102 };

@@ -738,6 +738,127 @@ const driftCov = computeStockCoverage([
 if (driftCov.warnings.length === 2) ok('novel pending tag + novel POST grade each raise a drift warning');
 else fail(`drift warnings: got ${driftCov.warnings.length} (${driftCov.warnings.join(' | ')}), expected 2`);
 
+// ---------- 13. Stock analytics over the persisted rollups ----------
+// One engine, four flat dimensions (warehouse | cropYear | blocked | cert),
+// reading exactly what ingest-stock-report persists (location summary +
+// coverage). Every constant hand-computed independently in python over the
+// raw CSV (scratchpad stock_analytics_census.py, 2026-07-10). Honesty rules:
+// blocked / WIP / old-crop COUNT toward the total (carve-outs, never
+// subtracted); untagged = certification UNKNOWN; shares are of the TOTAL.
+console.log('\n[13] Stock analytics (warehouse | cropYear | blocked | cert) vs hand-computed census');
+const { computeStockAnalytics } = await import('../lib/stockanalytics');
+const stockParts = { location: xbsSc.location, coverage: cov };
+const r2 = (n: number) => Math.round(n * 100) / 100;
+
+// warehouse — from the location summary (works even without coverage)
+const whDim = computeStockAnalytics('warehouse', stockParts)!;
+check('warehouse: count', whDim.warehouses!.length, 7);
+check('warehouse: totals bags', r2(whDim.totals.bags), 35568.29);
+const WH_EXPECT: Record<string, [number, number, number]> = {
+  // originalName: [bags, avgDays, sharePct]
+  'KAHAWA BORA WAREHOUSE': [25661.26, 48.05, 72.15],
+  'NO WAREHOUSE': [9495.77, 0, 26.7],
+  'BOLLORE WAREHOUSE': [251.88, 411.72, 0.71],
+  // avgDays true value 59.25497 — don't double-round the census's 4dp print
+  'MITCHELL COTTS FREIGHT KENYA LIMITED': [91.38, 59.25, 0.26],
+  'KPCU DANDORA': [43.33, 320.63, 0.12],
+  'TATU CITY (COFFEE MANAGEMENT SERVICES LTD)': [22.17, 557.15, 0.06],
+  'KENBELT': [2.48, 223.68, 0.01],
+};
+let whBad = 0;
+for (const [name, [bags, avgDays, sharePct]] of Object.entries(WH_EXPECT)) {
+  const w = whDim.warehouses!.find((x) => x.originalName === name);
+  if (!w) { whBad++; fail(`warehouse ${name} missing`); continue; }
+  if (r2(w.bags) !== bags) { whBad++; fail(`warehouse ${name} bags: got ${r2(w.bags)}, expected ${bags}`); }
+  if (r2(w.avgDays) !== avgDays) { whBad++; fail(`warehouse ${name} avgDays: got ${r2(w.avgDays)}, expected ${avgDays}`); }
+  if (r2(w.sharePct) !== sharePct) { whBad++; fail(`warehouse ${name} sharePct: got ${r2(w.sharePct)}, expected ${sharePct}`); }
+}
+if (whBad === 0) ok('all 7 warehouses exact (bags + age-weighted avgDays + share-of-total)');
+check('warehouse: sorted desc, largest first (KAHAWA BORA)', whDim.warehouses!.length >= 2 && whDim.warehouses![0].bags > whDim.warehouses![1].bags ? 1 : 0, 1);
+if (whDim.warehouses!.find((w) => w.originalName === 'NO WAREHOUSE')?.location === 'No Warehouse Assigned')
+  ok('warehouse: WIP rows surface as "No Warehouse Assigned" (they COUNT toward the total)');
+else fail('warehouse: NO WAREHOUSE display name wrong');
+
+// cropYear — old crops count toward the total (carve-out, never subtracted)
+const cyDim = computeStockAnalytics('cropYear', stockParts)!;
+const CY_EXPECT: Record<string, [number, number, number]> = {
+  '2025 / 2026': [775, 35333.78, 99.34],
+  '2024 / 2025': [16, 132.11, 0.37],
+  '2023 / 2024': [17, 102.4, 0.29],
+};
+check('cropYear: years present', Object.keys(cyDim.byCropYear!).length, 3);
+let cyBad = 0;
+let cyBagsSum = 0;
+for (const [year, [rows, bags, sharePct]] of Object.entries(CY_EXPECT)) {
+  const y = cyDim.byCropYear![year];
+  if (!y) { cyBad++; fail(`cropYear ${year} missing`); continue; }
+  cyBagsSum += y.bags;
+  if (y.rows !== rows) { cyBad++; fail(`cropYear ${year} rows: got ${y.rows}, expected ${rows}`); }
+  if (r2(y.bags) !== bags) { cyBad++; fail(`cropYear ${year} bags: got ${r2(y.bags)}, expected ${bags}`); }
+  if (r2(y.sharePct) !== sharePct) { cyBad++; fail(`cropYear ${year} sharePct: got ${r2(y.sharePct)}, expected ${sharePct}`); }
+}
+if (cyBad === 0) ok('all 3 crop years exact (rows + bags + share-of-total)');
+check('cropYear: identity — crop-year bags sum to the TOTAL (old crop counts)', r2(cyBagsSum), 35568.29);
+
+// blocked — blocked stock COUNTS toward the total; it is a carve-out
+const blDim = computeStockAnalytics('blocked', stockParts)!;
+check('blocked: rows', blDim.blocked!.rows, 68);
+check('blocked: bags', r2(blDim.blocked!.bags), 338.55);
+check('blocked: share of TOTAL %', r2(blDim.blocked!.sharePct), 0.95);
+check('blocked: not-blocked rows', blDim.notBlocked!.rows, 740);
+check('blocked: not-blocked bags', r2(blDim.notBlocked!.bags), 35229.74);
+check('blocked: identity — blocked + not-blocked = total', r2(blDim.blocked!.bags + blDim.notBlocked!.bags), 35568.29);
+
+// cert — XBS vocabulary only (NOT SOL's); untagged = UNKNOWN, never "not certified"
+const ctDim = computeStockAnalytics('cert', stockParts)!;
+check('cert: tagged rows', ctDim.tagged!.rows, 41);
+check('cert: tagged bags', r2(ctDim.tagged!.bags), 1139.32);
+check('cert: tagged share of TOTAL %', r2(ctDim.tagged!.sharePct), 3.2);
+check('cert: untagged rows (certification UNKNOWN)', ctDim.untagged!.rows, 767);
+check('cert: untagged bags', r2(ctDim.untagged!.bags), 34428.97);
+const CT_EXPECT: Record<string, [number, number, number]> = {
+  'RAINFOREST ALLIANCE': [28, 832.71, 2.34],
+  'RAINFOREST ALLIANCE, FAIRTRADE': [8, 181.74, 0.51],
+  'FAIRTRADE': [4, 122.97, 0.35],
+  'RFA,AAA': [1, 1.9, 0.01],
+};
+check('cert: XBS tags present', Object.keys(ctDim.byTag!).length, 4);
+let ctBad = 0;
+for (const [tag, [rows, bags, sharePct]] of Object.entries(CT_EXPECT)) {
+  const t = ctDim.byTag![tag];
+  if (!t) { ctBad++; fail(`cert tag "${tag}" missing`); continue; }
+  if (t.rows !== rows) { ctBad++; fail(`cert "${tag}" rows: got ${t.rows}, expected ${rows}`); }
+  if (r2(t.bags) !== bags) { ctBad++; fail(`cert "${tag}" bags: got ${r2(t.bags)}, expected ${bags}`); }
+  if (r2(t.sharePct) !== sharePct) { ctBad++; fail(`cert "${tag}" sharePct: got ${r2(t.sharePct)}, expected ${sharePct}`); }
+}
+if (ctBad === 0) ok('all 4 XBS cert tags exact (rows + bags + share-of-total)');
+
+// honest decline — snapshots ingested before c8939a0 have no stock.coverage
+const noCov = { location: xbsSc.location, coverage: undefined };
+if (computeStockAnalytics('cropYear', noCov) === null && computeStockAnalytics('blocked', noCov) === null && computeStockAnalytics('cert', noCov) === null)
+  ok('cropYear/blocked/cert return null without stock.coverage (honest decline, no fabrication)');
+else fail('coverage-dependent dimensions must return null when coverage is absent');
+if (computeStockAnalytics('warehouse', noCov) !== null) ok('warehouse dimension still works without coverage (location summary is older)');
+else fail('warehouse dimension should not require coverage');
+
+// demo seed: load-demo-snapshot must carry the same stock block that
+// ingest-stock-report persists (generated from the real committed CSV by
+// .lua/regen_demo_stock.ts) so the demo day answers stock-analytics questions.
+const { DEMO_STOCK } = (await import('../seed/demo')) as any;
+check('demo seed: stock rowCount', DEMO_STOCK?.rowCount ?? 0, 808);
+check(
+  'demo seed: KAHAWA BORA bags survive the seed',
+  r2(DEMO_STOCK?.location?.results?.find((l: any) => l.originalName === 'KAHAWA BORA WAREHOUSE')?.bags ?? 0),
+  25661.26
+);
+check('demo seed: coverage blocked bags', r2(DEMO_STOCK?.coverage?.blocked?.bags ?? 0), 338.55);
+check('demo seed: coverage warnings empty (golden baseline)', DEMO_STOCK?.coverage?.warnings?.length ?? 99, 0);
+const demoCert = DEMO_STOCK
+  ? computeStockAnalytics('cert', { location: DEMO_STOCK.location, coverage: DEMO_STOCK.coverage })
+  : null;
+check('demo seed: cert tagged rows via stock-analytics', demoCert?.tagged?.rows ?? 0, 41);
+check('demo seed: cert tagged bags via stock-analytics', r2(demoCert?.tagged?.bags ?? 0), 1139.32);
+
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));
 
