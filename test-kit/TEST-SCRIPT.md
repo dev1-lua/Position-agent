@@ -1,5 +1,7 @@
 # Production test script — agent v7 (skills v1.0.19, persona v18)
 
+> **⚠️ Superseded for v9+:** the demo capability was removed (`load-demo-snapshot` no longer exists), so **Track A no longer runs**. Use `UI-TEST-ROUND-2.md` at the repo root — it covers the upload-driven flow incl. the one-call `compute-position`. Track B/C below remain valid.
+
 Run against **production**: the deployed dashboard (`https://position-agent.vercel.app`) or `lua chat -e production -m "..."`. Send the messages in order, one per test. When you're done (or after any surprise), report back — the logs get pulled and every tool call + number gets verified against these expected values.
 
 All expected values below were hand-computed or captured from the parity-validated engine **before** this script was written. Nothing here is guessed.

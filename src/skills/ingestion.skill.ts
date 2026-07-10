@@ -12,7 +12,6 @@ import {
   BATCH_MAPPINGS_SEED,
   ASSIGNMENT_HISTORY_SEED,
 } from '../seed';
-import { DEMO_POSITION_DATE, DEMO_SALES, DEMO_DNP, DEMO_THEORETICAL, DEMO_STOCK, DEMO_MANUAL_INPUTS } from '../seed/demo';
 
 /**
  * Ingestion: turn the three uploaded exports into a compact snapshot for a
@@ -202,38 +201,13 @@ class SeedReferenceData implements LuaTool {
   }
 }
 
-class LoadDemoSnapshot implements LuaTool {
-  name = 'load-demo-snapshot';
-  description =
-    'Load the bundled demo/validation day (2026-06-18, the golden workbook day): 60 sales, the real DailyNetPosition, theoretical stock, and the manual pot figures. For demos and end-to-end verification — no uploads needed.';
-  inputSchema = z.object({});
-
-  async execute() {
-    await saveSnapshot(DEMO_POSITION_DATE, {
-      demo: true,
-      sales: DEMO_SALES,
-      dnp: DEMO_DNP,
-      theoretical: DEMO_THEORETICAL,
-      stock: DEMO_STOCK,
-    });
-    await upsert(COLLECTIONS.manualInputs, { positionDate: DEMO_POSITION_DATE }, {
-      positionDate: DEMO_POSITION_DATE,
-      ...DEMO_MANUAL_INPUTS,
-    });
-    return {
-      positionDate: DEMO_POSITION_DATE,
-      loaded: {
-        sales: DEMO_SALES.length,
-        dnpRows: DEMO_DNP.length,
-        theoreticalTotalBags: DEMO_THEORETICAL.totals.total,
-        stockRows: DEMO_STOCK.rowCount,
-      },
-      manualInputs: DEMO_MANUAL_INPUTS,
-      note: 'Demo day loaded (theoretical stock is pre-computed; the stock summaries come from the real 2026-06-18 XBS export, so stock-analytics works). Next: assign-blends → compute-forward-sales → compute-net-position → compute-futs-spread. Expected net ≈ −4,850 bags.',
-      cite: citeLine({ tool: this.name, positionDate: DEMO_POSITION_DATE, demo: true, sources: ['bundled demo seed (real 2026-06-18 desk exports)'] }),
-    };
-  }
-}
+// load-demo-snapshot was REMOVED 2026-07-10 at the desk's request: production
+// must hold nothing but real uploads — no loadable demo data at all. The
+// 2026-06-18 validation seeds stay in src/seed/demo.ts for the parity
+// harness only; they are no longer reachable from any deployed tool. The
+// `demo` flag handling (clearDemoSnapshot, demo:false on ingest) is kept as
+// protection against any demo-flagged snapshot that may still exist in a
+// store.
 
 class DeleteSnapshot implements LuaTool {
   name = 'delete-snapshot';
@@ -297,9 +271,8 @@ export const ingestionSkill = new LuaSkill({
 - All three write into the snapshot for the position date (default: today, Nairobi). Pass positionDate when the trader says the export is for another day.
 - If the trader uploaded a file but no fileId is known, the tools automatically use the most recent upload in this chat.
 - seed-reference-data is one-time setup (safe to re-run) — run it if blend/assumption lookups appear empty.
-- load-demo-snapshot loads the bundled 2026-06-18 validation day (no uploads needed) — ONLY when the trader explicitly asks for demo/validation data; never load it to answer a real question. Always tell the user the data is the demo day, not live.
-- A real upload onto a date holding the demo snapshot CLEARS that date first (fresh start, no demo/real mixing) — relay the "was CLEARED" note when present.
-- delete-snapshot permanently removes one date (demo/test days, bad uploads). Irreversible: confirm the exact date with the trader before calling; use list-snapshots to show what exists.
-- list-snapshots shows what data exists per date. The usual flow after uploads: compute-theoretical-stock → assign-blends → compute-forward-sales → compute-net-position → compute-futs-spread.`,
-  tools: [new IngestStockReport(), new IngestDailyNetPosition(), new IngestLogisticsReport(), new SeedReferenceData(), new LoadDemoSnapshot(), new DeleteSnapshot(), new ListSnapshots()],
+- There is NO demo/sample data: every answer comes from what the trader uploaded. If someone asks for demo data, say the system only works on real uploaded exports.
+- delete-snapshot permanently removes one date (test days, bad uploads). Irreversible: confirm the exact date with the trader before calling; use list-snapshots to show what exists.
+- list-snapshots shows what data exists per date. After uploads: run compute-theoretical-stock (stock), then compute-position does everything else in one call.`,
+  tools: [new IngestStockReport(), new IngestDailyNetPosition(), new IngestLogisticsReport(), new SeedReferenceData(), new DeleteSnapshot(), new ListSnapshots()],
 });

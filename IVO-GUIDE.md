@@ -67,7 +67,7 @@ Every answer with numbers ends with a small **source line**, for example:
 
 > `price-analytics · snapshot 2026-07-15 · SOL ReportLogistic · ingested 07:12 · difs = SMT-weighted "S.Dif"/"S.Fob dif"`
 
-That tells you: which calculation, which day's data, which of your files it came from, when you uploaded it, and the exact columns/formula behind the figure. **If you ever see an amber "DEMO DATA" badge, the answer is from the built-in practice day (18 June), not your uploads.** Real uploads never carry that badge.
+That tells you: which calculation, which day's data, which of your files it came from, when you uploaded it, and the exact columns/formula behind the figure. Every answer comes from files you uploaded — there is no built-in sample data.
 
 ## What it will NOT do (by design)
 
@@ -80,7 +80,6 @@ That tells you: which calculation, which day's data, which of your files it came
 ## Good to know
 
 - The **morning report** can land in your inbox before the market opens (currently 06:00) with the latest net, offers and warnings — tell Dev where to send it.
-- The **practice day**: say *load the demo day* to get a full 18 June dataset for trying things out. It's always clearly labelled, and uploading a real file for that date replaces it completely.
 - Tables have small **copy / download** buttons (top-right of each table) if you want the numbers in Excel.
 - If an answer says data is **stale or missing**, it's telling the truth — upload today's exports and ask again.
 
