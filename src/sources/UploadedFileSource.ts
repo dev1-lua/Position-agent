@@ -34,7 +34,13 @@ const INTAKE_MONTHS: Record<string, number> = {
 
 /** Intake dates arrive as Date cells (xlsx) or "01-DEC-2024" strings (raw CSV). */
 function parseIntakeDate(v: any): Date | null {
-  if (v instanceof Date) return v;
+  if (v instanceof Date) {
+    // XLSX (cellDates) hands back LOCAL-midnight Dates — for CSV date strings
+    // and xlsx date cells alike. Re-anchor to UTC midnight of the same
+    // calendar date so stock-age maths is identical on any server timezone.
+    if (Number.isNaN(v.getTime())) return null;
+    return new Date(Date.UTC(v.getFullYear(), v.getMonth(), v.getDate()));
+  }
   const m = /^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/.exec(String(v ?? '').trim());
   if (!m) return null;
   const month = INTAKE_MONTHS[m[2].toUpperCase()];
