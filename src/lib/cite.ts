@@ -26,10 +26,26 @@ export interface CiteInput {
    * `blocked = Σ XBS "Qty."(kg)/60 over rows where Blocked=Yes (68 rows)`.
    */
   derivation?: string;
+  /** Override "today" (`YYYY-MM-DD`) for deterministic tests; defaults to the current UTC date. */
+  today?: string;
+}
+
+/** Whole days between the snapshot's position date and today (UTC). ≤0 = current. */
+export function snapshotAgeDays(positionDate: string, today?: string): number {
+  const t = today ?? new Date().toISOString().slice(0, 10);
+  return Math.round((Date.parse(t) - Date.parse(positionDate)) / 86_400_000);
 }
 
 export function citeLine(c: CiteInput): string {
-  const snapshot = `snapshot ${c.positionDate}${c.demo ? ' (DEMO seed, not live data)' : ''}`;
+  // Staleness is computed HERE, mechanically, for the same reason the rest of
+  // the line is: the desk uploads fresh exports each morning, and if none came
+  // in, the trader must be told he is reading old data — without trusting the
+  // model to compare dates. The persona relays the "N days old" tag up front.
+  const tags: string[] = [];
+  if (c.demo) tags.push('DEMO seed, not live data');
+  const age = snapshotAgeDays(c.positionDate, c.today);
+  if (age >= 1) tags.push(`${age} day${age === 1 ? '' : 's'} old — latest upload on file`);
+  const snapshot = `snapshot ${c.positionDate}${tags.length ? ` (${tags.join('; ')})` : ''}`;
   const parts = [`source: ${c.tool}`, snapshot, c.sources.join(' + ')];
   if (c.updatedAt) {
     // 2026-07-10T01:48:43.154Z → 2026-07-10T01:48Z (minute precision reads better in chat)

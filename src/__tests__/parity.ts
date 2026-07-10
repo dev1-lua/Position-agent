@@ -925,21 +925,35 @@ const citeDemo = citeLine({
   demo: true,
   updatedAt: '2026-07-10T01:48:43.154Z',
   sources: ['SOL ReportLogistic'],
+  today: '2026-06-18',
 });
 const CITE_EXPECT =
   'source: price-analytics · snapshot 2026-06-18 (DEMO seed, not live data) · SOL ReportLogistic · ingested 2026-07-10T01:48Z';
 if (citeDemo === CITE_EXPECT) ok('demo cite exact');
 else fail(`demo cite: got "${citeDemo}"`);
-const citeLive = citeLine({ tool: 'stock-analytics', positionDate: '2026-07-11', sources: ['XBS Current Stock'] });
+const citeLive = citeLine({ tool: 'stock-analytics', positionDate: '2026-07-11', sources: ['XBS Current Stock'], today: '2026-07-11' });
 if (citeLive === 'source: stock-analytics · snapshot 2026-07-11 · XBS Current Stock') ok('live cite exact (no demo tag, no timestamp)');
 else fail(`live cite: got "${citeLive}"`);
-if (citeLine({ tool: 't', positionDate: '2026-01-01', sources: ['A', 'B'] }).includes('A + B')) ok('multi-source joined with " + "');
+// Staleness: uploads dated before "today" must carry an age tag — the persona
+// opens the answer with it so the trader knows he is reading old data.
+const citeStale = citeLine({ tool: 'net-position', positionDate: '2026-06-18', sources: ['SOL DailyNetPosition'], today: '2026-07-10' });
+if (citeStale === 'source: net-position · snapshot 2026-06-18 (22 days old — latest upload on file) · SOL DailyNetPosition')
+  ok('stale cite exact (22 days old)');
+else fail(`stale cite: got "${citeStale}"`);
+const citeOneDay = citeLine({ tool: 't', positionDate: '2026-07-09', sources: ['A'], today: '2026-07-10' });
+if (citeOneDay.includes('(1 day old — latest upload on file)')) ok('singular "1 day old"');
+else fail(`1-day cite: got "${citeOneDay}"`);
+const citeDemoStale = citeLine({ tool: 't', positionDate: '2026-06-18', demo: true, sources: ['A'], today: '2026-06-20' });
+if (citeDemoStale.includes('(DEMO seed, not live data; 2 days old — latest upload on file)')) ok('demo + stale tags joined with "; "');
+else fail(`demo+stale cite: got "${citeDemoStale}"`);
+if (citeLine({ tool: 't', positionDate: '2026-01-01', sources: ['A', 'B'], today: '2026-01-01' }).includes('A + B')) ok('multi-source joined with " + "');
 else fail('multi-source join');
 const citeDeriv = citeLine({
   tool: 'stock-analytics',
   positionDate: '2026-06-18',
   sources: ['XBS Current Stock'],
   derivation: 'blocked = Σ "Qty."(kg)/60 where Blocked=Yes (68 rows)',
+  today: '2026-06-18',
 });
 if (citeDeriv.endsWith(' · derivation: blocked = Σ "Qty."(kg)/60 where Blocked=Yes (68 rows)'))
   ok('derivation clause appended as final segment');

@@ -98,7 +98,12 @@ No hedging filler, no trade advice.
    do not promise it, and do not improvise it from other fields.
 5. **Relay verification signals, always**: the demo/live flag, coverage blocks,
    ingest warnings (verbatim), pending blend confirmations, and every caveat the
-   tool marks as relevant. If \`demo: true\`, the words "demo data" must appear.`;
+   tool marks as relevant. If \`demo: true\`, the words "demo data" must appear.
+6. **Stale data must be announced first.** When the cite line tags the snapshot
+   as "N days old", open the answer — before any number — with one line:
+   "⚠️ Based on the <position date> upload (N days old). No newer data has been
+   uploaded — upload today's three exports for current figures." Never present
+   an old snapshot as if it were today's position.`;
 
 const agent = new LuaAgent({
   name: 'Position Assistant',
