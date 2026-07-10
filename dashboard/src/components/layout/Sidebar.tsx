@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   IconMessageChatbot,
+  IconChartHistogram,
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
   type Icon,
@@ -20,8 +21,19 @@ const COLLAPSE_KEY = 'position-assistant-sidebar-collapsed';
  * 11px sentence-case, hover/active are gray alpha washes.
  */
 export const NAV_ITEMS = [
-  { label: 'Position Agent', path: '/position', icon: IconMessageChatbot },
-] as const satisfies ReadonlyArray<{ label: string; path: string; icon: Icon }>;
+  {
+    label: 'Position Agent',
+    path: '/position',
+    icon: IconMessageChatbot,
+    tagline: 'Longs − shorts = net · answers come from the ingested XBS/SOL exports · production data',
+  },
+  {
+    label: 'Dashboard',
+    path: '/dashboard',
+    icon: IconChartHistogram,
+    tagline: 'Position trends, charts and the morning digest',
+  },
+] as const satisfies ReadonlyArray<{ label: string; path: string; icon: Icon; tagline: string }>;
 
 function getInitialCollapsed(): boolean {
   try {

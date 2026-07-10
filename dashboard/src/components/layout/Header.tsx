@@ -22,9 +22,7 @@ export function Header() {
         </span>
         <h1 className="truncate text-sm font-medium">{active.label}</h1>
       </div>
-      <p className="hidden truncate text-xs text-muted-foreground/70 sm:block">
-        Longs − shorts = net · answers come from the ingested XBS/SOL exports · production data
-      </p>
+      <p className="hidden truncate text-xs text-muted-foreground/70 sm:block">{active.tagline}</p>
     </header>
   );
 }
