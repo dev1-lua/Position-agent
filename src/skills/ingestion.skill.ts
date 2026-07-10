@@ -4,7 +4,7 @@ import { UploadedFileSource } from '../sources/UploadedFileSource';
 import { processInventoryLocation, processWarehouseStatus, processMatrixData, groupForecastRows } from '../lib/stockcounter';
 import { computeStockCoverage } from '../lib/stockcoverage';
 import { citeLine } from '../lib/cite';
-import { COLLECTIONS, saveSnapshot, resolveFileId, defaultPositionDate, upsert, loadBatchMappings } from './store';
+import { COLLECTIONS, saveSnapshot, deleteSnapshot, clearDemoSnapshot, resolveFileId, defaultPositionDate, upsert, loadBatchMappings } from './store';
 import {
   BLENDS_SEED,
   ASSUMPTIONS_SEED,
@@ -59,7 +59,9 @@ class IngestStockReport implements LuaTool {
 
     // coverage rides the snapshot so blocked/crop-year/cert analytics work
     // later without the raw rows (absent on snapshots ingested before this)
+    const clearedDemo = await clearDemoSnapshot(positionDate);
     await saveSnapshot(positionDate, {
+      demo: false,
       stock: { location, status, matrix, postBags, groups, rowCount: rows.length, coverage },
     });
     const r2 = (n: number) => Math.round(n * 100) / 100;
@@ -81,6 +83,9 @@ class IngestStockReport implements LuaTool {
         extraPostGrades: coverage.extraPostGrades,
       },
       warnings: coverage.warnings,
+      ...(clearedDemo
+        ? { note: `The demo-seeded snapshot for ${positionDate} was CLEARED — this date now starts fresh from your real upload; re-run the compute chain.` }
+        : {}),
       nextStep: 'Run compute-theoretical-stock to get theoretical stock by POST grade.',
       cite: citeLine({ tool: this.name, positionDate, sources: ['uploaded XBS Current Stock export'] }),
     };
@@ -95,11 +100,15 @@ class IngestDailyNetPosition implements LuaTool {
   async execute(input: { fileId?: string; positionDate?: string }) {
     const positionDate = input.positionDate ?? defaultPositionDate();
     const dnp = await source.getDailyNetPosition(await resolveFileId(input.fileId));
-    await saveSnapshot(positionDate, { dnp });
+    const clearedDemo = await clearDemoSnapshot(positionDate);
+    await saveSnapshot(positionDate, { demo: false, dnp });
     return {
       positionDate,
       rowCount: dnp.length,
       hedgeableRows: dnp.filter((r) => r.quality.toUpperCase() === 'HEDGEABLE').length,
+      ...(clearedDemo
+        ? { note: `The demo-seeded snapshot for ${positionDate} was CLEARED — this date now starts fresh from your real upload.` }
+        : {}),
       nextStep: 'Run compute-futs-spread once theoretical stock and forward sales are computed.',
       cite: citeLine({ tool: this.name, positionDate, sources: ['uploaded SOL DailyNetPosition export'] }),
     };
@@ -114,7 +123,8 @@ class IngestLogisticsReport implements LuaTool {
   async execute(input: { fileId?: string; positionDate?: string }) {
     const positionDate = input.positionDate ?? defaultPositionDate();
     const sales = await source.getLogistics(await resolveFileId(input.fileId));
-    await saveSnapshot(positionDate, { sales });
+    const clearedDemo = await clearDemoSnapshot(positionDate);
+    await saveSnapshot(positionDate, { demo: false, sales });
     const totalSmt = sales.reduce((s, x) => s + x.smt, 0);
     // coverage report: surfaces export-format drift (missing difs, odd price
     // units, no bookings) at upload time instead of silently thinner answers
@@ -137,6 +147,9 @@ class IngestLogisticsReport implements LuaTool {
         ...(withDif < sales.length ? [`${sales.length - withDif} sale(s) have no differential — price analytics will exclude them.`] : []),
         ...(oddUnits.length ? [`Unknown price unit(s) ${oddUnits.join(', ')} — flat-price averages will skip those sales.`] : []),
       ],
+      ...(clearedDemo
+        ? { note: `The demo-seeded snapshot for ${positionDate} was CLEARED — this date now starts fresh from your real upload.` }
+        : {}),
       nextStep: 'Run assign-blends to allocate each sale to a blend recipe.',
       cite: citeLine({ tool: this.name, positionDate, sources: ['uploaded SOL ReportLogistic export'] }),
     };
@@ -222,6 +235,30 @@ class LoadDemoSnapshot implements LuaTool {
   }
 }
 
+class DeleteSnapshot implements LuaTool {
+  name = 'delete-snapshot';
+  description =
+    'Permanently remove one stored position snapshot (a demo/test day or a bad upload) and its pending blend confirmations. Irreversible — only call after the trader has explicitly confirmed the exact date.';
+  inputSchema = z.object({
+    positionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe('The snapshot date to delete (confirm with the trader first)'),
+  });
+
+  async execute(input: { positionDate: string }) {
+    const deleted = await deleteSnapshot(input.positionDate);
+    // pending blend confirmations for that date are meaningless without it
+    const pend = await Data.get(COLLECTIONS.pendingBlends, { positionDate: input.positionDate }, 1, 100);
+    for (const p of pend?.data ?? []) if (p?.id) await Data.delete(COLLECTIONS.pendingBlends, p.id);
+    const remaining = await Data.get(COLLECTIONS.snapshots, undefined, 1, 50);
+    return {
+      positionDate: input.positionDate,
+      deleted,
+      pendingBlendsRemoved: (pend?.data ?? []).length,
+      remainingSnapshots: (remaining?.data ?? []).map((r: any) => r.data?.positionDate).sort(),
+      ...(deleted ? {} : { note: 'No snapshot existed for that date — nothing was deleted.' }),
+    };
+  }
+}
+
 class ListSnapshots implements LuaTool {
   name = 'list-snapshots';
   description = 'List stored position snapshots (date + which inputs/results are present).';
@@ -260,7 +297,9 @@ export const ingestionSkill = new LuaSkill({
 - All three write into the snapshot for the position date (default: today, Nairobi). Pass positionDate when the trader says the export is for another day.
 - If the trader uploaded a file but no fileId is known, the tools automatically use the most recent upload in this chat.
 - seed-reference-data is one-time setup (safe to re-run) — run it if blend/assumption lookups appear empty.
-- load-demo-snapshot loads the bundled 2026-06-18 validation day (no uploads needed) — use it for demos or when someone wants to try the agent before real data exists. Always tell the user the data is the demo day, not live.
+- load-demo-snapshot loads the bundled 2026-06-18 validation day (no uploads needed) — ONLY when the trader explicitly asks for demo/validation data; never load it to answer a real question. Always tell the user the data is the demo day, not live.
+- A real upload onto a date holding the demo snapshot CLEARS that date first (fresh start, no demo/real mixing) — relay the "was CLEARED" note when present.
+- delete-snapshot permanently removes one date (demo/test days, bad uploads). Irreversible: confirm the exact date with the trader before calling; use list-snapshots to show what exists.
 - list-snapshots shows what data exists per date. The usual flow after uploads: compute-theoretical-stock → assign-blends → compute-forward-sales → compute-net-position → compute-futs-spread.`,
-  tools: [new IngestStockReport(), new IngestDailyNetPosition(), new IngestLogisticsReport(), new SeedReferenceData(), new LoadDemoSnapshot(), new ListSnapshots()],
+  tools: [new IngestStockReport(), new IngestDailyNetPosition(), new IngestLogisticsReport(), new SeedReferenceData(), new LoadDemoSnapshot(), new DeleteSnapshot(), new ListSnapshots()],
 });

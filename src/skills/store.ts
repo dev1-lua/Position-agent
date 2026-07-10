@@ -84,6 +84,30 @@ export async function getSnapshot(positionDate?: string): Promise<{ id: string; 
   return all[0] as { id: string; data: Snapshot };
 }
 
+/** Delete a stored snapshot document. Returns false if none existed. */
+export async function deleteSnapshot(positionDate: string): Promise<boolean> {
+  const existing = await Data.get(COLLECTIONS.snapshots, { positionDate }, 1, 1);
+  const hit = existing?.data?.[0];
+  if (!hit?.id) return false;
+  await Data.delete(COLLECTIONS.snapshots, hit.id);
+  return true;
+}
+
+/**
+ * A REAL upload landing on a date whose snapshot is the demo seed must start
+ * that date FRESH — snapshot writes merge, so ingesting into a demo snapshot
+ * would otherwise serve a hybrid (e.g. real stock + demo sales and a stale
+ * demo label; seen in prod UI testing 2026-07-10). Returns true if a demo
+ * snapshot was cleared.
+ */
+export async function clearDemoSnapshot(positionDate: string): Promise<boolean> {
+  const existing = await Data.get(COLLECTIONS.snapshots, { positionDate }, 1, 1);
+  const hit = existing?.data?.[0];
+  if (!hit?.id || hit.data?.demo !== true) return false;
+  await Data.delete(COLLECTIONS.snapshots, hit.id);
+  return true;
+}
+
 /** Merge `patch` into the snapshot for `positionDate`, creating it if needed. */
 export async function saveSnapshot(positionDate: string, patch: Record<string, any>): Promise<void> {
   await upsert(
