@@ -29,14 +29,15 @@ export interface PriceBucket {
   contractDifUscLb: number | null;
   /** SMT-weighted average FOB-equivalent differential, USc/lb. */
   fobDifUscLb: number | null;
+  /** Contracts with a flat price agreed (futures leg closed). */
+  fixed: { contracts: number; smt: number; flatUscLb: number | null };
+  /** Price-to-be-fixed contracts — this is the volume that re-rates with NY. */
+  ptbf: { contracts: number; smt: number };
 }
 
 export interface PricingResult {
   coverage: { priced: number; unpriced: number; unpricedContracts: string[] };
-  overall: PriceBucket & {
-    fixed: { contracts: number; smt: number; flatUscLb: number | null };
-    ptbf: { contracts: number; smt: number };
-  };
+  overall: PriceBucket;
   /** Present when a dimension was requested. Bucket key → stats. */
   byBucket?: Record<string, PriceBucket>;
 }
@@ -50,7 +51,17 @@ interface Acc {
   fobS: number;
 }
 
+/** One bucket's accumulators: every sale, plus its fixed/PTBF partition. */
+interface Group {
+  all: Acc;
+  fixed: Acc;
+  ptbf: Acc;
+  flatW: number;
+  flatS: number;
+}
+
 const newAcc = (): Acc => ({ contracts: 0, smt: 0, difW: 0, difS: 0, fobW: 0, fobS: 0 });
+const newGroup = (): Group => ({ all: newAcc(), fixed: newAcc(), ptbf: newAcc(), flatW: 0, flatS: 0 });
 
 function add(acc: Acc, s: Sale, weight: number): void {
   acc.contracts += 1;
@@ -65,11 +76,31 @@ function add(acc: Acc, s: Sale, weight: number): void {
   }
 }
 
-const bucketOf = (acc: Acc): PriceBucket => ({
-  contracts: acc.contracts,
-  smt: round(acc.smt, 4),
-  contractDifUscLb: acc.difW ? round(acc.difS / acc.difW, 4) : null,
-  fobDifUscLb: acc.fobW ? round(acc.fobS / acc.fobW, 4) : null,
+function addToGroup(g: Group, s: Sale, weight: number): void {
+  add(g.all, s, weight);
+  if (s.sPrice) {
+    add(g.fixed, s, weight);
+    const usc = priceToUscLb(s.sPrice, s.sPriceUnit);
+    if (usc != null) {
+      g.flatW += weight;
+      g.flatS += usc * weight;
+    }
+  } else {
+    add(g.ptbf, s, weight);
+  }
+}
+
+const bucketOf = (g: Group): PriceBucket => ({
+  contracts: g.all.contracts,
+  smt: round(g.all.smt, 4),
+  contractDifUscLb: g.all.difW ? round(g.all.difS / g.all.difW, 4) : null,
+  fobDifUscLb: g.all.fobW ? round(g.all.fobS / g.all.fobW, 4) : null,
+  fixed: {
+    contracts: g.fixed.contracts,
+    smt: round(g.fixed.smt, 4),
+    flatUscLb: g.flatW ? round(g.flatS / g.flatW, 4) : null,
+  },
+  ptbf: { contracts: g.ptbf.contracts, smt: round(g.ptbf.smt, 4) },
 });
 
 export function computePricing(
@@ -79,34 +110,17 @@ export function computePricing(
   const priced = sales.filter((s) => s.sDif != null || s.sFobDif != null);
   const unpriced = sales.filter((s) => s.sDif == null && s.sFobDif == null);
 
-  const overall = newAcc();
-  const fixed = newAcc();
-  const ptbf = newAcc();
-  let flatW = 0;
-  let flatS = 0;
-
-  for (const s of priced) {
-    add(overall, s, s.smt);
-    if (s.sPrice) {
-      add(fixed, s, s.smt);
-      const usc = priceToUscLb(s.sPrice, s.sPriceUnit);
-      if (usc != null) {
-        flatW += s.smt;
-        flatS += usc * s.smt;
-      }
-    } else {
-      add(ptbf, s, s.smt);
-    }
-  }
+  const overall = newGroup();
+  for (const s of priced) addToGroup(overall, s, s.smt);
 
   let byBucket: Record<string, PriceBucket> | undefined;
   if (opts.dimension) {
-    const accs = new Map<string, Acc>();
+    const groups = new Map<string, Group>();
     const into = (key: string | null | undefined, s: Sale, weight: number) => {
       const k = key?.trim() || 'UNKNOWN';
-      const acc = accs.get(k) ?? newAcc();
-      accs.set(k, acc);
-      add(acc, s, weight);
+      const g = groups.get(k) ?? newGroup();
+      groups.set(k, g);
+      addToGroup(g, s, weight);
     };
     for (const s of priced) {
       switch (opts.dimension) {
@@ -138,7 +152,7 @@ export function computePricing(
         }
       }
     }
-    byBucket = Object.fromEntries([...accs.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([k, a]) => [k, bucketOf(a)]));
+    byBucket = Object.fromEntries([...groups.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([k, g]) => [k, bucketOf(g)]));
   }
 
   return {
@@ -147,15 +161,7 @@ export function computePricing(
       unpriced: unpriced.length,
       unpricedContracts: unpriced.map((s) => s.saleCtr ?? 'unknown'),
     },
-    overall: {
-      ...bucketOf(overall),
-      fixed: {
-        contracts: fixed.contracts,
-        smt: round(fixed.smt, 4),
-        flatUscLb: flatW ? round(flatS / flatW, 4) : null,
-      },
-      ptbf: { contracts: ptbf.contracts, smt: round(ptbf.smt, 4) },
-    },
+    overall: bucketOf(overall),
     byBucket,
   };
 }

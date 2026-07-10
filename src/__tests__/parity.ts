@@ -407,6 +407,43 @@ if (fixBad === 0) ok('fix-month ladder: all 7 buckets exact (dif + SMT)');
 const byClient = computePricing(parsedSales, { dimension: 'client' });
 nearPx('NESTRADE wavg contract dif', byClient.byBucket?.['NESTRADE']?.contractDifUscLb ?? null, 144.5596);
 
+// Per-bucket fixed-vs-PTBF split ("how much of my grinder book re-rates if NY
+// rallies"). Expected values hand-computed independently (python over the raw
+// TSV, same contract+month aggregation); per-grade fixed SMT sums to −639.81
+// and PTBF to −2,268.0, the validated overall constants.
+const bySoldGrade = computePricing(parsedSales, { dimension: 'soldGrade' });
+const GRADE_SPLIT_EXPECT: Record<string, [number, number, number | null, number, number]> = {
+  // grade: [fixed contracts, fixed SMT, fixed flat USc/lb (null = none priced flat), ptbf contracts, ptbf SMT]
+  AA: [11, -177.42, 362.0995, 12, -748.8],
+  AB: [9, -259.14, 326.1024, 14, -876.0],
+  GRINDER: [2, -151.2, 301.3071, 5, -583.2],
+  MH: [0, 0, null, 1, -38.4],
+};
+let splitBad = 0;
+for (const [g, [fc, fs, flat, pc, ps]] of Object.entries(GRADE_SPLIT_EXPECT)) {
+  const b = bySoldGrade.byBucket?.[g];
+  const flatOk = flat == null ? b?.fixed?.flatUscLb == null : Math.abs((b?.fixed?.flatUscLb ?? NaN) - flat) <= priceTol;
+  if (
+    !b?.fixed || !b?.ptbf ||
+    b.fixed.contracts !== fc || Math.abs(b.fixed.smt - fs) > priceTol || !flatOk ||
+    b.ptbf.contracts !== pc || Math.abs(b.ptbf.smt - ps) > priceTol
+  ) {
+    splitBad++;
+    fail(`grade split ${g}: got fixed ${b?.fixed?.contracts}/${b?.fixed?.smt}@${b?.fixed?.flatUscLb} ptbf ${b?.ptbf?.contracts}/${b?.ptbf?.smt}, expected ${fc}/${fs}@${flat} ${pc}/${ps}`);
+  }
+}
+if (splitBad === 0) ok('per-grade fixed/PTBF split exact: AA, AB, GRINDER (79.4% PTBF), MH');
+const byDelMonth = computePricing(parsedSales, { dimension: 'deliveryMonth' });
+const aug = byDelMonth.byBucket?.['2026/08'];
+const jun = byDelMonth.byBucket?.['2026/06'];
+if (
+  aug?.fixed?.contracts === 0 && aug?.ptbf?.contracts === 9 && Math.abs(aug.ptbf.smt - -621.6) <= priceTol &&
+  jun?.fixed?.contracts === 19 && Math.abs(jun.fixed.smt - -302.37) <= priceTol && jun?.ptbf?.contracts === 3 && Math.abs(jun.ptbf.smt - -76.8) <= priceTol
+)
+  ok('per-month fixed/PTBF split: 2026/06 = 19 fixed/3 PTBF; 2026/08 = 0 fixed/9 PTBF (deferreds all re-rate)');
+else
+  fail(`per-month split: 2026/06 got ${jun?.fixed?.contracts}/${jun?.ptbf?.contracts} (fixed ${jun?.fixed?.smt}, ptbf ${jun?.ptbf?.smt}), 2026/08 got ${aug?.fixed?.contracts}/${aug?.ptbf?.contracts} (ptbf ${aug?.ptbf?.smt})`);
+
 // Demo-seed enrichment: bundled sales must carry the export's prices so the
 // demo day can answer pricing questions; postGrade attribution must work off
 // the seeded blend numbers.

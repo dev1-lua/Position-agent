@@ -26,6 +26,6 @@ preprocessors: []
 postprocessors: []
 mcpServers: []
 backup:
-  activeVersion: 7
-  lastHash: 6573f1335ac860b454b0d5ab16ddf794d81411351e601a6321e05fa93e797640
-  lastPushedAt: '2026-07-09T23:39:20.263Z'
+  activeVersion: 8
+  lastHash: a24bb3f683dd3b5afc345f671123e00c6b1d78d7e050aab8438e016b0c79714a
+  lastPushedAt: '2026-07-10T00:01:43.648Z'

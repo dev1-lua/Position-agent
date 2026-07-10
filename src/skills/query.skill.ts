@@ -143,7 +143,7 @@ class WhatIf implements LuaTool {
 class PriceAnalytics implements LuaTool {
   name = 'price-analytics';
   description =
-    'Average price level of the shorts book: SMT-weighted contract differential AND FOB-equivalent differential (USc/lb vs NY KC) — overall or by sold grade, POST grade, client, delivery month, or fixation month; plus the fixed vs price-to-be-fixed split. No cost basis, P&L, or market prices.';
+    'Average price level of the shorts book: SMT-weighted contract differential AND FOB-equivalent differential (USc/lb vs NY KC) — overall or by sold grade, POST grade, client, delivery month, or fixation month; plus the fixed vs price-to-be-fixed split, overall AND per bucket (answers "how much of my grinder book / my deferreds re-rates if NY moves"). No cost basis, P&L, or market prices.';
   inputSchema = z.object({
     positionDate: dateField,
     dimension: z
@@ -184,7 +184,14 @@ class PriceAnalytics implements LuaTool {
       byBucket = Object.fromEntries(
         Object.entries(byBucket).map(([g, b]: [string, any]) => [
           g,
-          { contracts: b.contracts, allocatedBags: b.smt, contractDifUscLb: b.contractDifUscLb, fobDifUscLb: b.fobDifUscLb },
+          {
+            contracts: b.contracts,
+            allocatedBags: b.smt,
+            contractDifUscLb: b.contractDifUscLb,
+            fobDifUscLb: b.fobDifUscLb,
+            fixed: { contracts: b.fixed.contracts, allocatedBags: b.fixed.smt, flatUscLb: b.fixed.flatUscLb },
+            ptbf: { contracts: b.ptbf.contracts, allocatedBags: b.ptbf.smt },
+          },
         ])
       );
     }
@@ -286,7 +293,7 @@ export const querySkill = new LuaSkill({
   context: `Answering questions about the position.
 - query-position for "what's my net position", "how short am I on AB FAQ", "shorts by month for grinders". Always mention the position date and any pending blend confirmations.
 - what-if for "can I sell N bags of X for month M" — report netAfter and, if it goes short, the first month it happens. Never turn this into trade advice; state the numbers.
-- price-analytics for "at what price level am I short", "average differential on grinders", "how much is fixed vs to-be-fixed". "Price level" on this desk = differential vs the NY KC futures in USc/lb. ALWAYS present the contract differential and the FOB-equivalent side by side — neither is the headline. State the fixed vs price-to-be-fixed split and any excluded (unpriced) sales. It covers the unallocated shorts book only: no purchase cost basis, no P&L or mark-to-market (no market prices exist in the data), no price history — say so when asked.
+- price-analytics for "at what price level am I short", "average differential on grinders", "how much is fixed vs to-be-fixed". "Price level" on this desk = differential vs the NY KC futures in USc/lb. ALWAYS present the contract differential and the FOB-equivalent side by side — neither is the headline. State the fixed vs price-to-be-fixed split and any excluded (unpriced) sales. Every bucket carries its own fixed/ptbf split — for "how much of my grinder book / August book re-rates if NY moves", quote that bucket's ptbf volume and share (price-to-be-fixed = futures leg open = re-rates with NY; fixed volume does not). It covers the unallocated shorts book only: no purchase cost basis, no P&L or mark-to-market (no market prices exist in the data), no price history — say so when asked.
 - client-exposure for "who am I most short to", "my exposure to Nestle", "what does client X buy". Volumes are forward commitments by counterparty; combine with price-analytics (dimension=client) when they also want the price level.
 - shipment-status for "what's booked/unbooked", "what's shipping this month", "when does X's coffee leave". Three states, keep them distinct: unbooked / preshipment-only (booked, no vessel yet) / vessel-assigned — a contract with a preshipment but no vessel is BOOKED. The export has no B/L, container, invoice, due-date, or warehouse data, so decline those plainly instead of approximating.
 - Grades are matched fuzzily ("AB FAQ" → POST 16 FAQ); confirm the resolved grade in the answer.
