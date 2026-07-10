@@ -704,6 +704,40 @@ check(
 const kahawa = xbsSc.location.results.find((l) => l.originalName === 'KAHAWA BORA WAREHOUSE');
 check('KAHAWA BORA bags (location summary)', Math.round((kahawa?.bags ?? 0) * 100) / 100, 25661.26);
 
+// Upload-time coverage report (pure engine function the ingest tool wraps).
+// The golden-day export is the validated baseline, so it must produce ZERO
+// drift warnings; every constant hand-computed in python (session log §11).
+const { computeStockCoverage } = await import('../lib/stockcoverage');
+const cov = computeStockCoverage(xbsRows);
+check('coverage blocked rows', cov.blocked.rows, 68);
+check('coverage blocked bags', Math.round(cov.blocked.bags * 100) / 100, 338.55);
+check('coverage WIP rows (no warehouse)', cov.wip.rows, 54);
+check('coverage WIP bags', Math.round(cov.wip.bags * 100) / 100, 9495.77);
+check('coverage crop years present', Object.keys(cov.byCropYear).length, 3);
+check('coverage 2025/2026 rows', cov.byCropYear['2025 / 2026']?.rows ?? 0, 775);
+check('coverage cert-tagged rows', cov.certTagged.rows, 41);
+check('coverage cert-tagged bags', Math.round(cov.certTagged.bags * 100) / 100, 1139.32);
+check('coverage intake dates parsed', cov.intakeDates.parsed, 754);
+check('coverage pending tags (DUST/STONES/MBUNIS/Specialty - Washed)', Object.keys(cov.pendingTags).length, 4);
+// exact value is 178.135 bags (10,688.10 kg) — a 2dp rounding coin-flip, so assert at 3dp
+check(
+  'coverage pending bags',
+  Math.round(Object.values(cov.pendingTags).reduce((s, t) => s + t.bags, 0) * 1000) / 1000,
+  178.135
+);
+check('coverage extra POST grades (MBUNI HEAVY + SPECIALTY WASHED)', cov.extraPostGrades.length, 2);
+check('coverage zero-qty rows', cov.zeroQtyRows, 0);
+if (cov.warnings.length === 0) ok('golden-day export produces zero drift warnings (clean baseline)');
+else fail(`golden-day export produced warnings: ${cov.warnings.join(' | ')}`);
+// Drift detection: a new unbucketed strategy tag and a new POST grade must warn.
+const driftCov = computeStockCoverage([
+  ...xbsRows,
+  { strategy: 'GRAVEL', qty: 60 },
+  { strategy: 'POST SUPERSONIC', qty: 60 },
+]);
+if (driftCov.warnings.length === 2) ok('novel pending tag + novel POST grade each raise a drift warning');
+else fail(`drift warnings: got ${driftCov.warnings.length} (${driftCov.warnings.join(' | ')}), expected 2`);
+
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));
 

@@ -2,6 +2,7 @@ import { LuaSkill, LuaTool, Data } from 'lua-cli';
 import { z } from 'zod';
 import { UploadedFileSource } from '../sources/UploadedFileSource';
 import { processInventoryLocation, processWarehouseStatus, processMatrixData, groupForecastRows } from '../lib/stockcounter';
+import { computeStockCoverage } from '../lib/stockcoverage';
 import { COLLECTIONS, saveSnapshot, resolveFileId, defaultPositionDate, upsert, loadBatchMappings } from './store';
 import {
   BLENDS_SEED,
@@ -30,7 +31,8 @@ const fileField = z.string().optional().describe('CDN file id of the upload (def
 
 class IngestStockReport implements LuaTool {
   name = 'ingest-stock-report';
-  description = 'Parse an uploaded XBS stock report (.xlsx) into the position snapshot (longs input).';
+  description =
+    'Parse an uploaded XBS Current Stock export (raw .csv or .xlsx) into the position snapshot (longs input). Returns an upload-time coverage report with drift warnings.';
   inputSchema = z.object({ fileId: fileField, positionDate: dateField });
 
   async execute(input: { fileId?: string; positionDate?: string }) {
@@ -42,6 +44,7 @@ class IngestStockReport implements LuaTool {
     const status = processWarehouseStatus(rows);
     const matrix = processMatrixData(rows);
     const groups = groupForecastRows(rows, await loadBatchMappings());
+    const coverage = computeStockCoverage(rows);
 
     // POST bags by raw strategy (consolidation happens at compute time)
     const postBags: Record<string, number> = {};
@@ -53,13 +56,30 @@ class IngestStockReport implements LuaTool {
       postBags[strategy] = (postBags[strategy] || 0) + qty;
     }
 
-    await saveSnapshot(positionDate, { stock: { location, status, matrix, postBags, groups, rowCount: rows.length } });
+    // coverage rides the snapshot so blocked/crop-year/cert analytics work
+    // later without the raw rows (absent on snapshots ingested before this)
+    await saveSnapshot(positionDate, {
+      stock: { location, status, matrix, postBags, groups, rowCount: rows.length, coverage },
+    });
+    const r2 = (n: number) => Math.round(n * 100) / 100;
+    const rollup = (b: { rows: number; bags: number }) => ({ rows: b.rows, bags: r2(b.bags) });
     return {
       positionDate,
       rowCount: rows.length,
       totalBags: Math.round(location.totals.bags),
       byStage: Object.fromEntries(status.map((s) => [s.key, Math.round(s.bags)])),
       matrixRows: matrix.length,
+      coverage: {
+        blocked: rollup(coverage.blocked),
+        workInProgressNoWarehouse: rollup(coverage.wip),
+        byCropYear: Object.fromEntries(Object.entries(coverage.byCropYear).map(([k, b]) => [k, rollup(b)])),
+        certTagged: { ...rollup(coverage.certTagged), tags: Object.keys(coverage.certTagged.tags) },
+        intakeDates: coverage.intakeDates,
+        pendingStrategyTags: Object.fromEntries(Object.entries(coverage.pendingTags).map(([k, b]) => [k, rollup(b)])),
+        unclassifiedBlankStrategy: rollup(coverage.unclassified),
+        extraPostGrades: coverage.extraPostGrades,
+      },
+      warnings: coverage.warnings,
       nextStep: 'Run compute-theoretical-stock to get theoretical stock by POST grade.',
     };
   }
@@ -223,7 +243,8 @@ export const ingestionSkill = new LuaSkill({
   name: 'position-ingestion',
   description: 'Ingest the three desk exports (XBS stock, SOL DailyNetPosition, SOL ReportLogistic) into daily position snapshots.',
   context: `Use these tools when the trader uploads position exports.
-- Each export type has its own tool; ask which file is which if unclear (stock is .xlsx; the two SOL exports are .xls).
+- Each export type has its own tool; ask which file is which if unclear (stock is the XBS "Current Stock" export, raw .csv or .xlsx; the two SOL exports are .xls).
+- ingest-stock-report returns a coverage report: blocked stock, WIP lots (no warehouse), crop years, XBS cert tags, and unbucketed strategy tags ALL COUNT toward the total (validated against the 2026-06-18 golden day). Relay any warnings to the trader verbatim — they signal export-format drift.
 - All three write into the snapshot for the position date (default: today, Nairobi). Pass positionDate when the trader says the export is for another day.
 - If the trader uploaded a file but no fileId is known, the tools automatically use the most recent upload in this chat.
 - seed-reference-data is one-time setup (safe to re-run) — run it if blend/assumption lookups appear empty.
