@@ -321,9 +321,9 @@ else {
 // Summary!C as fully-processed lots). Running all three through the real
 // parsers + engine must land on the golden Summary.
 console.log('\n[8] demo-files/ end-to-end through the real parsers');
-const { parseStockWorkbook } = await import('../sources/UploadedFileSource');
+const { parseXbsStock: parseXbs } = await import('../sources/UploadedFileSource');
 const demoDir = join(here, '../../demo-files');
-const stockRows = parseStockWorkbook(readFileSync(join(demoDir, 'XBS_Stock_2026-06-18.xlsx')));
+const stockRows = parseXbs(readFileSync(join(demoDir, 'XBS_Stock_2026-06-18.xlsx')));
 const demoSc = runStockCounter(stockRows, {}, new Date('2026-06-18T00:00:00Z'));
 const demoTheo = theoreticalByGrade(demoSc.theoretical);
 check('demo XBS total theoretical bags', Math.round(demoSc.theoretical.totals.total * 100) / 100, 35568.29);
@@ -591,6 +591,118 @@ else fail(`stock tagged: got ${cert.stock?.tagged.rows}/${cert.stock?.tagged.mt}
 const legacy = computeCertExposure(parsedSales, certDnp.map(({ certification: _c, ...r }: any) => r) as any);
 if (legacy.stock == null) ok('legacy DNP rows (no certification field) → stock side unavailable, not fabricated');
 else fail('legacy DNP rows should yield stock=null (got a stock result)');
+
+// ---------- 12. Real raw XBS export — parser + stock counter vs golden ----------
+// The real XBS Current Stock export for the golden day (HANDOVER §9 data ask
+// #1). Every constant below was hand-computed independently (python over the
+// raw CSV — session log §11); per-grade already-in-POST targets come from the
+// golden workbook's Stocks!I column. The Expected side (Stocks!J) is Ivo's
+// manual percentages (browser localStorage) and is NOT asserted here — the
+// counter runs with empty percentages, so expected must be 0 everywhere.
+console.log('\n[12] Real raw XBS export (2026-06-18) — parseXbsStock + counter vs golden Stocks sheet');
+const { parseXbsStock } = await import('../sources/UploadedFileSource');
+const xbsRows = parseXbsStock(
+  readFileSync(join(here, '../../forecast-context/XBS - Current Stock -ivo-2026-06-18 (2).csv'))
+);
+check('rows parsed', xbsRows.length, 808);
+const xbsKg = xbsRows.reduce((s, r) => s + (r.qty || 0), 0);
+check('total bag-equivalents (Qty kg / 60)', Math.round((xbsKg / 60) * 100) / 100, 35568.29);
+
+const xbsSc = runStockCounter(xbsRows, {}, new Date('2026-06-18T00:00:00Z'));
+const XBS_STATUS_EXPECT: Record<string, number> = {
+  PRE: 10341.79,
+  IN: 6803.93,
+  POST: 11687.76,
+  FINISHED: 5783.01,
+  PENDING: 178.14, // DUST / STONES / MBUNIS / "Specialty - Washed" tags
+  UNCLASSIFIED: 773.67, // blank strategy
+};
+let statusBad = 0;
+let preInPool = 0;
+for (const s of xbsSc.status) {
+  const exp = XBS_STATUS_EXPECT[s.key];
+  if (s.key === 'PRE' || s.key === 'IN') preInPool += s.bags;
+  if (Math.abs(Math.round(s.bags * 100) / 100 - exp) > 0.005) {
+    statusBad++;
+    fail(`status bucket ${s.key}: got ${s.bags.toFixed(2)}, expected ${exp}`);
+  }
+}
+if (statusBad === 0) ok('all 6 status buckets exact (PRE/IN/POST/FINISHED/PENDING/UNCLASSIFIED)');
+check('PRE+IN pool (= golden Expected total, awaits Ivo percentages)', Math.round(preInPool * 100) / 100, 17145.72);
+
+// Already-in-POST per counter grade vs golden Stocks!I. POST FAQ MINUS folds
+// into POST 17 UP FAQ (consolidation map); POST MBUNI HEAVY and POST
+// SPECIALTY WASHED are real counter grades outside POST_ORDER (Summary!C
+// folds them into POST MH / POST NATURAL respectively).
+const XBS_ALREADY_EXPECT: Record<string, number> = {
+  'POST 17 UP TOP': 495.42,
+  'POST 16 TOP': 8.4,
+  'POST 17 UP PLUS': 3591.81,
+  'POST 16 PLUS': 187.96,
+  'POST 14 PLUS': 0.12,
+  'POST PB - PLUS': 3.97,
+  'POST 17 UP FAQ': 2234.54, // 2231.69 + POST FAQ MINUS 2.85
+  'POST 16 FAQ': 1259.6,
+  'POST 14 FAQ': 511.95,
+  'POST PB - FAQ': 184.01,
+  'POST GRINDER BOLD': 2113.68,
+  'POST GRINDER LIGHT': 0.75,
+  'POST MH': 8.39,
+  'POST REJECTS P': 304.06,
+  'POST MBUNI HEAVY': 321.43,
+  'POST SPECIALTY WASHED': 461.67,
+};
+let alreadyBad = 0;
+let alreadyTotal = 0;
+for (const g of xbsSc.theoretical.order) {
+  const got = xbsSc.theoretical.grades[g];
+  alreadyTotal += got.alreadyInPost;
+  const exp = XBS_ALREADY_EXPECT[g] ?? 0;
+  if (Math.abs(Math.round(got.alreadyInPost * 100) / 100 - exp) > 0.005) {
+    alreadyBad++;
+    fail(`already-in-POST ${g}: got ${got.alreadyInPost.toFixed(2)}, expected ${exp}`);
+  }
+  if (got.expected !== 0) {
+    alreadyBad++;
+    fail(`expected ${g}: got ${got.expected} with empty percentages (must be 0)`);
+  }
+}
+if (alreadyBad === 0)
+  ok(`already-in-POST exact for all ${xbsSc.theoretical.order.length} counter grades (incl. MBUNI HEAVY + SPECIALTY WASHED)`);
+check('already-in-POST total', Math.round(alreadyTotal * 100) / 100, 11687.76);
+check('FINISHED', Math.round(xbsSc.theoretical.grandTotalFinished * 100) / 100, 5783.01);
+check('Unclassified/Pending', Math.round(xbsSc.theoretical.unclassifiedBags * 100) / 100, 951.8);
+
+// Field capture for the coming warehouse/crop-year/blocked/cert analytics.
+check('Blocked=Yes rows', xbsRows.filter((r) => r.blocked).length, 68);
+check(
+  'Blocked=Yes bags',
+  Math.round((xbsRows.filter((r) => r.blocked).reduce((s, r) => s + r.qty, 0) / 60) * 100) / 100,
+  338.55
+);
+const phases = xbsRows.reduce((m: Record<string, number>, r) => {
+  if (r.itemPhase) m[r.itemPhase] = (m[r.itemPhase] || 0) + 1;
+  return m;
+}, {});
+check('Item Phase Intermediate rows', phases['Intermediate'] || 0, 607);
+check('Item Phase Finished Good rows', phases['Finished Good'] || 0, 164);
+check('Item Phase Scrap rows', phases['Scrap'] || 0, 37);
+const crops = xbsRows.reduce((m: Record<string, number>, r) => {
+  if (r.cropYear) m[r.cropYear] = (m[r.cropYear] || 0) + 1;
+  return m;
+}, {});
+check('crop year 2025/2026 rows', crops['2025 / 2026'] || 0, 775);
+check('crop year 2024/2025 rows', crops['2024 / 2025'] || 0, 16);
+check('crop year 2023/2024 rows', crops['2023 / 2024'] || 0, 17);
+check('cert-tagged rows (XBS vocabulary)', xbsRows.filter((r) => r.certification).length, 41);
+check('WIP rows (no warehouse)', xbsRows.filter((r) => !r.warehouse || !r.warehouse.trim()).length, 54);
+check(
+  'rows with parseable Intake Date (DD-MMM-YYYY)',
+  xbsRows.filter((r) => r.intakeDate instanceof Date && !Number.isNaN(r.intakeDate.getTime())).length,
+  754
+);
+const kahawa = xbsSc.location.results.find((l) => l.originalName === 'KAHAWA BORA WAREHOUSE');
+check('KAHAWA BORA bags (location summary)', Math.round((kahawa?.bags ?? 0) * 100) / 100, 25661.26);
 
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));

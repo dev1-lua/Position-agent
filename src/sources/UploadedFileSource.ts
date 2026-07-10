@@ -18,11 +18,42 @@ const STOCK_HEADER_ALIASES: Record<keyof typeof STOCK_FIELDS, string[]> = {
   batchId: ['Batch No.'],
   qty: ['Qty.'],
   itemName: ['Item Name'],
+  blocked: ['Blocked'],
+  itemPhase: ['Item Phase'],
+  cropYear: ['Inventory Type'],
+  certification: ['Certification'],
 };
-const STOCK_FIELDS = { strategy: 0, warehouse: 0, intakeDate: 0, batchId: 0, qty: 0, itemName: 0 };
+const STOCK_FIELDS = {
+  strategy: 0, warehouse: 0, intakeDate: 0, batchId: 0, qty: 0, itemName: 0,
+  blocked: 0, itemPhase: 0, cropYear: 0, certification: 0,
+};
 
-/** Parse the XBS stock workbook (first sheet) into stock rows. */
-export function parseStockWorkbook(data: ArrayBuffer | Uint8Array): StockRow[] {
+const INTAKE_MONTHS: Record<string, number> = {
+  JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5, JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11,
+};
+
+/** Intake dates arrive as Date cells (xlsx) or "01-DEC-2024" strings (raw CSV). */
+function parseIntakeDate(v: any): Date | null {
+  if (v instanceof Date) return v;
+  const m = /^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/.exec(String(v ?? '').trim());
+  if (!m) return null;
+  const month = INTAKE_MONTHS[m[2].toUpperCase()];
+  return month === undefined ? null : new Date(Date.UTC(Number(m[3]), month, Number(m[1])));
+}
+
+/** Trimmed string, or undefined for empty/whitespace-only cells. */
+const cell = (v: any): string | undefined => {
+  if (v == null) return undefined;
+  const s = String(v).trim();
+  return s === '' ? undefined : s;
+};
+
+/**
+ * Parse an XBS Current Stock export into stock rows. Handles both the real
+ * raw export (CSV, kg quantities, "01-DEC-2024" dates) and workbook variants
+ * (e.g. the synthesized demo .xlsx) — columns are found by header name.
+ */
+export function parseXbsStock(data: ArrayBuffer | Uint8Array): StockRow[] {
   const workbook = XLSX.read(data instanceof Uint8Array ? data : new Uint8Array(data), {
     type: 'array',
     cellDates: true,
@@ -45,12 +76,17 @@ export function parseStockWorkbook(data: ArrayBuffer | Uint8Array): StockRow[] {
   return grid.slice(1).map((row) => ({
     strategy: String(row[col.strategy] ?? ''),
     warehouse: row[col.warehouse] != null ? String(row[col.warehouse]) : undefined,
-    intakeDate: row[col.intakeDate] instanceof Date ? row[col.intakeDate] : null,
+    intakeDate: parseIntakeDate(row[col.intakeDate]),
     batchId: row[col.batchId] != null ? String(row[col.batchId]) : undefined,
-    qty: parseFloat(String(row[col.qty])) || 0,
+    qty: parseFloat(String(row[col.qty]).replace(/,/g, '')) || 0,
     itemName: row[col.itemName] != null ? String(row[col.itemName]) : undefined,
+    blocked: String(row[col.blocked] ?? '').trim().toLowerCase() === 'yes',
+    itemPhase: cell(row[col.itemPhase]),
+    cropYear: cell(row[col.cropYear]),
+    certification: cell(row[col.certification]),
   }));
 }
+
 
 export class UploadedFileSource implements PositionSource {
   private async fetchBytes(fileId: string): Promise<ArrayBuffer> {
@@ -59,7 +95,7 @@ export class UploadedFileSource implements PositionSource {
   }
 
   async getStock(fileId: string): Promise<StockRow[]> {
-    return parseStockWorkbook(await this.fetchBytes(fileId));
+    return parseXbsStock(await this.fetchBytes(fileId));
   }
 
   async getDailyNetPosition(fileId: string): Promise<DnpRow[]> {

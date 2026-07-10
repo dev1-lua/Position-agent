@@ -74,6 +74,10 @@ export interface StockRow {
   batchId?: string;
   qty: number; // kg
   itemName?: string;
+  blocked?: boolean; // "Blocked" column ("Yes"/"No")
+  itemPhase?: string; // "Item Phase": Intermediate / Finished Good / Scrap
+  cropYear?: string; // "Inventory Type" column, e.g. "2025 / 2026"
+  certification?: string; // XBS cert vocabulary, e.g. "RAINFOREST ALLIANCE" (≠ SOL's "RA")
 }
 
 /** Outcome of resolving a sale to a blend. */
