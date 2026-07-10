@@ -105,12 +105,11 @@ export default function PositionAgentPage() {
         onDeleteChat={handleDeleteChat}
       />
 
-      <div className="flex min-w-0 flex-1 flex-col p-4">
-        <div className="h-full overflow-hidden rounded-lg border border-border bg-card">
-          {/* Key by chat id: switching chats swaps the whole iframe/widget
-              context so the widget re-inits with that chat's session id. */}
-          <LuaChat key={activeId} sessionId={activeId} />
-        </div>
+      {/* The app frame's white panel IS the card — the chat fills it directly.
+          Key by chat id: switching chats swaps the whole iframe/widget context
+          so the widget re-inits with that chat's session id. */}
+      <div className="min-w-0 flex-1 bg-card">
+        <LuaChat key={activeId} sessionId={activeId} />
       </div>
     </div>
   );

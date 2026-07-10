@@ -4,39 +4,47 @@
 @tailwind utilities;
 
 @layer base {
-  /* Same token values as Sucafina/dashboard-v2: true-neutral gray scale
-     (R=G=B), single indigo accent on --primary/--ring only, faint indigo
-     --accent for selection. UI is pinned light (client wants a white UI),
-     but the .dark block is kept for a future toggle. */
+  /* Calibrated against Twenty CRM's twenty-ui theme constants (read for
+     reference, no code lifted): a TRUE-neutral gray scale — text #333/#666/#999
+     (gray12/11/9), borders #EBEBEB medium / #D6D6D6 strong (gray5/6) — and
+     Twenty's signature layout physics: a gray canvas (--background) with the
+     content floating as a rounded white panel (--card). The indigo accent
+     (Radix indigo9 ≈ 226° 70% 55%) appears ONLY on focus rings and selection
+     tints; buttons are white + hairline border, never solid blue. UI pinned
+     light (client wants a white UI); .dark kept for a future toggle. */
   :root {
-    --background: 0 0% 99%;
-    --foreground: 0 0% 20%;
-    --card: 0 0% 100%;
+    --background: 0 0% 96%; /* the canvas the panel floats on */
+    --foreground: 0 0% 20%; /* gray12 #333 */
+    --card: 0 0% 100%; /* the floating panel */
     --card-foreground: 0 0% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
     --primary: 226 70% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 95%;
+    --secondary: 0 0% 96%;
     --secondary-foreground: 0 0% 20%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 0 0% 94.5%; /* gray4 #F1F1F1 hover fill on white */
+    --muted-foreground: 0 0% 40%; /* gray11 #666 */
     --accent: 226 100% 97%;
     --accent-foreground: 226 70% 40%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 90%;
-    --input: 0 0% 87%;
+    --border: 0 0% 92%; /* gray5 #EBEBEB — hairline */
+    --input: 0 0% 84%; /* gray6 #D6D6D6 — strong (focused inputs) */
     --ring: 226 70% 55%;
-    --radius: 0.5rem;
+    --radius: 0.5rem; /* 8px panels; controls use 4px */
   }
 
   .dark {
-    --background: 0 0% 9%;
+    --background: 0 0% 7%;
     --foreground: 0 0% 92%;
-    --card: 0 0% 12%;
+    --card: 0 0% 11%;
     --card-foreground: 0 0% 92%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 92%;
     --primary: 226 70% 63%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 16%;
+    --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 92%;
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 63%;
@@ -44,7 +52,7 @@
     --accent-foreground: 226 85% 82%;
     --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 27%;
+    --border: 0 0% 20%;
     --input: 0 0% 27%;
     --ring: 226 70% 63%;
   }
@@ -57,7 +65,7 @@
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.5; /* Twenty TEXT.lineHeight.lg */
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -72,6 +80,7 @@
   ::-webkit-scrollbar-thumb {
     background-color: hsl(var(--border));
     border-radius: 9999px;
-    border: 2px solid hsl(var(--background));
+    border: 2px solid transparent;
+    background-clip: padding-box;
   }
 }

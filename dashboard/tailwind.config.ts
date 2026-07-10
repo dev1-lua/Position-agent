@@ -24,6 +24,11 @@ export default {
       borderRadius: { lg: 'var(--radius)', md: '6px', sm: '4px' },
       fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
       fontSize: { '2xs': ['10px', '14px'], xs: ['11px', '16px'], sm: ['13px', '18px'], base: ['13px', '18px'] },
+      // Twenty's BOX_SHADOW_LIGHT.light, scaled down a hair: shadows whisper.
+      boxShadow: {
+        panel: '0px 2px 4px 0px rgba(0,0,0,0.04), 0px 0px 4px 0px rgba(0,0,0,0.06)',
+        btn: '0px 1px 2px 0px rgba(0,0,0,0.04)',
+      },
       keyframes: {
         'fade-in': { from: { opacity: '0' }, to: { opacity: '1' } },
       },
