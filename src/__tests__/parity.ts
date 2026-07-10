@@ -581,6 +581,11 @@ if (stockBad === 0) ok('stock cert tags exact over unsold purchase rows (185 row
 if (cert.stock && Math.abs(cert.stock.totalMt - 577.49) <= 0.01 && Math.abs(cert.stock.eudr.mt - 59.89) <= 0.01)
   ok(`stock EUDR-flagged: ${cert.stock.eudr.mt} MT of ${cert.stock.totalMt} MT unsold`);
 else fail(`stock totals: got ${cert.stock?.totalMt}/${cert.stock?.eudr.mt}, expected 577.49/59.89`);
+// tagged rollup (prod QA catch: without it the agent conflated "EUDR rows"
+// with "tagged rows" — 32 rows carry a tag, 2 of them EUDR)
+if (cert.stock && cert.stock.tagged.rows === 32 && Math.abs(cert.stock.tagged.mt - 192.56) <= 0.01)
+  ok('stock tagged rollup: 32 rows / 192.56 MT carry a cert tag');
+else fail(`stock tagged: got ${cert.stock?.tagged.rows}/${cert.stock?.tagged.mt}, expected 32/192.56`);
 // Old snapshots parsed before `certification` was captured must be detected,
 // not silently reported as 100% untagged.
 const legacy = computeCertExposure(parsedSales, certDnp.map(({ certification: _c, ...r }: any) => r) as any);

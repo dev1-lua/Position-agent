@@ -310,7 +310,10 @@ class CertExposureTool implements LuaTool {
         ? { ...result.stock, byTag: filterTags(result.stock.byTag) }
         : { note: 'This snapshot\'s DNP predates certification capture — re-ingest the DailyNetPosition export to get the stock side.' },
       caveats: [
-        `Coverage is partial by nature: ${result.sales.tagged.contracts}/${result.sales.total.contracts} sales contracts carry a cert tag. UNTAGGED means certification UNKNOWN — never report untagged volume as non-certified.`,
+        `Coverage is partial by nature: ${result.sales.tagged.contracts}/${result.sales.total.contracts} sales contracts carry a cert tag${
+          result.stock ? `; ${result.stock.tagged.rows}/${result.stock.rows} unsold stock rows do (${result.stock.tagged.mt} MT)` : ''
+        }. UNTAGGED means certification UNKNOWN — never report untagged volume as non-certified.`,
+        'All sharePct figures are of the TOTAL volume (tagged + untagged), not of the tagged subset.',
         'Stock side = unsold purchase rows only (in-store origin / to-be-shipped), purchase MT.',
         'The full cert picture needs the 3 external cert workbooks (not yet provided); these are the tags SOL itself carries.',
       ],

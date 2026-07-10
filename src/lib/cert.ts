@@ -33,6 +33,7 @@ export interface CertExposureResult {
   stock: {
     rows: number;
     totalMt: number;
+    tagged: { rows: number; mt: number };
     byTag: Record<string, { rows: number; mt: number }>;
     eudr: { rows: number; mt: number; sharePct: number };
   } | null;
@@ -71,6 +72,7 @@ export function computeCertExposure(sales: Sale[], dnp?: DnpRow[]): CertExposure
   if (dnp && dnp.length > 0 && dnp.some((r) => r.certification !== undefined)) {
     const stockByTag = new Map<string, { rows: number; mt: number }>();
     const stockTotal = { rows: 0, mt: 0 };
+    const stockTagged = { rows: 0, mt: 0 };
     const stockEudr = { rows: 0, mt: 0 };
     for (const r of dnp) {
       if (!UNSOLD_STATES.has(r.state) || !r.pMt) continue;
@@ -81,15 +83,20 @@ export function computeCertExposure(sales: Sale[], dnp?: DnpRow[]): CertExposure
       b.mt += r.pMt;
       stockTotal.rows += 1;
       stockTotal.mt += r.pMt;
-      if (tag !== UNTAGGED && isEudr(tag)) {
-        stockEudr.rows += 1;
-        stockEudr.mt += r.pMt;
+      if (tag !== UNTAGGED) {
+        stockTagged.rows += 1;
+        stockTagged.mt += r.pMt;
+        if (isEudr(tag)) {
+          stockEudr.rows += 1;
+          stockEudr.mt += r.pMt;
+        }
       }
     }
     for (const b of stockByTag.values()) b.mt = round(b.mt, 4);
     stock = {
       rows: stockTotal.rows,
       totalMt: round(stockTotal.mt, 4),
+      tagged: { rows: stockTagged.rows, mt: round(stockTagged.mt, 4) },
       byTag: sortTags(stockByTag),
       eudr: {
         rows: stockEudr.rows,
