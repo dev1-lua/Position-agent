@@ -78,6 +78,8 @@ export interface StockRow {
   itemPhase?: string; // "Item Phase": Intermediate / Finished Good / Scrap
   cropYear?: string; // "Inventory Type" column, e.g. "2025 / 2026"
   certification?: string; // XBS cert vocabulary, e.g. "RAINFOREST ALLIANCE" (≠ SOL's "RA")
+  /** "Stock In Day(s)": days in store as of the export — intakeDate + this = report date. */
+  stockInDays?: number | null;
 }
 
 /** Outcome of resolving a sale to a blend. */
@@ -114,6 +116,8 @@ export interface DnpRow {
   totLine: number;   // TotLine (col S)
   /** Cert tag, e.g. "RA.EUDR"; '' = untagged. Absent on rows parsed before capture. */
   certification?: string;
+  /** "DatePos" column, DD-MM-YYYY — the export's own position date. */
+  datePos?: string;
 }
 
 /** Net position result. */

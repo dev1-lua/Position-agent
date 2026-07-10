@@ -57,6 +57,7 @@ export function parseDailyNetPosition(text: string): DnpRow[] {
     sMt: columnIndex(header, ['S.MT']),
     totLine: columnIndex(header, ['TotLine']),
     certification: columnIndex(header, ['certification']),
+    datePos: header.findIndex((h) => h.trim() === 'DatePos'), // tolerant: absent on older exports
   };
   return rows.map((r) => ({
     quality: r[col.quality] ?? '',
@@ -66,6 +67,7 @@ export function parseDailyNetPosition(text: string): DnpRow[] {
     sMt: toNum(r[col.sMt]),
     totLine: toNum(r[col.totLine]),
     certification: r[col.certification] ?? '',
+    datePos: col.datePos === -1 ? '' : (r[col.datePos] ?? ''),
   }));
 }
 

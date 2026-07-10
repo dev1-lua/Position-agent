@@ -28,6 +28,7 @@ import {
 
 export const COLLECTIONS = {
   snapshots: 'snapshots',
+  snapshotInputs: 'snapshot_inputs',
   blends: 'blends',
   assumptions: 'assumptions',
   strategyMappings: 'strategy_mappings',
@@ -71,26 +72,57 @@ export interface Snapshot {
   [key: string]: any;
 }
 
-/** Get the snapshot for a date, or the most recent one when no date given. */
-export async function getSnapshot(positionDate?: string): Promise<{ id: string; data: Snapshot } | null> {
-  if (positionDate) {
-    const res = await Data.get(COLLECTIONS.snapshots, { positionDate }, 1, 1);
-    const hit = res?.data?.[0];
-    return hit ? { id: hit.id, data: hit.data as Snapshot } : null;
-  }
-  const all = await getAll(COLLECTIONS.snapshots);
-  if (all.length === 0) return null;
-  all.sort((a, b) => String(b.data.positionDate).localeCompare(String(a.data.positionDate)));
-  return all[0] as { id: string; data: Snapshot };
+/**
+ * The three ingested inputs live in their OWN docs, one per (positionDate,
+ * kind) — NOT inside the shared snapshot doc. Root cause (prod, 2026-07-10):
+ * the model fires all three ingest tools in parallel when the trader drops
+ * three files in one message, and concurrent read-modify-write upserts on one
+ * doc lost the DNP patch. Distinct upsert filters never contend, so parallel
+ * ingestion is race-free by construction. Computed results (theoretical /
+ * forwardSales / net / futs / …) stay on the snapshot doc — the compute chain
+ * is sequential.
+ */
+const INPUT_KINDS = ['stock', 'dnp', 'sales'] as const;
+
+/** Merge duplicate docs for one date (older race could create several), oldest first so the newest write wins per key. */
+function mergeDocs(docs: Array<{ id: string; data: any }>): { id: string; data: any } | null {
+  if (docs.length === 0) return null;
+  docs.sort((a, b) => String(a.data?.updatedAt ?? '').localeCompare(String(b.data?.updatedAt ?? '')));
+  const data = Object.assign({}, ...docs.map((d) => d.data));
+  return { id: docs[docs.length - 1].id, data };
 }
 
-/** Delete a stored snapshot document. Returns false if none existed. */
+/** Get the snapshot for a date (computed doc + input docs assembled), or the most recent one when no date given. */
+export async function getSnapshot(positionDate?: string): Promise<{ id: string; data: Snapshot } | null> {
+  if (!positionDate) {
+    const dates = new Set<string>();
+    for (const row of await getAll(COLLECTIONS.snapshots)) if (row.data?.positionDate) dates.add(String(row.data.positionDate));
+    for (const row of await getAll(COLLECTIONS.snapshotInputs)) if (row.data?.positionDate) dates.add(String(row.data.positionDate));
+    if (dates.size === 0) return null;
+    positionDate = [...dates].sort().pop()!;
+  }
+  const computed = mergeDocs(await getAll(COLLECTIONS.snapshots, { positionDate }));
+  const inputs = await getAll(COLLECTIONS.snapshotInputs, { positionDate });
+  if (!computed && inputs.length === 0) return null;
+  const data: Snapshot = { positionDate, ...(computed?.data ?? {}) };
+  let updatedAt = String(computed?.data?.updatedAt ?? '');
+  for (const row of inputs) {
+    // input docs are authoritative over legacy embedded stock/dnp/sales keys
+    data[row.data.kind] = row.data.payload;
+    if (String(row.data.updatedAt ?? '') > updatedAt) updatedAt = String(row.data.updatedAt);
+  }
+  if (updatedAt) data.updatedAt = updatedAt;
+  return { id: computed?.id ?? inputs[0].id, data };
+}
+
+/** Delete a stored snapshot (computed doc + input docs, duplicates included). Returns false if none existed. */
 export async function deleteSnapshot(positionDate: string): Promise<boolean> {
-  const existing = await Data.get(COLLECTIONS.snapshots, { positionDate }, 1, 1);
-  const hit = existing?.data?.[0];
-  if (!hit?.id) return false;
-  await Data.delete(COLLECTIONS.snapshots, hit.id);
-  return true;
+  const docs = [
+    ...(await getAll(COLLECTIONS.snapshots, { positionDate })).map((d) => ({ collection: COLLECTIONS.snapshots, id: d.id })),
+    ...(await getAll(COLLECTIONS.snapshotInputs, { positionDate })).map((d) => ({ collection: COLLECTIONS.snapshotInputs, id: d.id })),
+  ];
+  for (const d of docs) await Data.delete(d.collection, d.id);
+  return docs.length > 0;
 }
 
 /**
@@ -101,21 +133,71 @@ export async function deleteSnapshot(positionDate: string): Promise<boolean> {
  * snapshot was cleared.
  */
 export async function clearDemoSnapshot(positionDate: string): Promise<boolean> {
-  const existing = await Data.get(COLLECTIONS.snapshots, { positionDate }, 1, 1);
-  const hit = existing?.data?.[0];
-  if (!hit?.id || hit.data?.demo !== true) return false;
-  await Data.delete(COLLECTIONS.snapshots, hit.id);
+  const demoDocs = (await getAll(COLLECTIONS.snapshots, { positionDate })).filter((d) => d.data?.demo === true);
+  if (demoDocs.length === 0) return false;
+  for (const d of demoDocs) await Data.delete(COLLECTIONS.snapshots, d.id);
+  // the demo day's input docs must go too, or a real upload onto this date
+  // would assemble a hybrid of real + demo inputs
+  for (const d of await getAll(COLLECTIONS.snapshotInputs, { positionDate })) await Data.delete(COLLECTIONS.snapshotInputs, d.id);
   return true;
 }
 
-/** Merge `patch` into the snapshot for `positionDate`, creating it if needed. */
+/**
+ * Merge `patch` into the snapshot for `positionDate`, creating it if needed.
+ * Input keys (stock / dnp / sales) are routed to their per-kind docs; every
+ * other key goes to the shared computed doc. Callers are unchanged.
+ */
 export async function saveSnapshot(positionDate: string, patch: Record<string, any>): Promise<void> {
-  await upsert(
-    COLLECTIONS.snapshots,
-    { positionDate },
-    { ...patch, positionDate, updatedAt: new Date().toISOString() },
-    `position snapshot ${positionDate}`
-  );
+  const updatedAt = new Date().toISOString();
+  const rest: Record<string, any> = {};
+  for (const [key, value] of Object.entries(patch)) {
+    if ((INPUT_KINDS as readonly string[]).includes(key)) {
+      await upsert(
+        COLLECTIONS.snapshotInputs,
+        { positionDate, kind: key },
+        { positionDate, kind: key, payload: value, updatedAt },
+        `snapshot input ${key} ${positionDate}`
+      );
+    } else {
+      rest[key] = value;
+    }
+  }
+  if (Object.keys(rest).length > 0) {
+    await upsert(
+      COLLECTIONS.snapshots,
+      { positionDate },
+      { ...rest, positionDate, updatedAt },
+      `position snapshot ${positionDate}`
+    );
+  }
+}
+
+/** One line per stored date: which inputs/results are present (assembled across both collections). */
+export async function listSnapshotSummaries(): Promise<
+  Array<{ positionDate: string; has: Record<string, boolean>; updatedAt?: string }>
+> {
+  const dates = new Set<string>();
+  for (const row of await getAll(COLLECTIONS.snapshots)) if (row.data?.positionDate) dates.add(String(row.data.positionDate));
+  for (const row of await getAll(COLLECTIONS.snapshotInputs)) if (row.data?.positionDate) dates.add(String(row.data.positionDate));
+  const out = [];
+  for (const positionDate of [...dates].sort().reverse()) {
+    const snap = await getSnapshot(positionDate);
+    const d: Snapshot = snap?.data ?? { positionDate };
+    out.push({
+      positionDate,
+      has: {
+        stock: !!d.stock,
+        dailyNetPosition: !!d.dnp,
+        sales: !!d.sales,
+        theoretical: !!d.theoretical,
+        forwardSales: !!d.forwardSales,
+        netPosition: !!d.net,
+        futsSpread: !!d.futs,
+      },
+      updatedAt: d.updatedAt,
+    });
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------------------

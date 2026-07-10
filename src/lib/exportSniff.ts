@@ -1,5 +1,7 @@
 import * as XLSX from 'xlsx';
-import { decodeExportText, parseTsv } from './parse';
+import { decodeExportText, parseTsv, parseDailyNetPosition } from './parse';
+import { parseXbsStock } from '../sources/UploadedFileSource';
+import { xbsReportDate, dnpReportDate } from './reportdate';
 
 /**
  * Sniff which desk export an uploaded spreadsheet is, from its bytes alone.
@@ -18,6 +20,8 @@ export interface SniffResult {
   headers: string[];
   dataRows: number;
   sheetNames?: string[];
+  /** The export's own report date (XBS/DNP only), YYYY-MM-DD; null when not derivable. */
+  dataDate?: string | null;
 }
 
 const isZip = (b: Uint8Array) => b.length >= 4 && b[0] === 0x50 && b[1] === 0x4b;
@@ -65,7 +69,18 @@ export function sniffExport(data: ArrayBuffer | Uint8Array): SniffResult {
   if (has('Position Strategy Allocation') && has('Qty.')) kind = 'xbs-stock';
   else if (has('Quality') && has('TotLine')) kind = 'sol-dnp';
   else if (has('Sale Ctr.') && has('S.Ship.')) kind = 'sol-logistics';
-  return { kind, ...meta };
+
+  // Derive the export's own report date (via the same parsers ingestion uses)
+  // so the manifest can pin the position date — the logistics export has no
+  // internal date and must borrow it from its siblings or the trader.
+  let dataDate: string | null = null;
+  try {
+    if (kind === 'xbs-stock') dataDate = xbsReportDate(parseXbsStock(bytes)).date;
+    else if (kind === 'sol-dnp') dataDate = dnpReportDate(parseDailyNetPosition(decodeExportText(bytes))).date;
+  } catch {
+    dataDate = null; // date sniffing must never block intake
+  }
+  return { kind, dataDate, ...meta };
 }
 
 const KIND_INFO: Record<Exclude<ExportKind, 'unknown'>, { label: string; tool: string }> = {
@@ -83,10 +98,15 @@ export function manifestText(fileId: string, s: SniffResult): string {
   const shape = `${s.dataRows} data rows`;
   if (s.kind !== 'unknown') {
     const info = KIND_INFO[s.kind];
+    const dateNote =
+      s.kind === 'sol-logistics'
+        ? 'This export carries NO internal date — pass positionDate explicitly (the data date of the XBS/DNP exports uploaded with it, or ask the trader for the report date; never guess today).'
+        : s.dataDate
+          ? `Data date ${s.dataDate} (derived from the export's own rows — the ingest tool stores under this date automatically).`
+          : 'No data date derivable from the rows — pass positionDate after confirming the report date with the trader.';
     return (
       `[Spreadsheet received and stored: fileId=${fileId}; detected: ${info.label}, ${shape}. ` +
-      `Call ${info.tool} with this fileId to ingest it into the position snapshot ` +
-      `(pass positionDate if the export is not for today).]`
+      `${dateNote} Call ${info.tool} with this fileId to ingest it into the position snapshot.]`
     );
   }
   const headers = s.headers.slice(0, 15).join(', ') + (s.headers.length > 15 ? ', …' : '');

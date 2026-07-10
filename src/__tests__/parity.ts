@@ -29,6 +29,7 @@ import { decodeExportText, parseDailyNetPosition, parseLogisticsReport, aggregat
 import { computeFutsSpread, futuresPotBySFixDte } from '../lib/futsspread';
 import { distinctContractsForGrades } from '../lib/pricing';
 import { citeLine } from '../lib/cite';
+import { xbsReportDate, dnpReportDate, parseSolDate, resolvePositionDate } from '../lib/reportdate';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const blendsSeed = JSON.parse(readFileSync(join(here, '../seed/blends.json'), 'utf8'));
@@ -975,6 +976,56 @@ const exAll = explainGradeContributions(sales, blends, 'POST 16 FAQ');
 check('explain: grade total (all months)', r2(exAll.totalBags), -6564);
 if (exAll.rows.every((r) => r.fraction > 0 && r.allocatedBags !== 0)) ok('explain: only non-zero allocations listed');
 else fail('explain: zero-allocation rows leaked into the list');
+
+// ---------- 17. Report-date sniffing (position date must ALWAYS be accurate) ----------
+// Hand-verified over the real 2026-06-18 exports (python, verify_dates.py):
+// XBS: Intake Date + Stock In Day(s) → 2026-06-18 on 754/754 derivable rows
+// (54 rows lack one of the fields); DNP: DatePos = 18-06-2026 on 459/459.
+// The ReportLogistic export carries no report date → resolver must refuse to
+// default to "today" and demand a date.
+console.log('\n[17] Report-date sniffing vs real 2026-06-18 exports');
+{
+  const eqs = (label: string, actual: any, expected: any) => {
+    if (actual === expected) ok(`${label}: ${expected}`);
+    else fail(`${label}: expected ${expected}, got ${actual}`);
+  };
+  // xbsRows = the real raw CSV already parsed in section [12]
+  const xd = xbsReportDate(xbsRows);
+  eqs('XBS sniffed report date', xd.date, '2026-06-18');
+  eqs('XBS date votes unanimous', `${xd.agree}/${xd.total}`, '754/754');
+  const dnpDateRows = parseDailyNetPosition(
+    decodeExportText(readFileSync(join(here, '../../forecast-context/DailyNetPosition-IVO (87).xls')))
+  );
+  const dd = dnpReportDate(dnpDateRows);
+  eqs('DNP sniffed report date', dd.date, '2026-06-18');
+  eqs('DNP date votes unanimous', `${dd.agree}/${dd.total}`, '459/459');
+
+  eqs('parseSolDate DD-MM-YYYY', parseSolDate('18-06-2026'), '2026-06-18');
+  eqs('parseSolDate passthrough ISO', parseSolDate('2026-06-18'), '2026-06-18');
+  eqs('parseSolDate junk → null', parseSolDate('foo'), null);
+
+  // export date beats a conflicting trader-provided date, with a warning
+  const res = resolvePositionDate(xd, '2026-07-10', 'XBS Current Stock export');
+  eqs('resolver: export date wins over provided', res.positionDate, '2026-06-18');
+  if (res.warnings.some((w) => w.includes('2026-07-10') && w.includes('always wins'))) ok('resolver: conflict warning emitted');
+  else fail(`resolver: conflict warning missing (got ${JSON.stringify(res.warnings)})`);
+  // no sniffable date + provided → provided; + nothing → THROW (never today)
+  const none = { date: null, agree: 0, total: 0 };
+  eqs('resolver: provided date used when no sniff', resolvePositionDate(none, '2026-06-18', 'SOL ReportLogistic export').positionDate, '2026-06-18');
+  try {
+    resolvePositionDate(none, undefined, 'SOL ReportLogistic export');
+    fail('resolver: must throw when no date is derivable or provided');
+  } catch (e: any) {
+    if (String(e.message).includes('Never assume it is today')) ok('resolver: refuses to default to today');
+    else fail(`resolver: wrong error: ${e.message}`);
+  }
+  // majority vote survives noisy rows
+  const noisy = xbsReportDate([
+    ...xbsRows.slice(0, 5),
+    { ...xbsRows[0], stockInDays: (xbsRows[0].stockInDays ?? 0) + 3 },
+  ]);
+  eqs('resolver: majority vote survives one bad row', noisy.date, '2026-06-18');
+}
 
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));

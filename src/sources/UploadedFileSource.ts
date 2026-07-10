@@ -15,6 +15,7 @@ const STOCK_HEADER_ALIASES: Record<keyof typeof STOCK_FIELDS, string[]> = {
   strategy: ['Position Strategy Allocation'],
   warehouse: ['Warehouse'],
   intakeDate: ['Intake Date'],
+  stockInDays: ['Stock In Day(s)'],
   batchId: ['Batch No.'],
   qty: ['Qty.'],
   itemName: ['Item Name'],
@@ -24,7 +25,7 @@ const STOCK_HEADER_ALIASES: Record<keyof typeof STOCK_FIELDS, string[]> = {
   certification: ['Certification'],
 };
 const STOCK_FIELDS = {
-  strategy: 0, warehouse: 0, intakeDate: 0, batchId: 0, qty: 0, itemName: 0,
+  strategy: 0, warehouse: 0, intakeDate: 0, stockInDays: 0, batchId: 0, qty: 0, itemName: 0,
   blocked: 0, itemPhase: 0, cropYear: 0, certification: 0,
 };
 
@@ -83,6 +84,9 @@ export function parseXbsStock(data: ArrayBuffer | Uint8Array): StockRow[] {
     strategy: String(row[col.strategy] ?? ''),
     warehouse: row[col.warehouse] != null ? String(row[col.warehouse]) : undefined,
     intakeDate: parseIntakeDate(row[col.intakeDate]),
+    stockInDays: row[col.stockInDays] != null && String(row[col.stockInDays]).trim() !== ''
+      ? parseInt(String(row[col.stockInDays]).replace(/,/g, ''), 10)
+      : null,
     batchId: row[col.batchId] != null ? String(row[col.batchId]) : undefined,
     qty: parseFloat(String(row[col.qty]).replace(/,/g, '')) || 0,
     itemName: row[col.itemName] != null ? String(row[col.itemName]) : undefined,

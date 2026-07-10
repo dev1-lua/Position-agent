@@ -4,7 +4,8 @@ import { UploadedFileSource } from '../sources/UploadedFileSource';
 import { processInventoryLocation, processWarehouseStatus, processMatrixData, groupForecastRows } from '../lib/stockcounter';
 import { computeStockCoverage } from '../lib/stockcoverage';
 import { citeLine } from '../lib/cite';
-import { COLLECTIONS, saveSnapshot, deleteSnapshot, clearDemoSnapshot, resolveFileId, defaultPositionDate, upsert, loadBatchMappings } from './store';
+import { xbsReportDate, dnpReportDate, resolvePositionDate } from '../lib/reportdate';
+import { COLLECTIONS, saveSnapshot, deleteSnapshot, clearDemoSnapshot, resolveFileId, listSnapshotSummaries, upsert, loadBatchMappings } from './store';
 import {
   BLENDS_SEED,
   ASSUMPTIONS_SEED,
@@ -26,7 +27,12 @@ const dateField = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/)
   .optional()
-  .describe('Position date YYYY-MM-DD (defaults to today in Nairobi)');
+  .describe('Position date YYYY-MM-DD. XBS/DNP exports carry their own date in their rows — it is derived automatically and always wins; pass this only as a fallback. NEVER pass today\'s date just because none was mentioned.');
+const logisticsDateField = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/)
+  .optional()
+  .describe('Position date YYYY-MM-DD — REQUIRED in practice: this export carries no internal date. Use the data date derived for the XBS/DNP exports uploaded with it, or ask the trader which day the report was exported. NEVER pass today\'s date as a guess.');
 const fileField = z.string().optional().describe('CDN file id of the upload (defaults to the most recent file in this chat)');
 
 class IngestStockReport implements LuaTool {
@@ -36,8 +42,10 @@ class IngestStockReport implements LuaTool {
   inputSchema = z.object({ fileId: fileField, positionDate: dateField });
 
   async execute(input: { fileId?: string; positionDate?: string }) {
-    const positionDate = input.positionDate ?? defaultPositionDate();
     const rows = await source.getStock(await resolveFileId(input.fileId));
+    // the export's own date (Intake Date + Stock In Day(s), row-majority) always wins
+    const dateRes = resolvePositionDate(xbsReportDate(rows), input.positionDate, 'XBS Current Stock export');
+    const positionDate = dateRes.positionDate;
 
     const today = new Date(`${positionDate}T00:00:00Z`);
     const location = processInventoryLocation(rows, today);
@@ -60,13 +68,13 @@ class IngestStockReport implements LuaTool {
     // later without the raw rows (absent on snapshots ingested before this)
     const clearedDemo = await clearDemoSnapshot(positionDate);
     await saveSnapshot(positionDate, {
-      demo: false,
       stock: { location, status, matrix, postBags, groups, rowCount: rows.length, coverage },
     });
     const r2 = (n: number) => Math.round(n * 100) / 100;
     const rollup = (b: { rows: number; bags: number }) => ({ rows: b.rows, bags: r2(b.bags) });
     return {
       positionDate,
+      dateSource: dateRes.dateSource,
       rowCount: rows.length,
       totalBags: Math.round(location.totals.bags),
       byStage: Object.fromEntries(status.map((s) => [s.key, Math.round(s.bags)])),
@@ -81,7 +89,7 @@ class IngestStockReport implements LuaTool {
         unclassifiedBlankStrategy: rollup(coverage.unclassified),
         extraPostGrades: coverage.extraPostGrades,
       },
-      warnings: coverage.warnings,
+      warnings: [...dateRes.warnings, ...coverage.warnings],
       ...(clearedDemo
         ? { note: `The demo-seeded snapshot for ${positionDate} was CLEARED — this date now starts fresh from your real upload; re-run the compute chain.` }
         : {}),
@@ -97,14 +105,18 @@ class IngestDailyNetPosition implements LuaTool {
   inputSchema = z.object({ fileId: fileField, positionDate: dateField });
 
   async execute(input: { fileId?: string; positionDate?: string }) {
-    const positionDate = input.positionDate ?? defaultPositionDate();
     const dnp = await source.getDailyNetPosition(await resolveFileId(input.fileId));
+    // the export's own date (DatePos column, row-majority) always wins
+    const dateRes = resolvePositionDate(dnpReportDate(dnp), input.positionDate, 'SOL DailyNetPosition export');
+    const positionDate = dateRes.positionDate;
     const clearedDemo = await clearDemoSnapshot(positionDate);
-    await saveSnapshot(positionDate, { demo: false, dnp });
+    await saveSnapshot(positionDate, { dnp });
     return {
       positionDate,
+      dateSource: dateRes.dateSource,
       rowCount: dnp.length,
       hedgeableRows: dnp.filter((r) => r.quality.toUpperCase() === 'HEDGEABLE').length,
+      ...(dateRes.warnings.length ? { warnings: dateRes.warnings } : {}),
       ...(clearedDemo
         ? { note: `The demo-seeded snapshot for ${positionDate} was CLEARED — this date now starts fresh from your real upload.` }
         : {}),
@@ -117,13 +129,17 @@ class IngestDailyNetPosition implements LuaTool {
 class IngestLogisticsReport implements LuaTool {
   name = 'ingest-logistics-report';
   description = 'Parse an uploaded SOL ReportLogistic export (unallocated sales = shorts) into the position snapshot.';
-  inputSchema = z.object({ fileId: fileField, positionDate: dateField });
+  inputSchema = z.object({ fileId: fileField, positionDate: logisticsDateField });
 
   async execute(input: { fileId?: string; positionDate?: string }) {
-    const positionDate = input.positionDate ?? defaultPositionDate();
+    // the ReportLogistic export carries NO report date in its rows (verified
+    // column-by-column) — a date must be supplied; guessing "today" is exactly
+    // the inaccuracy this refuses to allow.
+    const dateRes = resolvePositionDate({ date: null, agree: 0, total: 0 }, input.positionDate, 'SOL ReportLogistic export');
+    const positionDate = dateRes.positionDate;
     const sales = await source.getLogistics(await resolveFileId(input.fileId));
     const clearedDemo = await clearDemoSnapshot(positionDate);
-    await saveSnapshot(positionDate, { demo: false, sales });
+    await saveSnapshot(positionDate, { sales });
     const totalSmt = sales.reduce((s, x) => s + x.smt, 0);
     // coverage report: surfaces export-format drift (missing difs, odd price
     // units, no bookings) at upload time instead of silently thinner answers
@@ -132,6 +148,7 @@ class IngestLogisticsReport implements LuaTool {
     const withDif = sales.filter((s) => s.sDif != null).length;
     return {
       positionDate,
+      dateSource: dateRes.dateSource,
       saleCount: sales.length,
       totalSmt: Math.round(totalSmt * 100) / 100,
       months: [...new Set(sales.map((s) => s.month))].sort(),
@@ -222,12 +239,12 @@ class DeleteSnapshot implements LuaTool {
     // pending blend confirmations for that date are meaningless without it
     const pend = await Data.get(COLLECTIONS.pendingBlends, { positionDate: input.positionDate }, 1, 100);
     for (const p of pend?.data ?? []) if (p?.id) await Data.delete(COLLECTIONS.pendingBlends, p.id);
-    const remaining = await Data.get(COLLECTIONS.snapshots, undefined, 1, 50);
+    const remaining = await listSnapshotSummaries();
     return {
       positionDate: input.positionDate,
       deleted,
       pendingBlendsRemoved: (pend?.data ?? []).length,
-      remainingSnapshots: (remaining?.data ?? []).map((r: any) => r.data?.positionDate).sort(),
+      remainingSnapshots: remaining.map((r) => r.positionDate).sort(),
       ...(deleted ? {} : { note: 'No snapshot existed for that date — nothing was deleted.' }),
     };
   }
@@ -239,25 +256,7 @@ class ListSnapshots implements LuaTool {
   inputSchema = z.object({});
 
   async execute() {
-    const res = await Data.get(COLLECTIONS.snapshots, undefined, 1, 50);
-    return (res?.data ?? [])
-      .map((r: any) => {
-        const d = r.data ?? {};
-        return {
-          positionDate: d.positionDate,
-          has: {
-            stock: !!d.stock,
-            dailyNetPosition: !!d.dnp,
-            sales: !!d.sales,
-            theoretical: !!d.theoretical,
-            forwardSales: !!d.forwardSales,
-            netPosition: !!d.net,
-            futsSpread: !!d.futs,
-          },
-          updatedAt: d.updatedAt,
-        };
-      })
-      .sort((a: any, b: any) => String(b.positionDate).localeCompare(String(a.positionDate)));
+    return listSnapshotSummaries();
   }
 }
 
@@ -268,7 +267,8 @@ export const ingestionSkill = new LuaSkill({
 - Uploaded spreadsheets arrive as a "[Spreadsheet received and stored: fileId=…]" manifest (a preprocessor stores the raw file on the CDN and detects the export type). Pass that fileId to the ingest tool the manifest names. If it says the file was not recognized, ask the trader what it is instead of guessing.
 - Each export type has its own tool; ask which file is which if unclear (stock is the XBS "Current Stock" export, raw .csv or .xlsx; the two SOL exports are .xls).
 - ingest-stock-report returns a coverage report: blocked stock, WIP lots (no warehouse), crop years, XBS cert tags, and unbucketed strategy tags ALL COUNT toward the total (validated against the 2026-06-18 golden day). Relay any warnings to the trader verbatim — they signal export-format drift.
-- All three write into the snapshot for the position date (default: today, Nairobi). Pass positionDate when the trader says the export is for another day.
+- POSITION DATE (accuracy is a hard rule): the XBS and DNP exports carry their own report date in their rows — the ingest tools derive it automatically and it ALWAYS wins, even over a date the trader states. The ReportLogistic export carries NO internal date: you MUST pass positionDate — use the data date the XBS/DNP manifests/results show for the same upload batch, or ask the trader which day the report was exported. NEVER pass today's date as a guess; if you truly cannot determine it, ask. Relay each tool's dateSource and any date warnings to the trader.
+- Uploading all three files in one message is safe — each ingest writes its own record; they cannot overwrite each other.
 - If the trader uploaded a file but no fileId is known, the tools automatically use the most recent upload in this chat.
 - seed-reference-data is one-time setup (safe to re-run) — run it if blend/assumption lookups appear empty.
 - There is NO demo/sample data: every answer comes from what the trader uploaded. If someone asks for demo data, say the system only works on real uploaded exports.
