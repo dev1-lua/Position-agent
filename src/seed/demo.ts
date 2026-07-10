@@ -1600,3672 +1600,4131 @@ export const DEMO_DNP: any[] = [
   "state": "0-In Store Origin unsold",
   "company": "SUCASTAI",
   "pMt": 0.62,
-  "sMt": 0.0,
-  "totLine": 0.62
+  "sMt": 0,
+  "totLine": 0.62,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCASTAI",
   "pMt": 1.64,
-  "sMt": 0.0,
-  "totLine": 1.64
+  "sMt": 0,
+  "totLine": 1.64,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCASTAI",
   "pMt": 1.43,
-  "sMt": 0.0,
-  "totLine": 1.43
+  "sMt": 0,
+  "totLine": 1.43,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "BARAGWI",
   "pMt": 0.6,
-  "sMt": 0.0,
-  "totLine": 0.6
+  "sMt": 0,
+  "totLine": 0.6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NYERIHILL",
   "pMt": 1.29,
-  "sMt": 0.0,
-  "totLine": 1.29
+  "sMt": 0,
+  "totLine": 1.29,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NYERIHILL",
   "pMt": 1.34,
-  "sMt": 0.0,
-  "totLine": 1.34
+  "sMt": 0,
+  "totLine": 1.34,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "KIRIMIRIESTA",
   "pMt": 0.39,
-  "sMt": 0.0,
-  "totLine": 0.39
+  "sMt": 0,
+  "totLine": 0.39,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "ALLIANCEBERR",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "RUNGETOFCS",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "BARAGWI",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "RUNGETOFCS",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "THIRIRIKA",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.07,
-  "sMt": 0.0,
-  "totLine": 0.07
+  "sMt": 0,
+  "totLine": 0.07,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.09,
-  "sMt": 0.0,
-  "totLine": 0.09
+  "sMt": 0,
+  "totLine": 0.09,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.1,
-  "sMt": 0.0,
-  "totLine": 0.1
+  "sMt": 0,
+  "totLine": 0.1,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 38.4,
-  "sMt": 0.0,
-  "totLine": 4.4
+  "sMt": 0,
+  "totLine": 4.4,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "SUCAFINA SA",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -136.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -136,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "SUCAFINA SA",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 2.2
+  "sMt": 0,
+  "totLine": 2.2,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 9.6,
-  "sMt": 0.0,
-  "totLine": 9.6
+  "sMt": 0,
+  "totLine": 9.6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "sMt": 0,
+  "totLine": 0,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "sMt": 0,
+  "totLine": 0,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "sMt": 0,
+  "totLine": 0,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "sMt": 0,
+  "totLine": 0,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "sMt": 0,
+  "totLine": 0,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 13.2
+  "sMt": 0,
+  "totLine": 13.2,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 9.6,
-  "sMt": 0.0,
-  "totLine": -7.4
+  "sMt": 0,
+  "totLine": -7.4,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 4.8,
-  "sMt": 0.0,
-  "totLine": 4.8
+  "sMt": 0,
+  "totLine": 4.8,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 2.2
+  "sMt": 0,
+  "totLine": 2.2,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 2.2
+  "sMt": 0,
+  "totLine": 2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "KENYACOF",
-  "pMt": 6.0,
-  "sMt": 0.0,
-  "totLine": 6.0
+  "pMt": 6,
+  "sMt": 0,
+  "totLine": 6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 2.2
+  "sMt": 0,
+  "totLine": 2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 2.2
+  "sMt": 0,
+  "totLine": 2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 2.2
+  "sMt": 0,
+  "totLine": 2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "5-In Store sold",
   "company": "RABOBANK IN",
   "pMt": 1.21,
-  "sMt": 0.0,
-  "totLine": 1.21
+  "sMt": 0,
+  "totLine": 1.21,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "RABOBANK IN",
   "pMt": 1.21,
-  "sMt": 0.0,
-  "totLine": 1.21
+  "sMt": 0,
+  "totLine": 1.21,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "NESTRADE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 136.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 136,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": 0.0
+  "totLine": 0,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": 0.0
+  "totLine": 0,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": 0.0
+  "totLine": 0,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": 0.0
+  "totLine": 0,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": 0.0
+  "totLine": 0,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": 3.8
+  "totLine": 3.8,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -172.8,
-  "totLine": -2.8
+  "totLine": -2.8,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -134.4,
-  "totLine": 1.6
+  "totLine": 1.6,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "NESTRADE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": 0.0
+  "totLine": 0,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -4.4
+  "totLine": -4.4,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -38.4,
-  "totLine": -4.4
+  "totLine": -4.4,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -134.4,
-  "totLine": 1.6
+  "totLine": 1.6,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -153.6,
-  "totLine": -0.6
+  "totLine": -0.6,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "FULLERTON",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "M.ICOFFEE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "M.ICOFFEE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "DANDALIS",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "FIDELI CO",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -9.6,
-  "totLine": 7.4
+  "totLine": 7.4,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "FIDELI CO",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -4.8,
-  "totLine": -4.8
+  "totLine": -4.8,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "CHINALIGHT",
-  "pMt": 0.0,
-  "sMt": -6.0,
-  "totLine": -6.0
+  "pMt": 0,
+  "sMt": -6,
+  "totLine": -6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "GSIINTERNAT",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "WOOSUNG M.F",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -9.6,
-  "totLine": -9.6
+  "totLine": -9.6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "CAFFE VERDE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SOBHY",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -38.4,
-  "totLine": -4.4
+  "totLine": -4.4,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "CHINALIGHT",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "GSIINTERNAT",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "GSIINTERNAT",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "GSIINTERNAT",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NANJINGECO",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "DEESPREZZA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "GSIINTERNAT",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "GSIINTERNAT",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SUKUNSHAN",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NANJINGECO",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "5-In Store sold",
   "company": "RABOBANK IN",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.21,
-  "totLine": -1.21
+  "totLine": -1.21,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.2,
-  "totLine": -1.2
+  "totLine": -1.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCASTAI",
   "pMt": 0.12,
-  "sMt": 0.0,
-  "totLine": 0.12
+  "sMt": 0,
+  "totLine": 0.12,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "MAWARA",
   "pMt": 0.66,
-  "sMt": 0.0,
-  "totLine": 0.66
+  "sMt": 0,
+  "totLine": 0.66,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "EDMAXTEA",
   "pMt": 0.77,
-  "sMt": 0.0,
-  "totLine": 0.77
+  "sMt": 0,
+  "totLine": 0.77,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NYERIHILL",
   "pMt": 6.01,
-  "sMt": 0.0,
-  "totLine": 6.01
+  "sMt": 0,
+  "totLine": 6.01,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NYERIHILL",
   "pMt": 1.36,
-  "sMt": 0.0,
-  "totLine": 1.36
+  "sMt": 0,
+  "totLine": 1.36,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "KIRIMIRIESTA",
   "pMt": 1.1,
-  "sMt": 0.0,
-  "totLine": 1.1
+  "sMt": 0,
+  "totLine": 1.1,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "RUNGETOFCS",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "RUNGETOFCS",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "BARAGWI",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "RUNGETOFCS",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "RUNGETOFCS",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "THANGAINI",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 5.78,
-  "sMt": 0.0,
-  "totLine": 5.78
+  "sMt": 0,
+  "totLine": 5.78,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.05,
-  "sMt": 0.0,
-  "totLine": 0.05
+  "sMt": 0,
+  "totLine": 0.05,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.1,
-  "sMt": 0.0,
-  "totLine": 0.1
+  "sMt": 0,
+  "totLine": 0.1,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.02,
-  "sMt": 0.0,
-  "totLine": 0.02
+  "sMt": 0,
+  "totLine": 0.02,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.07,
-  "sMt": 0.0,
-  "totLine": 0.07
+  "sMt": 0,
+  "totLine": 0.07,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.6,
-  "sMt": 0.0,
-  "totLine": 0.6
+  "sMt": 0,
+  "totLine": 0.6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": "CP"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -51.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -51,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -34.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -34,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "SUCAFINA SA",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -34.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -34,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat unsold",
   "company": "KENYACOF",
   "pMt": 8.46,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 10.74,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat unsold",
   "company": "KENYACOF",
   "pMt": 10.74,
-  "sMt": 0.0,
-  "totLine": -4.06
+  "sMt": 0,
+  "totLine": -4.06,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -34.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -34,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 76.8,
-  "sMt": 0.0,
-  "totLine": -8.2
+  "sMt": 0,
+  "totLine": -8.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Sold",
   "company": "TRC SPECIA",
   "pMt": 38.4,
-  "sMt": 0.0,
-  "totLine": 4.4
+  "sMt": 0,
+  "totLine": 4.4,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "SUCAFINA SA",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "SUCAFINA SA",
   "pMt": 21.6,
-  "sMt": 0.0,
-  "totLine": 4.6
+  "sMt": 0,
+  "totLine": 4.6,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "SUCAFINA SA",
   "pMt": 33.8,
-  "sMt": 0.0,
-  "totLine": 16.8
+  "sMt": 0,
+  "totLine": 16.8,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "KENYACOF",
   "pMt": 9.4,
-  "sMt": 0.0,
-  "totLine": 9.4
+  "sMt": 0,
+  "totLine": 9.4,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -68.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -68,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -102.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -102,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat unsold",
   "company": "SUCAFINA SA",
   "pMt": 8.46,
-  "sMt": 0.0,
-  "totLine": 8.46
+  "sMt": 0,
+  "totLine": 8.46,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 9.6,
-  "sMt": 0.0,
-  "totLine": -7.4
+  "sMt": 0,
+  "totLine": -7.4,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
-  "pMt": 100.0,
-  "sMt": 0.0,
-  "totLine": -2.0
+  "pMt": 100,
+  "sMt": 0,
+  "totLine": -2,
+  "certification": "CP"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "sMt": 0,
+  "totLine": 0,
+  "certification": "CP"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 4.4
+  "sMt": 0,
+  "totLine": 4.4,
+  "certification": "CP"
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 2.2
+  "sMt": 0,
+  "totLine": 2.2,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 12.24,
-  "sMt": 0.0,
-  "totLine": -4.76
+  "sMt": 0,
+  "totLine": -4.76,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "KENYACOF",
   "pMt": 16.32,
-  "sMt": 0.0,
-  "totLine": -0.68
+  "sMt": 0,
+  "totLine": -0.68,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 13.98,
-  "sMt": 0.0,
-  "totLine": -3.02
+  "sMt": 0,
+  "totLine": -3.02,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "KENYACOF",
   "pMt": 19.2,
-  "sMt": 0.0,
-  "totLine": 2.2
+  "sMt": 0,
+  "totLine": 2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "KENYACOF",
   "pMt": 13.2,
-  "sMt": 0.0,
-  "totLine": -3.8
+  "sMt": 0,
+  "totLine": -3.8,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "KENYACOF",
   "pMt": 43.2,
-  "sMt": 0.0,
-  "totLine": 9.2
+  "sMt": 0,
+  "totLine": 9.2,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "KENYACOF",
   "pMt": 43.2,
-  "sMt": 0.0,
-  "totLine": -7.8
+  "sMt": 0,
+  "totLine": -7.8,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "KENYACOF",
   "pMt": 43.2,
-  "sMt": 0.0,
-  "totLine": -7.8
+  "sMt": 0,
+  "totLine": -7.8,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
-  "pMt": 108.0,
-  "sMt": 0.0,
-  "totLine": 6.0
+  "pMt": 108,
+  "sMt": 0,
+  "totLine": 6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "RABOBANK IN",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "STARBUCKS",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": "CP"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "STARBUCKS",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": 0.0
+  "totLine": 0,
+  "certification": "CP"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "STARBUCKS",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": 12.6
+  "totLine": 12.6,
+  "certification": "CP"
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "STARBUCKS",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": "CP.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "STARBUCKS",
-  "pMt": 0.0,
-  "sMt": -100.0,
-  "totLine": 2.0
+  "pMt": 0,
+  "sMt": -100,
+  "totLine": 2,
+  "certification": "CP"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 34.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 34,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 51.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 51,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -21.6,
-  "totLine": -4.6
+  "totLine": -4.6,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -43.2,
-  "totLine": 7.8
+  "totLine": 7.8,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -64.8,
-  "totLine": 3.2
+  "totLine": 3.2,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -64.8,
-  "totLine": 3.2
+  "totLine": 3.2,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -64.8,
-  "totLine": 3.2
+  "totLine": 3.2,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -64.8,
-  "totLine": 3.2
+  "totLine": 3.2,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -43.2,
-  "totLine": 7.8
+  "totLine": 7.8,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 51.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 51,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 51.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 51,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -33.8,
-  "totLine": 0.0
+  "totLine": 0,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -9.4,
-  "totLine": 7.8
+  "totLine": 7.8,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -43.2,
-  "totLine": 7.8
+  "totLine": 7.8,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -43.2,
-  "totLine": 7.8
+  "totLine": 7.8,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -64.8,
-  "totLine": 3.2
+  "totLine": 3.2,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -64.8,
-  "totLine": 3.2
+  "totLine": 3.2,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -64.8,
-  "totLine": 3.2
+  "totLine": 3.2,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -43.2,
-  "totLine": 7.8
+  "totLine": 7.8,
+  "certification": "AAA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "ARVID NORDQ",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 68.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 68,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 102.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 102,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "NESTLE SVE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -43.2,
-  "totLine": 7.8
+  "totLine": 7.8,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SUKUNSHAN",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "CHINALIGHT",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -13.2,
-  "totLine": 3.8
+  "totLine": 3.8,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "RIDGE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "NANJINGECO",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "GSIINTERNAT",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "WOOSUNG M.F",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -9.6,
-  "totLine": 7.4
+  "totLine": 7.4,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -13.98,
-  "totLine": 3.02
+  "totLine": 3.02,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "3-Afloat sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -16.32,
-  "totLine": 0.68
+  "totLine": 0.68,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": -108.0,
-  "totLine": -6.0
+  "pMt": 0,
+  "sMt": -108,
+  "totLine": -6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "NANJINGECO",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -12.24,
-  "totLine": 4.76
+  "totLine": 4.76,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "CHINALIGHT",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -38.4,
-  "totLine": 0.0
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Sold",
   "company": "CHINALIGHT",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -38.4,
-  "totLine": 8.2
+  "totLine": 8.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "1-Transit Origin sold",
   "company": "SINJYCDINC",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SINJYCDINC",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NANJINGECO",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -19.2,
-  "totLine": -2.2
+  "totLine": -2.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "AB KAFFE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": -108.0,
-  "totLine": -6.0
+  "pMt": 0,
+  "sMt": -108,
+  "totLine": -6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": -108.0,
-  "totLine": -6.0
+  "pMt": 0,
+  "sMt": -108,
+  "totLine": -6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": -108.0,
-  "totLine": -6.0
+  "pMt": 0,
+  "sMt": -108,
+  "totLine": -6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "RABOBANK IN",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 1.76,
-  "sMt": 0.0,
-  "totLine": 1.76
+  "sMt": 0,
+  "totLine": 1.76,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.02,
-  "sMt": 0.0,
-  "totLine": 0.02
+  "sMt": 0,
+  "totLine": 0.02,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "SUCAFINA SA",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -17,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -51.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -51,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 42.92,
-  "sMt": 0.0,
-  "totLine": -8.08
+  "sMt": 0,
+  "totLine": -8.08,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA SA",
   "pMt": 33.88,
-  "sMt": 0.0,
-  "totLine": 33.88
+  "sMt": 0,
+  "totLine": 33.88,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "ALDISUD NEWC",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": "RA.EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "ITOH",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 51.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 51,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "ITOH",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -50.4,
-  "totLine": 0.6
+  "totLine": 0.6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUKUNSHAN",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -42.92,
-  "totLine": 0.0
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUKUNSHAN",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -33.88,
-  "totLine": 8.2
+  "totLine": 8.2,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "AHOLD COFFE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -21.6,
-  "totLine": -4.6
+  "totLine": -4.6,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "EDMAXTEA",
   "pMt": 0.16,
-  "sMt": 0.0,
-  "totLine": 0.16
+  "sMt": 0,
+  "totLine": 0.16,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "EDMAXTEA",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NYERIHILL",
   "pMt": 2.64,
-  "sMt": 0.0,
-  "totLine": 2.64
+  "sMt": 0,
+  "totLine": 2.64,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NYERIHILL",
   "pMt": 1.76,
-  "sMt": 0.0,
-  "totLine": 1.76
+  "sMt": 0,
+  "totLine": 1.76,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NYERIHILL",
   "pMt": 0.27,
-  "sMt": 0.0,
-  "totLine": 0.27
+  "sMt": 0,
+  "totLine": 0.27,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NYERIHILL",
   "pMt": 2.7,
-  "sMt": 0.0,
-  "totLine": 2.7
+  "sMt": 0,
+  "totLine": 2.7,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "KIRIMIRIESTA",
   "pMt": 0.45,
-  "sMt": 0.0,
-  "totLine": 0.45
+  "sMt": 0,
+  "totLine": 0.45,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "EDMAXTEA",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "EDMAXTEA",
   "pMt": 0.03,
-  "sMt": 0.0,
-  "totLine": 0.03
+  "sMt": 0,
+  "totLine": 0.03,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.23,
-  "sMt": 0.0,
-  "totLine": 0.23
+  "sMt": 0,
+  "totLine": 0.23,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 2.56,
-  "sMt": 0.0,
-  "totLine": 2.56
+  "sMt": 0,
+  "totLine": 2.56,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 7.29,
-  "sMt": 0.0,
-  "totLine": 7.29
+  "sMt": 0,
+  "totLine": 7.29,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.76,
-  "sMt": 0.0,
-  "totLine": 0.76
+  "sMt": 0,
+  "totLine": 0.76,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "5-In Store unsold",
   "company": "UNITED COFF",
   "pMt": 21.6,
-  "sMt": 0.0,
-  "totLine": 4.6
+  "sMt": 0,
+  "totLine": 4.6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KENYACOF",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -153.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -153,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 107.16,
-  "sMt": 0.0,
-  "totLine": 5.16
+  "sMt": 0,
+  "totLine": 5.16,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.84,
-  "sMt": 0.0,
-  "totLine": 0.84
+  "sMt": 0,
+  "totLine": 0.84,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "RABOBANK IN",
   "pMt": 21.49,
-  "sMt": 0.0,
-  "totLine": 4.49
+  "sMt": 0,
+  "totLine": 4.49,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 153.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 153,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "LIDLGE",
-  "pMt": 0.0,
-  "sMt": -108.0,
-  "totLine": -6.0
+  "pMt": 0,
+  "sMt": -108,
+  "totLine": -6,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "NESTRADE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -151.2,
-  "totLine": 1.8
+  "totLine": 1.8,
+  "certification": "4C.RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": -108.0,
-  "totLine": -6.0
+  "pMt": 0,
+  "sMt": -108,
+  "totLine": -6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": -108.0,
-  "totLine": -6.0
+  "pMt": 0,
+  "sMt": -108,
+  "totLine": -6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": -108.0,
-  "totLine": -6.0
+  "pMt": 0,
+  "sMt": -108,
+  "totLine": -6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "KONINKLUJKE",
-  "pMt": 0.0,
-  "sMt": -108.0,
-  "totLine": -6.0
+  "pMt": 0,
+  "sMt": -108,
+  "totLine": -6,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "ALDINORD",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -43.2,
-  "totLine": -9.2
+  "totLine": -9.2,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "RABOBANK IN",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 17.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 17,
+  "certification": "EUDR"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.12,
-  "sMt": 0.0,
-  "totLine": 0.12
+  "sMt": 0,
+  "totLine": 0.12,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.17,
-  "sMt": 0.0,
-  "totLine": 0.17
+  "sMt": 0,
+  "totLine": 0.17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.04,
-  "sMt": 0.0,
-  "totLine": 0.04
+  "sMt": 0,
+  "totLine": 0.04,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.33,
-  "sMt": 0.0,
-  "totLine": 0.33
+  "sMt": 0,
+  "totLine": 0.33,
+  "certification": "CP"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.02,
-  "sMt": 0.0,
-  "totLine": 0.02
+  "sMt": 0,
+  "totLine": 0.02,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.34,
-  "sMt": 0.0,
-  "totLine": 0.34
+  "sMt": 0,
+  "totLine": 0.34,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.65,
-  "sMt": 0.0,
-  "totLine": 0.65
+  "sMt": 0,
+  "totLine": 0.65,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.37,
-  "sMt": 0.0,
-  "totLine": 0.37
+  "sMt": 0,
+  "totLine": 0.37,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.13,
-  "sMt": 0.0,
-  "totLine": 0.13
+  "sMt": 0,
+  "totLine": 0.13,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.11,
-  "sMt": 0.0,
-  "totLine": 0.11
+  "sMt": 0,
+  "totLine": 0.11,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.56,
-  "sMt": 0.0,
-  "totLine": 0.56
+  "sMt": 0,
+  "totLine": 0.56,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.95,
-  "sMt": 0.0,
-  "totLine": 0.95
+  "sMt": 0,
+  "totLine": 0.95,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.33,
-  "sMt": 0.0,
-  "totLine": 0.33
+  "sMt": 0,
+  "totLine": 0.33,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.55,
-  "sMt": 0.0,
-  "totLine": 0.55
+  "sMt": 0,
+  "totLine": 0.55,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.46,
-  "sMt": 0.0,
-  "totLine": 0.46
+  "sMt": 0,
+  "totLine": 0.46,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.56,
-  "sMt": 0.0,
-  "totLine": 0.56
+  "sMt": 0,
+  "totLine": 0.56,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.7,
-  "sMt": 0.0,
-  "totLine": 0.7
+  "sMt": 0,
+  "totLine": 0.7,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.79,
-  "sMt": 0.0,
-  "totLine": 0.79
+  "sMt": 0,
+  "totLine": 0.79,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.3,
-  "sMt": 0.0,
-  "totLine": 0.3
+  "sMt": 0,
+  "totLine": 0.3,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 4.77,
-  "sMt": 0.0,
-  "totLine": 4.77
+  "sMt": 0,
+  "totLine": 4.77,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.41,
-  "sMt": 0.0,
-  "totLine": 0.41
+  "sMt": 0,
+  "totLine": 0.41,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
-  "pMt": 1.0,
-  "sMt": 0.0,
-  "totLine": 1.0
+  "pMt": 1,
+  "sMt": 0,
+  "totLine": 1,
+  "certification": "RA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.03,
-  "sMt": 0.0,
-  "totLine": 0.03
+  "sMt": 0,
+  "totLine": 0.03,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.32,
-  "sMt": 0.0,
-  "totLine": 0.32
+  "sMt": 0,
+  "totLine": 0.32,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 1.4,
-  "sMt": 0.0,
-  "totLine": 1.4
+  "sMt": 0,
+  "totLine": 1.4,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.73,
-  "sMt": 0.0,
-  "totLine": 0.73
+  "sMt": 0,
+  "totLine": 0.73,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.17,
-  "sMt": 0.0,
-  "totLine": 0.17
+  "sMt": 0,
+  "totLine": 0.17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 1.51,
-  "sMt": 0.0,
-  "totLine": 1.51
+  "sMt": 0,
+  "totLine": 1.51,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.13,
-  "sMt": 0.0,
-  "totLine": 0.13
+  "sMt": 0,
+  "totLine": 0.13,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.16,
-  "sMt": 0.0,
-  "totLine": 0.16
+  "sMt": 0,
+  "totLine": 0.16,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.04,
-  "sMt": 0.0,
-  "totLine": 0.04
+  "sMt": 0,
+  "totLine": 0.04,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.13,
-  "sMt": 0.0,
-  "totLine": 0.13
+  "sMt": 0,
+  "totLine": 0.13,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.16,
-  "sMt": 0.0,
-  "totLine": 0.16
+  "sMt": 0,
+  "totLine": 0.16,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.13,
-  "sMt": 0.0,
-  "totLine": 0.13
+  "sMt": 0,
+  "totLine": 0.13,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.1,
-  "sMt": 0.0,
-  "totLine": 0.1
+  "sMt": 0,
+  "totLine": 0.1,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.04,
-  "sMt": 0.0,
-  "totLine": 0.04
+  "sMt": 0,
+  "totLine": 0.04,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.04,
-  "sMt": 0.0,
-  "totLine": 0.04
+  "sMt": 0,
+  "totLine": 0.04,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.45,
-  "sMt": 0.0,
-  "totLine": 0.45
+  "sMt": 0,
+  "totLine": 0.45,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.14,
-  "sMt": 0.0,
-  "totLine": 0.14
+  "sMt": 0,
+  "totLine": 0.14,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCASTAI",
   "pMt": 0.08,
-  "sMt": 0.0,
-  "totLine": 0.08
+  "sMt": 0,
+  "totLine": 0.08,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCASTAI",
   "pMt": 0.03,
-  "sMt": 0.0,
-  "totLine": 0.03
+  "sMt": 0,
+  "totLine": 0.03,
+  "certification": "RFA"
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "EDMAXTEA",
   "pMt": 0.17,
-  "sMt": 0.0,
-  "totLine": 0.17
+  "sMt": 0,
+  "totLine": 0.17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NYERIHILL",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NYERIHILL",
   "pMt": 0.17,
-  "sMt": 0.0,
-  "totLine": 0.17
+  "sMt": 0,
+  "totLine": 0.17,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "KIRIMIRIESTA",
   "pMt": 0.1,
-  "sMt": 0.0,
-  "totLine": 0.1
+  "sMt": 0,
+  "totLine": 0.1,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.02,
-  "sMt": 0.0,
-  "totLine": 0.02
+  "sMt": 0,
+  "totLine": 0.02,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "Invoiced with hedge",
   "company": "SUCAFINA SA",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": -119.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": -119,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 31.02,
-  "sMt": 0.0,
-  "totLine": -2.98
+  "sMt": 0,
+  "totLine": -2.98,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "TOSTADORES",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -38.4,
-  "totLine": -4.4
+  "totLine": -4.4,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.04,
-  "sMt": 0.0,
-  "totLine": 0.04
+  "sMt": 0,
+  "totLine": 0.04,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.08,
-  "sMt": 0.0,
-  "totLine": 0.08
+  "sMt": 0,
+  "totLine": 0.08,
+  "certification": ""
  },
  {
   "quality": "Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "EDMAXTEA",
   "pMt": 0.04,
-  "sMt": 0.0,
-  "totLine": 0.04
+  "sMt": 0,
+  "totLine": 0.04,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "CHEPSANGOR",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "CHEPSANGOR",
   "pMt": 0.13,
-  "sMt": 0.0,
-  "totLine": 0.13
+  "sMt": 0,
+  "totLine": 0.13,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NGARATUA",
   "pMt": 0.26,
-  "sMt": 0.0,
-  "totLine": 0.26
+  "sMt": 0,
+  "totLine": 0.26,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NGARATUA",
   "pMt": 0.72,
-  "sMt": 0.0,
-  "totLine": 0.72
+  "sMt": 0,
+  "totLine": 0.72,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "KENYACOF",
   "pMt": 1.74,
-  "sMt": 0.0,
-  "totLine": 1.74
+  "sMt": 0,
+  "totLine": 1.74,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "IRIAINI",
   "pMt": 1.2,
-  "sMt": 0.0,
-  "totLine": 1.2
+  "sMt": 0,
+  "totLine": 1.2,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "IRIAINI",
   "pMt": 0.42,
-  "sMt": 0.0,
-  "totLine": 0.42
+  "sMt": 0,
+  "totLine": 0.42,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "AGUTHI",
   "pMt": 0.54,
-  "sMt": 0.0,
-  "totLine": 0.54
+  "sMt": 0,
+  "totLine": 0.54,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 3.6,
-  "sMt": 0.0,
-  "totLine": 3.6
+  "sMt": 0,
+  "totLine": 3.6,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 1.56,
-  "sMt": 0.0,
-  "totLine": 1.56
+  "sMt": 0,
+  "totLine": 1.56,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 0.6,
-  "sMt": 0.0,
-  "totLine": 0.6
+  "sMt": 0,
+  "totLine": 0.6,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "KENYACOF",
   "pMt": 1.2,
-  "sMt": 0.0,
-  "totLine": 1.2
+  "sMt": 0,
+  "totLine": 1.2,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "KENYACOF",
   "pMt": 0.48,
-  "sMt": 0.0,
-  "totLine": 0.48
+  "sMt": 0,
+  "totLine": 0.48,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "KENYACOF",
   "pMt": 1.2,
-  "sMt": 0.0,
-  "totLine": 1.2
+  "sMt": 0,
+  "totLine": 1.2,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 0.3,
-  "sMt": 0.0,
-  "totLine": 0.3
+  "sMt": 0,
+  "totLine": 0.3,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 1.62,
-  "sMt": 0.0,
-  "totLine": 1.62
+  "sMt": 0,
+  "totLine": 1.62,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 0.3,
-  "sMt": 0.0,
-  "totLine": 0.3
+  "sMt": 0,
+  "totLine": 0.3,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
-  "pMt": 3.0,
-  "sMt": 0.0,
-  "totLine": 3.0
+  "pMt": 3,
+  "sMt": 0,
+  "totLine": 3,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 0.9,
-  "sMt": 0.0,
-  "totLine": 0.96
+  "sMt": 0,
+  "totLine": 0.96,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 1.92,
-  "sMt": 0.0,
-  "totLine": 1.92
+  "sMt": 0,
+  "totLine": 1.92,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 1.92,
-  "sMt": 0.0,
-  "totLine": 1.92
+  "sMt": 0,
+  "totLine": 1.92,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 3.6,
-  "sMt": 0.0,
-  "totLine": 3.6
+  "sMt": 0,
+  "totLine": 3.6,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.04,
-  "sMt": 0.0,
-  "totLine": 0.04
+  "sMt": 0,
+  "totLine": 0.04,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.25,
-  "sMt": 0.0,
-  "totLine": 0.25
+  "sMt": 0,
+  "totLine": 0.25,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.02,
-  "sMt": 0.0,
-  "totLine": 0.02
+  "sMt": 0,
+  "totLine": 0.02,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "ARPOR",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.74,
-  "totLine": -1.74
+  "totLine": -1.74,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "HAKSAN CO",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "HAKSAN CO",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "FIDELI CO",
-  "pMt": 0.0,
-  "sMt": -3.0,
-  "totLine": -3.0
+  "pMt": 0,
+  "sMt": -3,
+  "totLine": -3,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "FIDELI CO",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.9,
-  "totLine": -0.9
+  "totLine": -0.9,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SARUTAHIKOJP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.3,
-  "totLine": -0.3
+  "totLine": -0.3,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.62,
-  "totLine": -1.62
+  "totLine": -1.62,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.3,
-  "totLine": -0.3
+  "totLine": -0.3,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.56,
-  "totLine": -1.56
+  "totLine": -1.56,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.2,
-  "totLine": -1.2
+  "totLine": -1.2,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.2,
-  "totLine": -1.2
+  "totLine": -1.2,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -3.6,
-  "totLine": -3.6
+  "totLine": -3.6,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "ITOH",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.8,
-  "totLine": -1.8
+  "totLine": -1.8,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SUCAHK",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.96,
-  "totLine": -0.96
+  "totLine": -0.96,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SUCAHK",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.96,
-  "totLine": -0.96
+  "totLine": -0.96,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.48,
-  "totLine": -0.48
+  "totLine": -0.48,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.6,
-  "totLine": -0.6
+  "totLine": -0.6,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -18.9,
-  "totLine": -18.9
+  "totLine": -18.9,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "CHEPSANGOR",
   "pMt": 0.24,
-  "sMt": 0.0,
-  "totLine": 0.24
+  "sMt": 0,
+  "totLine": 0.24,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NGARATUA",
   "pMt": 2.87,
-  "sMt": 0.0,
-  "totLine": 2.87
+  "sMt": 0,
+  "totLine": 2.87,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NGARATUA",
   "pMt": 0.3,
-  "sMt": 0.0,
-  "totLine": 0.3
+  "sMt": 0,
+  "totLine": 0.3,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "NGACHAEST",
   "pMt": 0.42,
-  "sMt": 0.0,
-  "totLine": 0.42
+  "sMt": 0,
+  "totLine": 0.42,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "KENYACOF",
   "pMt": 1.2,
-  "sMt": 0.0,
-  "totLine": 1.2
+  "sMt": 0,
+  "totLine": 1.2,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "IRIAINI",
   "pMt": 0.12,
-  "sMt": 0.0,
-  "totLine": 0.12
+  "sMt": 0,
+  "totLine": 0.12,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 1.2,
-  "sMt": 0.0,
-  "totLine": 1.2
+  "sMt": 0,
+  "totLine": 1.2,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
-  "pMt": 3.0,
-  "sMt": 0.0,
-  "totLine": 3.0
+  "pMt": 3,
+  "sMt": 0,
+  "totLine": 3,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
-  "pMt": 6.0,
-  "sMt": 0.0,
-  "totLine": 6.0
+  "pMt": 6,
+  "sMt": 0,
+  "totLine": 6,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 3.12,
-  "sMt": 0.0,
-  "totLine": 3.12
+  "sMt": 0,
+  "totLine": 3.12,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "ARPOR",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.2,
-  "totLine": -1.2
+  "totLine": -1.2,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "HAKSAN CO",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "HAKSAN CO",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SARUTAHIKOJP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SARUTAHIKOJP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "RIDGE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.09,
-  "totLine": -0.09
+  "totLine": -0.09,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "RIDGE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.09,
-  "totLine": -0.09
+  "totLine": -0.09,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.2,
-  "totLine": -1.2
+  "totLine": -1.2,
+  "certification": "FT"
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "ITOH",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -1.56,
-  "totLine": -1.56
+  "totLine": -1.56,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SUCAHK",
-  "pMt": 0.0,
-  "sMt": -3.0,
-  "totLine": -3.0
+  "pMt": 0,
+  "sMt": -3,
+  "totLine": -3,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "SUCAFINA NA",
-  "pMt": 0.0,
-  "sMt": -3.0,
-  "totLine": -3.0
+  "pMt": 0,
+  "sMt": -3,
+  "totLine": -3,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "CHEPSANGOR",
   "pMt": 0.69,
-  "sMt": 0.0,
-  "totLine": 0.69
+  "sMt": 0,
+  "totLine": 0.69,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.07,
-  "sMt": 0.0,
-  "totLine": 0.07
+  "sMt": 0,
+  "totLine": 0.07,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.04,
-  "sMt": 0.0,
-  "totLine": 0.04
+  "sMt": 0,
+  "totLine": 0.04,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.21,
-  "sMt": 0.0,
-  "totLine": 0.21
+  "sMt": 0,
+  "totLine": 0.21,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.02,
-  "sMt": 0.0,
-  "totLine": 0.02
+  "sMt": 0,
+  "totLine": 0.02,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.04,
-  "sMt": 0.0,
-  "totLine": 0.04
+  "sMt": 0,
+  "totLine": 0.04,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.07,
-  "sMt": 0.0,
-  "totLine": 0.07
+  "sMt": 0,
+  "totLine": 0.07,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.02,
-  "sMt": 0.0,
-  "totLine": 0.02
+  "sMt": 0,
+  "totLine": 0.02,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.03,
-  "sMt": 0.0,
-  "totLine": 0.03
+  "sMt": 0,
+  "totLine": 0.03,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.77,
-  "sMt": 0.0,
-  "totLine": 0.77
+  "sMt": 0,
+  "totLine": 0.77,
+  "certification": "RA"
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 7.87,
-  "sMt": 0.0,
-  "totLine": 7.87
+  "sMt": 0,
+  "totLine": 7.87,
+  "certification": "RA"
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.53,
-  "sMt": 0.0,
-  "totLine": 0.53
+  "sMt": 0,
+  "totLine": 0.53,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.11,
-  "sMt": 0.0,
-  "totLine": 0.11
+  "sMt": 0,
+  "totLine": 0.11,
+  "certification": "RFA"
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.31,
-  "sMt": 0.0,
-  "totLine": 0.31
+  "sMt": 0,
+  "totLine": 0.31,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.24,
-  "sMt": 0.0,
-  "totLine": 0.24
+  "sMt": 0,
+  "totLine": 0.24,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.28,
-  "sMt": 0.0,
-  "totLine": 0.28
+  "sMt": 0,
+  "totLine": 0.28,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 1.34,
-  "sMt": 0.0,
-  "totLine": 1.34
+  "sMt": 0,
+  "totLine": 1.34,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.58,
-  "sMt": 0.0,
-  "totLine": 0.58
+  "sMt": 0,
+  "totLine": 0.58,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.69,
-  "sMt": 0.0,
-  "totLine": 0.69
+  "sMt": 0,
+  "totLine": 0.69,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.28,
-  "sMt": 0.0,
-  "totLine": 0.28
+  "sMt": 0,
+  "totLine": 0.28,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 1.23,
-  "sMt": 0.0,
-  "totLine": 1.23
+  "sMt": 0,
+  "totLine": 1.23,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.13,
-  "sMt": 0.0,
-  "totLine": 0.13
+  "sMt": 0,
+  "totLine": 0.13,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.33,
-  "sMt": 0.0,
-  "totLine": 0.33
+  "sMt": 0,
+  "totLine": 0.33,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.1,
-  "sMt": 0.0,
-  "totLine": 0.1
+  "sMt": 0,
+  "totLine": 0.1,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.14,
-  "sMt": 0.0,
-  "totLine": 0.14
+  "sMt": 0,
+  "totLine": 0.14,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.05,
-  "sMt": 0.0,
-  "totLine": 0.05
+  "sMt": 0,
+  "totLine": 0.05,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.03,
-  "sMt": 0.0,
-  "totLine": 0.03
+  "sMt": 0,
+  "totLine": 0.03,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.15,
-  "sMt": 0.0,
-  "totLine": 0.15
+  "sMt": 0,
+  "totLine": 0.15,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.07,
-  "sMt": 0.0,
-  "totLine": 0.07
+  "sMt": 0,
+  "totLine": 0.07,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.03,
-  "sMt": 0.0,
-  "totLine": 0.03
+  "sMt": 0,
+  "totLine": 0.03,
+  "certification": "CP"
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.91,
-  "sMt": 0.0,
-  "totLine": 0.91
+  "sMt": 0,
+  "totLine": 0.91,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.01,
-  "sMt": 0.0,
-  "totLine": 0.01
+  "sMt": 0,
+  "totLine": 0.01,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.02,
-  "sMt": 0.0,
-  "totLine": 0.02
+  "sMt": 0,
+  "totLine": 0.02,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.04,
-  "sMt": 0.0,
-  "totLine": 0.04
+  "sMt": 0,
+  "totLine": 0.04,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.97,
-  "sMt": 0.0,
-  "totLine": 0.97
+  "sMt": 0,
+  "totLine": 0.97,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 0.73,
-  "sMt": 0.0,
-  "totLine": 0.73
+  "sMt": 0,
+  "totLine": 0.73,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 3.08,
-  "sMt": 0.0,
-  "totLine": 3.08
+  "sMt": 0,
+  "totLine": 3.08,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "CHEPSANGOR",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.06
+  "sMt": 0,
+  "totLine": 0.06,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "CHEPSANGOR",
   "pMt": 0.24,
-  "sMt": 0.0,
-  "totLine": 0.24
+  "sMt": 0,
+  "totLine": 0.24,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "KENYACOF",
   "pMt": 0.6,
-  "sMt": 0.0,
-  "totLine": 0.6
+  "sMt": 0,
+  "totLine": 0.6,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 0.06,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "KENYACOF",
   "pMt": 0.66,
-  "sMt": 0.0,
-  "totLine": 0.72
+  "sMt": 0,
+  "totLine": 0.72,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 0.72,
-  "sMt": 0.0,
-  "totLine": 0.72
+  "sMt": 0,
+  "totLine": 0.72,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "2-To Be Shipped Unsold",
   "company": "KENYACOF",
   "pMt": 1.44,
-  "sMt": 0.0,
-  "totLine": 1.44
+  "sMt": 0,
+  "totLine": 1.44,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "DREYFUS SUI",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "RIDGE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "RIDGE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "RIDGE",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "3-Afloat sold",
   "company": "ARPOR",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.6,
-  "totLine": -0.6
+  "totLine": -0.6,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-On Quay Origin sold",
   "company": "FIDELI CO",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.66,
-  "totLine": -0.66
+  "totLine": -0.66,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SARUTAHIKOJP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "RIDGE",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.12,
-  "totLine": -0.12
+  "totLine": -0.12,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SUCAHK",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.36,
-  "totLine": -0.36
+  "totLine": -0.36,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "SUCAHK",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.72,
-  "totLine": -0.72
+  "totLine": -0.72,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "SUCAFINA SA",
   "pMt": 7.38,
-  "sMt": 0.0,
-  "totLine": 7.38
+  "sMt": 0,
+  "totLine": 7.38,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "CHEPSANGOR",
   "pMt": 0.31,
-  "sMt": 0.0,
-  "totLine": 0.31
+  "sMt": 0,
+  "totLine": 0.31,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NGACHAEST",
   "pMt": 0.24,
-  "sMt": 0.0,
-  "totLine": 0.24
+  "sMt": 0,
+  "totLine": 0.24,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NGACHAEST",
   "pMt": 0.42,
-  "sMt": 0.0,
-  "totLine": 0.42
+  "sMt": 0,
+  "totLine": 0.42,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "IRIAINI",
   "pMt": 0.54,
-  "sMt": 0.0,
-  "totLine": 0.54
+  "sMt": 0,
+  "totLine": 0.54,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "IRIAINI",
   "pMt": 0.54,
-  "sMt": 0.0,
-  "totLine": 0.54
+  "sMt": 0,
+  "totLine": 0.54,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "AGUTHI",
   "pMt": 0.12,
-  "sMt": 0.0,
-  "totLine": 0.12
+  "sMt": 0,
+  "totLine": 0.12,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "0-In Store Origin unsold",
   "company": "NGACHAEST",
   "pMt": 0.19,
-  "sMt": 0.0,
-  "totLine": 0.19
+  "sMt": 0,
+  "totLine": 0.19,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.24,
-  "totLine": -0.24
+  "totLine": -0.24,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
-  "sMt": 0.0,
-  "totLine": 0.0
+  "pMt": 0,
+  "sMt": 0,
+  "totLine": 0,
+  "certification": ""
  },
  {
   "quality": "Non Hedgeable",
   "state": "6-Sales Unallocated",
   "company": "32CUP",
-  "pMt": 0.0,
+  "pMt": 0,
   "sMt": -0.21,
-  "totLine": -0.21
+  "totLine": -0.21,
+  "certification": ""
  }
 ];
 

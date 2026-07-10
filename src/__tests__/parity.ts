@@ -530,6 +530,63 @@ if (demoStatus.overall.booked.contracts >= 15 && demoVessels >= 10)
   ok(`demo seed: ${demoStatus.overall.booked.contracts} booked contracts, ${demoVessels} with vessels — booking detail survives the join`);
 else fail(`demo seed booked: ${demoStatus.overall.booked.contracts} booked, ${demoVessels} vessels (expected ≥15 / ≥10)`);
 
+// ---------- 11. Cert / EUDR exposure ----------
+// Expected values hand-computed independently (python over the raw TSVs,
+// scratchpad cert_census.py). Coverage is PARTIAL BY NATURE: S.Cert tags
+// 19/61 aggregated sales, DNP `certification` 114/459 rows — untagged means
+// unknown, never "not certified". Stock side = unsold purchase rows only
+// (same state filter the workbook's Direct Sales Stock uses).
+console.log('\n[11] Cert / EUDR exposure vs hand-computed constants');
+const { computeCertExposure } = await import('../lib/cert');
+const certDnp = parseDailyNetPosition(decodeExportText(readFileSync(join(here, '../../forecast-context/DailyNetPosition-IVO (87).xls'))));
+const cert = computeCertExposure(parsedSales, certDnp);
+const SALES_CERT_EXPECT: Record<string, [number, number]> = {
+  'AAA.EUDR': [5, -280.8],
+  'CP.EUDR': [3, -326.4],
+  EUDR: [2, -307.2],
+  'RA.EUDR': [5, -302.4],
+  RA: [3, -172.8],
+  '4C.RFA': [1, -151.2],
+  UNTAGGED: [42, -1367.01],
+};
+let certBad = 0;
+for (const [tag, [ctr, smt]] of Object.entries(SALES_CERT_EXPECT)) {
+  const b = cert.sales.byTag[tag];
+  if (!b || b.contracts !== ctr || Math.abs(b.smt - smt) > 0.01) {
+    certBad++;
+    fail(`sales cert ${tag}: got ${b?.contracts}/${b?.smt}, expected ${ctr}/${smt}`);
+  }
+}
+if (certBad === 0) ok('sales cert tags exact: 6 tags + UNTAGGED (42 ctr / −1,367.01 SMT unknown)');
+if (cert.sales.eudr.contracts === 15 && Math.abs(cert.sales.eudr.smt - -1216.8) <= 0.01)
+  ok(`sales EUDR-flagged: 15 contracts / −1,216.8 SMT (${cert.sales.eudr.sharePct}% of book)`);
+else fail(`sales EUDR: got ${cert.sales.eudr.contracts}/${cert.sales.eudr.smt}, expected 15/-1216.8`);
+const STOCK_CERT_EXPECT: Record<string, [number, number]> = {
+  RA: [9, 123.22],
+  RFA: [19, 9.09],
+  CP: [2, 0.36],
+  'CP.EUDR': [1, 38.4],
+  EUDR: [1, 21.49],
+  UNTAGGED: [153, 384.93],
+};
+let stockBad = 0;
+for (const [tag, [n, mt]] of Object.entries(STOCK_CERT_EXPECT)) {
+  const b = cert.stock?.byTag[tag];
+  if (!b || b.rows !== n || Math.abs(b.mt - mt) > 0.01) {
+    stockBad++;
+    fail(`stock cert ${tag}: got ${b?.rows}/${b?.mt}, expected ${n}/${mt}`);
+  }
+}
+if (stockBad === 0) ok('stock cert tags exact over unsold purchase rows (185 rows, 577.49 MT)');
+if (cert.stock && Math.abs(cert.stock.totalMt - 577.49) <= 0.01 && Math.abs(cert.stock.eudr.mt - 59.89) <= 0.01)
+  ok(`stock EUDR-flagged: ${cert.stock.eudr.mt} MT of ${cert.stock.totalMt} MT unsold`);
+else fail(`stock totals: got ${cert.stock?.totalMt}/${cert.stock?.eudr.mt}, expected 577.49/59.89`);
+// Old snapshots parsed before `certification` was captured must be detected,
+// not silently reported as 100% untagged.
+const legacy = computeCertExposure(parsedSales, certDnp.map(({ certification: _c, ...r }: any) => r) as any);
+if (legacy.stock == null) ok('legacy DNP rows (no certification field) → stock side unavailable, not fabricated');
+else fail('legacy DNP rows should yield stock=null (got a stock result)');
+
 console.log('\n[offers] (informational)');
 console.table(computeOffers(net));
 

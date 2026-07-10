@@ -108,6 +108,8 @@ export interface DnpRow {
   pMt: number;       // P.MT (col O)
   sMt: number;       // S.MT (col P)
   totLine: number;   // TotLine (col S)
+  /** Cert tag, e.g. "RA.EUDR"; '' = untagged. Absent on rows parsed before capture. */
+  certification?: string;
 }
 
 /** Net position result. */

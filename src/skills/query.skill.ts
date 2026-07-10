@@ -4,6 +4,7 @@ import { normGrade, POST_GRADES_SUMMARY } from '../lib/grades';
 import { bagsToMt, round } from '../lib/units';
 import { computePricing, PriceDimension } from '../lib/pricing';
 import { computeClientExposure, computeShipmentStatus } from '../lib/book';
+import { computeCertExposure } from '../lib/cert';
 import { getSnapshot, loadBlendRecipes } from './store';
 
 /**
@@ -287,6 +288,36 @@ class ShipmentStatusTool implements LuaTool {
   }
 }
 
+class CertExposureTool implements LuaTool {
+  name = 'cert-exposure';
+  description =
+    'Certification / EUDR exposure, honestly partial: sold-forward volume by cert tag (S.Cert — only ~1/3 of contracts are tagged) and unsold physical stock by cert tag (DNP certification column). Untagged = certification UNKNOWN, never "not certified". EUDR-flagged = any tag containing EUDR.';
+  inputSchema = z.object({
+    positionDate: dateField,
+    tag: z.string().optional().describe('Filter to cert tags containing this (case-insensitive), e.g. "EUDR", "RA"'),
+  });
+
+  async execute(input: { positionDate?: string; tag?: string }) {
+    const { data, sales } = await snapshotSales(input.positionDate);
+    const result = computeCertExposure(sales, data.dnp ?? undefined);
+    const filterTags = (byTag: Record<string, any>) =>
+      input.tag ? Object.fromEntries(Object.entries(byTag).filter(([t]) => t.toUpperCase().includes(input.tag!.toUpperCase()))) : byTag;
+    return {
+      positionDate: data.positionDate,
+      demo: data.demo === true || undefined,
+      sales: { ...result.sales, byTag: filterTags(result.sales.byTag) },
+      stock: result.stock
+        ? { ...result.stock, byTag: filterTags(result.stock.byTag) }
+        : { note: 'This snapshot\'s DNP predates certification capture — re-ingest the DailyNetPosition export to get the stock side.' },
+      caveats: [
+        `Coverage is partial by nature: ${result.sales.tagged.contracts}/${result.sales.total.contracts} sales contracts carry a cert tag. UNTAGGED means certification UNKNOWN — never report untagged volume as non-certified.`,
+        'Stock side = unsold purchase rows only (in-store origin / to-be-shipped), purchase MT.',
+        'The full cert picture needs the 3 external cert workbooks (not yet provided); these are the tags SOL itself carries.',
+      ],
+    };
+  }
+}
+
 export const querySkill = new LuaSkill({
   name: 'position-query',
   description: 'Answer position questions and what-ifs from the computed snapshots.',
@@ -296,8 +327,9 @@ export const querySkill = new LuaSkill({
 - price-analytics for "at what price level am I short", "average differential on grinders", "how much is fixed vs to-be-fixed". "Price level" on this desk = differential vs the NY KC futures in USc/lb. ALWAYS present the contract differential and the FOB-equivalent side by side — neither is the headline. State the fixed vs price-to-be-fixed split and any excluded (unpriced) sales. Every bucket carries its own fixed/ptbf split — for "how much of my grinder book / August book re-rates if NY moves", quote that bucket's ptbf volume and share (price-to-be-fixed = futures leg open = re-rates with NY; fixed volume does not). It covers the unallocated shorts book only: no purchase cost basis, no P&L or mark-to-market (no market prices exist in the data), no price history — say so when asked.
 - client-exposure for "who am I most short to", "my exposure to Nestle", "what does client X buy". Volumes are forward commitments by counterparty; combine with price-analytics (dimension=client) when they also want the price level.
 - shipment-status for "what's booked/unbooked", "what's shipping this month", "when does X's coffee leave". Three states, keep them distinct: unbooked / preshipment-only (booked, no vessel yet) / vessel-assigned — a contract with a preshipment but no vessel is BOOKED. The export has no B/L, container, invoice, due-date, or warehouse data, so decline those plainly instead of approximating.
+- cert-exposure for "how much of my book is EUDR", "certified stock", "what's sold as Rainforest Alliance". ALWAYS lead with the coverage caveat: only a minority of contracts/lots carry a cert tag, so figures are floors ("at least X"), and UNTAGGED volume is UNKNOWN — never "not certified". EUDR-flagged = tag contains EUDR (RA.EUDR, CP.EUDR, AAA.EUDR…).
 - Grades are matched fuzzily ("AB FAQ" → POST 16 FAQ); confirm the resolved grade in the answer.
 - Quote bags by default; add MT when the trader asks or the number is hedge-related.
 - Never label net values as "longs": longs = theoretical stock, net = longs + shorts. Say which one you're quoting.`,
-  tools: [new QueryPosition(), new WhatIf(), new PriceAnalytics(), new ClientExposureTool(), new ShipmentStatusTool()],
+  tools: [new QueryPosition(), new WhatIf(), new PriceAnalytics(), new ClientExposureTool(), new ShipmentStatusTool(), new CertExposureTool()],
 });

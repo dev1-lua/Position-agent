@@ -4,28 +4,28 @@ agent:
 skills:
   - name: position-ingestion
     skillId: 86b4e026-77bb-44c2-8610-6a4beddb47fb
-    version: 1.0.5
+    version: 1.0.10
   - name: position-stockcounter
     skillId: f441a564-3398-4a89-999b-9844534ea285
-    version: 1.0.5
+    version: 1.0.10
   - name: position-forwardsales
     skillId: 343333e3-d830-4dba-88ed-9e8a1426e10d
-    version: 1.0.5
+    version: 1.0.10
   - name: position-net
     skillId: ba377074-9c85-4138-a95b-e7c05684ee2a
-    version: 1.0.5
+    version: 1.0.10
   - name: position-query
     skillId: fc09a975-abae-414b-b24d-48f415e755e4
-    version: 1.0.5
+    version: 1.0.10
 webhooks: []
 jobs:
   - jobId: 30a59e32-b84f-4588-bf16-3ce426dd5439
     name: morning-position-report
-    version: 1.0.5
+    version: 1.0.10
 preprocessors: []
 postprocessors: []
 mcpServers: []
 backup:
-  activeVersion: 8
-  lastHash: a24bb3f683dd3b5afc345f671123e00c6b1d78d7e050aab8438e016b0c79714a
-  lastPushedAt: '2026-07-10T00:01:43.648Z'
+  activeVersion: 9
+  lastHash: e74e790c68d591659db08c0e8987a78000bcaa1bdc20ccbe351feb47bf602ad8
+  lastPushedAt: '2026-07-10T00:15:58.297Z'
