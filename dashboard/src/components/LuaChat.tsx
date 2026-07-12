@@ -67,10 +67,10 @@ function buildSrcDoc(sessionId: string): string {
   #lua-chat-embedded-root { height: 100%; width: 100%; }
 </style>
 <style id="lua-cite-css">
-  /* Citation footer — decorates the agent's machine-built "— source: …" line
-     (Twenty language: hairline top border, 11px muted text, chip + badge).
-     Kept in its own tag: the decorator clones it into the widget's shadow
-     root, where page-level CSS cannot reach. */
+  /* Chat content CSS (cite footer + tables) — cloned by the decorator into
+     the widget's shadow root, where page-level CSS cannot reach.
+     Citation footer: decorates the agent's machine-built "— source: …" line
+     (Twenty language: hairline top border, 11px muted text, chip + badge). */
   p.lua-cite {
     display: flex !important;
     flex-wrap: wrap;
@@ -107,6 +107,54 @@ function buildSrcDoc(sessionId: string): string {
     margin-top: 2px;
     color: #999;
     font-style: italic;
+  }
+  /* Stale-upload banner — promoted by the decorator to the top of the
+     message and styled like the DEMO badge (amber). */
+  p.lua-stale {
+    margin: 2px 0 10px !important;
+    padding: 6px 10px !important;
+    border: 1px solid #FDE68A;
+    border-radius: 6px;
+    background: #FEF3C7;
+    color: #92400E !important;
+    font-size: 12px !important;
+    line-height: 17px !important;
+    font-weight: 500;
+  }
+  /* Markdown tables (by-grade / shorts-by-month) — baseline styling, no
+     semantic colors yet (deferred). Pure CSS: safe under streaming
+     re-renders, no observer work needed. LuaPop renders each table w-full
+     inside its own bordered card (with copy/download buttons), so the table
+     must FILL that card — width:auto leaves a void to the right. !important
+     where LuaPop's Tailwind utility classes would out-rank these element
+     selectors. First column is the label (grade / month), every other column
+     is numeric → right-aligned tabular figures. */
+  table {
+    width: 100% !important;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 18px;
+  }
+  th, td {
+    padding: 5px 12px !important;
+    border-bottom: 1px solid #EBEBEB;
+    text-align: left;
+  }
+  thead th {
+    background: #F7F7F7;
+    border-bottom: 1px solid #E0E0E0;
+    font-weight: 600;
+    color: #555;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  tbody tr:nth-child(even) td { background: #FAFAFA; }
+  tbody tr:last-child td { border-bottom: none; }
+  th:not(:first-child), td:not(:first-child) {
+    text-align: right !important;
+    font-variant-numeric: tabular-nums;
   }
 </style>
 </head>
@@ -154,7 +202,35 @@ function buildSrcDoc(sessionId: string): string {
     function esc(s) {
       return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
+    // Stale banner: the agent is told to OPEN with the machine-built
+    // "⚠️ Based on the <date> upload…" line (src/lib/cite.ts staleNotice),
+    // but under some phrasings it glues it after a refusal sentence. The
+    // string is byte-exact by construction, so find it wherever it landed,
+    // split it out, and promote it to the top of the message as its own
+    // amber banner. Idempotent: a promoted banner is skipped by class.
+    var STALE =
+      /\\u26a0\\ufe0f? Based on the \\d{4}-\\d{2}-\\d{2} upload \\(\\d+ days? old\\)\\. No newer data has been uploaded \\u2014 upload today's three exports for current figures\\./;
+    function promoteStale(root) {
+      var els = root.querySelectorAll('p, li');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        if (el.className === 'lua-stale' || el.className === 'lua-cite') continue;
+        var t = el.textContent || '';
+        var sm = STALE.exec(t);
+        if (!sm) continue;
+        var rest = t.replace(sm[0], '').trim();
+        var b = el.ownerDocument.createElement('p');
+        b.className = 'lua-stale';
+        b.textContent = sm[0];
+        var msg = el.closest('[class*="space-y-4"]');
+        if (msg && !msg.querySelector('.lua-stale')) msg.insertBefore(b, msg.firstChild);
+        else if (!msg) el.parentNode.insertBefore(b, el);
+        if (rest) el.textContent = rest;
+        else el.parentNode.removeChild(el);
+      }
+    }
     function decorateIn(root) {
+      promoteStale(root);
       var ps = root.querySelectorAll('p');
       for (var i = 0; i < ps.length; i++) {
         var p = ps[i];
