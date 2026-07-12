@@ -1,7 +1,8 @@
 import { Sale, StockRow } from '../lib/types';
 import { matchBlend, globallyAmbiguousKeys, assignmentKey } from '../lib/blends';
-import { computeForwardSales, sumOverMonths } from '../lib/shorts';
+import { computeForwardSales, sumOverMonths, monthTotals } from '../lib/shorts';
 import { computeNetPosition, computeOffers } from '../lib/netposition';
+import { computePositionInsights } from '../lib/insights';
 import { computeFutsSpread, futuresPotBySFixDte, FutsManualInputs } from '../lib/futsspread';
 import {
   calculateTheoreticalStock,
@@ -10,7 +11,7 @@ import {
   Percentages,
 } from '../lib/stockcounter';
 import { round } from '../lib/units';
-import { citeLine } from '../lib/cite';
+import { citeLine, staleNotice } from '../lib/cite';
 import {
   COLLECTIONS,
   getSnapshot,
@@ -130,6 +131,7 @@ export async function runComputeChain(positionDate?: string, opts: { tool: strin
   const horizon = defaultHorizon(d.positionDate);
   const net = computeNetPosition(d.theoretical.byGrade, sumOverMonths(fs.matrix, horizon));
   const offers = computeOffers(net);
+  const byMonth = monthTotals(fs.matrix);
 
   // 4. futs/hedge view — only when the DNP export is on file
   let futsOut: Record<string, any> | undefined;
@@ -168,7 +170,22 @@ export async function runComputeChain(positionDate?: string, opts: { tool: strin
     ...(futsOut ? { futs: futsOut } : {}),
   });
 
+  const hedge = futsOut
+    ? Object.fromEntries(
+        (futsOut.order as string[]).map((k) => [
+          k,
+          {
+            mt: futsOut!.lines[k].mt != null ? round(futsOut!.lines[k].mt) : null,
+            lots: futsOut!.lines[k].lots != null ? round(futsOut!.lines[k].lots) : null,
+          },
+        ])
+      )
+    : undefined;
+  const outsideHorizon = Object.entries(byMonth).some(([mo, v]) => v !== 0 && !horizon.includes(mo));
+
+  const stale = staleNotice(d.positionDate);
   return {
+    ...(stale ? { staleNotice: stale } : {}),
     positionDate: d.positionDate,
     blendAssignment: {
       autoAssigned: assigned.filter((s) => s.blendNo != null).length,
@@ -194,19 +211,20 @@ export async function runComputeChain(positionDate?: string, opts: { tool: strin
         .filter(([, v]) => v.theoretical !== 0 || v.forwardSales !== 0)
         .map(([g, v]) => [g, { longs: round(v.theoretical), shorts: round(v.forwardSales), net: round(v.net) }])
     ),
+    shortsByMonth: Object.fromEntries(Object.entries(byMonth).map(([m, v]) => [m, round(v)])),
     offers,
-    hedge: futsOut
-      ? Object.fromEntries(
-          (futsOut.order as string[]).map((k) => [
-            k,
-            {
-              mt: futsOut!.lines[k].mt != null ? round(futsOut!.lines[k].mt) : null,
-              lots: futsOut!.lines[k].lots != null ? round(futsOut!.lines[k].lots) : null,
-            },
-          ])
-        )
-      : undefined,
+    hedge,
+    insights: computePositionInsights({
+      positionDate: d.positionDate,
+      horizon,
+      shortsByMonth: byMonth,
+      byGrade: net.byGrade,
+      hedgeLines: hedge,
+    }),
     caveats: [
+      ...(outsideHorizon
+        ? ['Net position sums shorts over the horizon months only; months outside it (e.g. 2026/10+) appear in shortsByMonth but are NOT netted.']
+        : []),
       ...(pending.length
         ? [`${pending.length} sale(s) need a blend confirmation and are EXCLUDED from every figure until confirmed — ask the trader (confirm-blend), then re-run.`]
         : []),
@@ -225,7 +243,9 @@ export async function runComputeChain(positionDate?: string, opts: { tool: strin
       sources: d.dnp
         ? ['XBS Current Stock (longs)', 'SOL ReportLogistic (shorts)', 'SOL DailyNetPosition (hedge)']
         : ['XBS Current Stock (longs)', 'SOL ReportLogistic (shorts)'],
-      derivation: 'net[grade] = stock-counter theoretical (Summary!C) + Σ "S.MT" × blend fraction × 1000/60 over the horizon',
+      derivation: d.dnp
+        ? 'net[grade] = stock-counter theoretical (Summary!C) + Σ "S.MT" × blend fraction × 1000/60 over the horizon; hedge: Kenyacof Net = Stock hedgeable + Kenyacof futs (manual) + KenyaZZ (manual); Sucafina = SOL DailyNetPosition futures rows; Δ Hedge (KENY_AR_DYN) = manual pot input'
+        : 'net[grade] = stock-counter theoretical (Summary!C) + Σ "S.MT" × blend fraction × 1000/60 over the horizon',
     }),
   };
 }

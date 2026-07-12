@@ -36,6 +36,21 @@ export function snapshotAgeDays(positionDate: string, today?: string): number {
   return Math.round((Date.parse(t) - Date.parse(positionDate)) / 86_400_000);
 }
 
+/**
+ * Ready-made stale-upload banner, or undefined when the snapshot is current.
+ *
+ * QA 2026-07-12 (finding F2): when the model composed this banner itself from
+ * persona rule 6, it reworded it or dropped it entirely on some turns. Built
+ * HERE for the same reason citeLine is — the tool result carries the finished
+ * sentence and the persona prepends it verbatim, so it can never drift.
+ * The wording mirrors persona hard rule 6; change both together or neither.
+ */
+export function staleNotice(positionDate: string, today?: string): string | undefined {
+  const age = snapshotAgeDays(positionDate, today);
+  if (age < 1) return undefined;
+  return `⚠️ Based on the ${positionDate} upload (${age} day${age === 1 ? '' : 's'} old). No newer data has been uploaded — upload today's three exports for current figures.`;
+}
+
 export function citeLine(c: CiteInput): string {
   // Staleness is computed HERE, mechanically, for the same reason the rest of
   // the line is: the desk uploads fresh exports each morning, and if none came

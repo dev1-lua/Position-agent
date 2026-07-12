@@ -28,7 +28,8 @@ import {
 import { decodeExportText, parseDailyNetPosition, parseLogisticsReport, aggregateSales } from '../lib/parse';
 import { computeFutsSpread, futuresPotBySFixDte } from '../lib/futsspread';
 import { distinctContractsForGrades } from '../lib/pricing';
-import { citeLine } from '../lib/cite';
+import { citeLine, staleNotice } from '../lib/cite';
+import { computePositionInsights } from '../lib/insights';
 import { xbsReportDate, dnpReportDate, parseSolDate, resolvePositionDate } from '../lib/reportdate';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -1025,6 +1026,121 @@ console.log('\n[17] Report-date sniffing vs real 2026-06-18 exports');
     { ...xbsRows[0], stockInDays: (xbsRows[0].stockInDays ?? 0) + 3 },
   ]);
   eqs('resolver: majority vote survives one bad row', noisy.date, '2026-06-18');
+}
+
+// ---------- 18. Code-computed insights ----------
+// The persona bans model-derived arithmetic, so insight strings come from
+// computePositionInsights and the agent quotes them verbatim. These asserts
+// ARE the wording spec — a wording change here must be deliberate.
+// Hand-computed from [14]'s golden month totals (horizon shorts −40,418.5):
+//   largest: 2026/09 −12,415 → 12,415/40,418.5 = 30.7 → 31%
+//   next-3 window from 2026-06-18: 2026/06..08 = 6,319.5+8,560+10,360 = 25,239.5 → 62.4 → 62%
+//   out-of-horizon: 2024/10 −20, 2026/10 −5,760, 2026/11 −1,440 → 7,220 bags
+console.log('\n[18] Code-computed insights (wording spec + edge guards)');
+{
+  const eqs = (label: string, actual: any, expected: any) => {
+    if (actual === expected) ok(label);
+    else fail(`${label}: expected "${expected}", got "${actual}"`);
+  };
+  const golden18 = computePositionInsights({
+    positionDate: '2026-06-18',
+    horizon,
+    shortsByMonth: mt14,
+    byGrade: net.byGrade,
+  });
+  const find = (frag: string) => golden18.find((s) => s.includes(frag)) ?? '';
+  eqs(
+    'insight: largest short month exact',
+    find('Largest short month'),
+    'Largest short month: 2026/09 — 12,415 bags, 31% of horizon shorts.'
+  );
+  eqs(
+    'insight: next-3-months concentration exact',
+    find('next 3 delivery months'),
+    '62% of horizon shorts fall in the next 3 delivery months (2026/06–2026/08).'
+  );
+  eqs(
+    'insight: out-of-horizon shorts exact',
+    find('outside the netting horizon'),
+    '7,220 bags of shorts sit outside the netting horizon (2024/10, 2026/10, 2026/11) — not in the net figures.'
+  );
+  // net-short grade insight derived from the golden net, not hand-typed
+  const expectShort = Object.entries(net.byGrade)
+    .filter(([, v]) => v.net < 0)
+    .sort(([, a], [, b]) => a.net - b.net);
+  const shortLine = find('net short');
+  if (expectShort.length === 0) {
+    if (shortLine === '') ok('insight: no net-short grades → no insight');
+    else fail(`insight: net-short line emitted with no net-short grades: "${shortLine}"`);
+  } else {
+    if (shortLine.startsWith(`${expectShort.length} grade`) || (expectShort.length === 1 && shortLine.startsWith('1 grade')))
+      ok(`insight: net-short grade count = ${expectShort.length}`);
+    else fail(`insight: net-short count wrong: "${shortLine}"`);
+    if (shortLine.includes(expectShort[0][0])) ok(`insight: most-short grade listed first (${expectShort[0][0]})`);
+    else fail(`insight: most-short grade ${expectShort[0][0]} missing from "${shortLine}"`);
+  }
+  if (!/NaN|Infinity/.test(golden18.join(' '))) ok('insight: no NaN/Infinity in any string');
+  else fail(`insight: NaN/Infinity leaked: ${JSON.stringify(golden18)}`);
+
+  // determinism: identical inputs → identical strings
+  const again = computePositionInsights({ positionDate: '2026-06-18', horizon, shortsByMonth: mt14, byGrade: net.byGrade });
+  if (JSON.stringify(again) === JSON.stringify(golden18)) ok('insight: deterministic (two runs identical)');
+  else fail('insight: non-deterministic output');
+
+  // edge guards — omit rather than emit
+  eqs('insight: empty inputs → []', JSON.stringify(computePositionInsights({ positionDate: '2026-06-18', horizon: [], shortsByMonth: {}, byGrade: {} })), '[]');
+  eqs(
+    'insight: all-zero months → []',
+    JSON.stringify(computePositionInsights({ positionDate: '2026-06-18', horizon, shortsByMonth: { '2026/06': 0 }, byGrade: {} })),
+    '[]'
+  );
+  const unk = computePositionInsights({ positionDate: '2026-06-18', horizon, shortsByMonth: { UNKNOWN: -100 }, byGrade: {} });
+  if (!unk.some((s) => s.includes('Largest') || s.includes('next 3'))) ok('insight: UNKNOWN month never wins largest/concentration');
+  else fail(`insight: UNKNOWN month leaked into ${JSON.stringify(unk)}`);
+  eqs(
+    'insight: UNKNOWN month labeled "month unknown" in out-of-horizon',
+    unk.find((s) => s.includes('outside the netting horizon')) ?? '',
+    '100 bags of shorts sit outside the netting horizon (month unknown) — not in the net figures.'
+  );
+  const noHedge = computePositionInsights({
+    positionDate: '2026-06-18',
+    horizon,
+    shortsByMonth: {},
+    byGrade: {},
+    hedgeLines: { True_Net_Excl_Specialty: { mt: -209, lots: null } },
+  });
+  if (!noHedge.some((s) => s.includes('Hedge view'))) ok('insight: hedge lots null → no hedge insight');
+  else fail(`insight: hedge insight emitted with null lots: ${JSON.stringify(noHedge)}`);
+  const hedged = computePositionInsights({
+    positionDate: '2026-06-18',
+    horizon,
+    shortsByMonth: {},
+    byGrade: {},
+    hedgeLines: { True_Net_Excl_Specialty: { mt: -209.1, lots: -12.3 }, 'Kenyacof Net': { mt: -209, lots: null }, Sucafina: { mt: 0, lots: 0 } },
+  });
+  eqs(
+    'insight: hedge residual exact',
+    hedged.find((s) => s.includes('Hedge view')) ?? '',
+    'Hedge view: true net excl. specialty −12.3 lots (Kenyacof Net −209 MT, Sucafina 0 MT).'
+  );
+
+  // staleNotice — the ready-made banner tools attach so the model prepends it
+  // verbatim (QA F2: model-composed banners drifted). Wording spec, like cite.
+  eqs(
+    'staleNotice: 2 days old exact',
+    staleNotice('2026-07-10', '2026-07-12'),
+    '⚠️ Based on the 2026-07-10 upload (2 days old). No newer data has been uploaded — upload today\'s three exports for current figures.'
+  );
+  eqs('staleNotice: singular "1 day old"', staleNotice('2026-07-09', '2026-07-10')?.includes('(1 day old)') ? 1 : 0, 1);
+  eqs('staleNotice: current snapshot → undefined', staleNotice('2026-07-10', '2026-07-10'), undefined);
+
+  // shortsByMonth surface parity: the rounded pipeline-shaped pass keeps [14]'s keys 1:1
+  const rounded = Object.fromEntries(Object.entries(mt14).map(([m, v]) => [m, Math.round((v + Number.EPSILON) * 100) / 100]));
+  const keysMatch =
+    Object.keys(rounded).filter((m) => rounded[m] !== 0).length === Object.keys(MT_EXPECT).length &&
+    Object.keys(MT_EXPECT).every((m) => m in rounded);
+  if (keysMatch) ok('shortsByMonth: rounded month buckets match MT_EXPECT keys 1:1');
+  else fail('shortsByMonth: rounded month buckets diverge from MT_EXPECT');
 }
 
 console.log('\n[offers] (informational)');

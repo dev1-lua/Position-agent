@@ -161,7 +161,7 @@ export const positionSkill = new LuaSkill({
   name: 'position-net',
   description: 'Assemble the position: net by grade (longs + shorts over the horizon), offer roll-ups, and the Futs+Spread hedge view.',
   context: `Assembly step, after the exports are ingested.
-- compute-position is THE tool for "compute my position" / "run the numbers": ONE call runs blend assignment → forward sales → net + offers → hedge. NEVER chain the individual compute tools for a full run — make the single call and answer only from its result. If it returns pendingConfirmation sales, relay them and ask the trader for blend numbers (confirm-blend), then re-run compute-position.
+- compute-position is THE tool for "compute my position" / "run the numbers": ONE call runs blend assignment → forward sales → net + offers → hedge. NEVER chain the individual compute tools for a full run — make the single call and answer only from its result. If it returns pendingConfirmation sales, relay them and ask the trader for blend numbers (confirm-blend), then re-run compute-position. The result carries \`shortsByMonth\` (month → total short bags — show it as the "Shorts by month" table) and \`insights\` (code-computed observations; relay the relevant ones, numbers verbatim).
 - compute-net-position / compute-futs-spread are for targeted re-runs only (e.g. custom horizonMonths, or refreshing the hedge after set-manual-inputs).
 - compute-futs-spread needs the trader's manual pot figures (set-manual-inputs) — always state the caveat when they're missing or stale.
 - Certificate positions are manual passthrough until the cert workbooks are wired; say so when asked about certs.`,
