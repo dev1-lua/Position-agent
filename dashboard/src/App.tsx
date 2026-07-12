@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
 import PositionAgentPage from '@/pages/PositionAgentPage';
+import UploadsPage from '@/pages/UploadsPage';
 import DashboardPage from '@/pages/DashboardPage';
 
 /**
@@ -19,6 +20,7 @@ export default function App() {
         <main className="min-h-0 flex-1 overflow-hidden">
           <Routes>
             <Route path="/position" element={<PositionAgentPage />} />
+            <Route path="/uploads" element={<UploadsPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             {/* Future sections (reports, uploads, …) mount here as siblings. */}
             <Route path="*" element={<Navigate to="/position" replace />} />

@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import {
   IconMessageChatbot,
   IconChartHistogram,
+  IconDatabaseImport,
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
   type Icon,
@@ -26,6 +27,12 @@ export const NAV_ITEMS = [
     path: '/position',
     icon: IconMessageChatbot,
     tagline: 'Longs − shorts = net · answers come from the ingested XBS/SOL exports · production data',
+  },
+  {
+    label: 'Uploads',
+    path: '/uploads',
+    icon: IconDatabaseImport,
+    tagline: 'What got uploaded when — the 3 desk exports, tracked per day',
   },
   {
     label: 'Dashboard',
