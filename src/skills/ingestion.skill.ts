@@ -5,7 +5,7 @@ import { processInventoryLocation, processWarehouseStatus, processMatrixData, gr
 import { computeStockCoverage } from '../lib/stockcoverage';
 import { citeLine } from '../lib/cite';
 import { xbsReportDate, dnpReportDate, resolvePositionDate } from '../lib/reportdate';
-import { COLLECTIONS, saveSnapshot, deleteSnapshot, clearDemoSnapshot, resolveFileId, listSnapshotSummaries, upsert, loadBatchMappings } from './store';
+import { COLLECTIONS, saveSnapshot, deleteSnapshot, clearDemoSnapshot, resolveFileId, listSnapshotSummaries, upsert, loadBatchMappings, inputDocExists, logUpload } from './store';
 import {
   BLENDS_SEED,
   ASSUMPTIONS_SEED,
@@ -42,7 +42,8 @@ class IngestStockReport implements LuaTool {
   inputSchema = z.object({ fileId: fileField, positionDate: dateField });
 
   async execute(input: { fileId?: string; positionDate?: string }) {
-    const rows = await source.getStock(await resolveFileId(input.fileId));
+    const fileId = await resolveFileId(input.fileId);
+    const rows = await source.getStock(fileId);
     // the export's own date (Intake Date + Stock In Day(s), row-majority) always wins
     const dateRes = resolvePositionDate(xbsReportDate(rows), input.positionDate, 'XBS Current Stock export');
     const positionDate = dateRes.positionDate;
@@ -67,11 +68,34 @@ class IngestStockReport implements LuaTool {
     // coverage rides the snapshot so blocked/crop-year/cert analytics work
     // later without the raw rows (absent on snapshots ingested before this)
     const clearedDemo = await clearDemoSnapshot(positionDate);
+    const overwrote = await inputDocExists(positionDate, 'stock');
     await saveSnapshot(positionDate, {
       stock: { location, status, matrix, postBags, groups, rowCount: rows.length, coverage },
     });
     const r2 = (n: number) => Math.round(n * 100) / 100;
     const rollup = (b: { rows: number; bags: number }) => ({ rows: b.rows, bags: r2(b.bags) });
+    const coverageReport = {
+      blocked: rollup(coverage.blocked),
+      workInProgressNoWarehouse: rollup(coverage.wip),
+      byCropYear: Object.fromEntries(Object.entries(coverage.byCropYear).map(([k, b]) => [k, rollup(b)])),
+      certTagged: { ...rollup(coverage.certTagged), tags: Object.keys(coverage.certTagged.tags) },
+      intakeDates: coverage.intakeDates,
+      pendingStrategyTags: Object.fromEntries(Object.entries(coverage.pendingTags).map(([k, b]) => [k, rollup(b)])),
+      unclassifiedBlankStrategy: rollup(coverage.unclassified),
+      extraPostGrades: coverage.extraPostGrades,
+    };
+    const warnings = [...dateRes.warnings, ...coverage.warnings];
+    await logUpload({
+      at: new Date().toISOString(),
+      kind: 'stock',
+      positionDate,
+      fileId,
+      rowCount: rows.length,
+      dateSource: dateRes.dateSource,
+      warnings,
+      overwrote,
+      coverage: coverageReport,
+    });
     return {
       positionDate,
       dateSource: dateRes.dateSource,
@@ -79,17 +103,8 @@ class IngestStockReport implements LuaTool {
       totalBags: Math.round(location.totals.bags),
       byStage: Object.fromEntries(status.map((s) => [s.key, Math.round(s.bags)])),
       matrixRows: matrix.length,
-      coverage: {
-        blocked: rollup(coverage.blocked),
-        workInProgressNoWarehouse: rollup(coverage.wip),
-        byCropYear: Object.fromEntries(Object.entries(coverage.byCropYear).map(([k, b]) => [k, rollup(b)])),
-        certTagged: { ...rollup(coverage.certTagged), tags: Object.keys(coverage.certTagged.tags) },
-        intakeDates: coverage.intakeDates,
-        pendingStrategyTags: Object.fromEntries(Object.entries(coverage.pendingTags).map(([k, b]) => [k, rollup(b)])),
-        unclassifiedBlankStrategy: rollup(coverage.unclassified),
-        extraPostGrades: coverage.extraPostGrades,
-      },
-      warnings: [...dateRes.warnings, ...coverage.warnings],
+      coverage: coverageReport,
+      warnings,
       ...(clearedDemo
         ? { note: `The demo-seeded snapshot for ${positionDate} was CLEARED — this date now starts fresh from your real upload; re-run the compute chain.` }
         : {}),
@@ -105,12 +120,24 @@ class IngestDailyNetPosition implements LuaTool {
   inputSchema = z.object({ fileId: fileField, positionDate: dateField });
 
   async execute(input: { fileId?: string; positionDate?: string }) {
-    const dnp = await source.getDailyNetPosition(await resolveFileId(input.fileId));
+    const fileId = await resolveFileId(input.fileId);
+    const dnp = await source.getDailyNetPosition(fileId);
     // the export's own date (DatePos column, row-majority) always wins
     const dateRes = resolvePositionDate(dnpReportDate(dnp), input.positionDate, 'SOL DailyNetPosition export');
     const positionDate = dateRes.positionDate;
     const clearedDemo = await clearDemoSnapshot(positionDate);
+    const overwrote = await inputDocExists(positionDate, 'dnp');
     await saveSnapshot(positionDate, { dnp });
+    await logUpload({
+      at: new Date().toISOString(),
+      kind: 'dnp',
+      positionDate,
+      fileId,
+      rowCount: dnp.length,
+      dateSource: dateRes.dateSource,
+      warnings: dateRes.warnings,
+      overwrote,
+    });
     return {
       positionDate,
       dateSource: dateRes.dateSource,
@@ -137,8 +164,10 @@ class IngestLogisticsReport implements LuaTool {
     // the inaccuracy this refuses to allow.
     const dateRes = resolvePositionDate({ date: null, agree: 0, total: 0 }, input.positionDate, 'SOL ReportLogistic export');
     const positionDate = dateRes.positionDate;
-    const sales = await source.getLogistics(await resolveFileId(input.fileId));
+    const fileId = await resolveFileId(input.fileId);
+    const sales = await source.getLogistics(fileId);
     const clearedDemo = await clearDemoSnapshot(positionDate);
+    const overwrote = await inputDocExists(positionDate, 'sales');
     await saveSnapshot(positionDate, { sales });
     const totalSmt = sales.reduce((s, x) => s + x.smt, 0);
     // coverage report: surfaces export-format drift (missing difs, odd price
@@ -146,23 +175,36 @@ class IngestLogisticsReport implements LuaTool {
     const knownUnits = new Set(['USC/LB', 'USD/KG', 'USD/MT']);
     const oddUnits = [...new Set(sales.map((s) => s.sPriceUnit).filter((u): u is string => !!u && !knownUnits.has(u.toUpperCase())))];
     const withDif = sales.filter((s) => s.sDif != null).length;
+    const coverageReport = {
+      pricedSales: withDif,
+      unpricedSales: sales.length - withDif,
+      bookedContracts: sales.filter((s) => s.booking?.preshipId != null).length,
+      vesselAssigned: sales.filter((s) => s.booking?.vessel != null).length,
+      ...(oddUnits.length ? { unknownPriceUnits: oddUnits } : {}),
+    };
+    const warnings = [
+      ...(withDif < sales.length ? [`${sales.length - withDif} sale(s) have no differential — price analytics will exclude them.`] : []),
+      ...(oddUnits.length ? [`Unknown price unit(s) ${oddUnits.join(', ')} — flat-price averages will skip those sales.`] : []),
+    ];
+    await logUpload({
+      at: new Date().toISOString(),
+      kind: 'sales',
+      positionDate,
+      fileId,
+      rowCount: sales.length,
+      dateSource: dateRes.dateSource,
+      warnings: [...dateRes.warnings, ...warnings],
+      overwrote,
+      coverage: coverageReport,
+    });
     return {
       positionDate,
       dateSource: dateRes.dateSource,
       saleCount: sales.length,
       totalSmt: Math.round(totalSmt * 100) / 100,
       months: [...new Set(sales.map((s) => s.month))].sort(),
-      coverage: {
-        pricedSales: withDif,
-        unpricedSales: sales.length - withDif,
-        bookedContracts: sales.filter((s) => s.booking?.preshipId != null).length,
-        vesselAssigned: sales.filter((s) => s.booking?.vessel != null).length,
-        ...(oddUnits.length ? { unknownPriceUnits: oddUnits } : {}),
-      },
-      warnings: [
-        ...(withDif < sales.length ? [`${sales.length - withDif} sale(s) have no differential — price analytics will exclude them.`] : []),
-        ...(oddUnits.length ? [`Unknown price unit(s) ${oddUnits.join(', ')} — flat-price averages will skip those sales.`] : []),
-      ],
+      coverage: coverageReport,
+      warnings,
       ...(clearedDemo
         ? { note: `The demo-seeded snapshot for ${positionDate} was CLEARED — this date now starts fresh from your real upload.` }
         : {}),

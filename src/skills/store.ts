@@ -2,6 +2,7 @@ import { Data, User } from 'lua-cli';
 import { AssignmentMemory } from '../lib/blends';
 import { Blend, Sale } from '../lib/types';
 import { AssumptionEntry } from '../lib/stockcounter';
+import { UploadLogEvent } from '../lib/feed';
 import {
   BLENDS_SEED,
   ASSUMPTIONS_SEED,
@@ -24,6 +25,7 @@ import {
  *  - `pending_blends`    sales awaiting a trader's blend confirmation
  *  - `manual_inputs`     futures pots + certificate positions per date
  *  - `config`            unit constants + horizon rule (editable)
+ *  - `upload_log`        append-only audit trail of ingest events (never upserted)
  */
 
 export const COLLECTIONS = {
@@ -38,6 +40,7 @@ export const COLLECTIONS = {
   pendingBlends: 'pending_blends',
   manualInputs: 'manual_inputs',
   config: 'config',
+  uploadLog: 'upload_log',
 } as const;
 
 /** Read every entry of a collection (paginates; collections here are small). */
@@ -198,6 +201,39 @@ export async function listSnapshotSummaries(): Promise<
     });
   }
   return out;
+}
+
+// ---------------------------------------------------------------------------
+// Upload log (append-only audit trail)
+// ---------------------------------------------------------------------------
+
+/** True if an input doc already exists for (positionDate, kind) — read BEFORE saveSnapshot to detect overwrites. */
+export async function inputDocExists(positionDate: string, kind: string): Promise<boolean> {
+  const res = await Data.get(COLLECTIONS.snapshotInputs, { positionDate, kind }, 1, 1);
+  return (res?.data ?? []).length > 0;
+}
+
+/**
+ * Append one upload event to the audit trail. Always Data.create — a
+ * re-upload adds a second event instead of replacing the first, and
+ * delete-snapshot never touches this collection (an audit trail that forgets
+ * deletions isn't one). A log failure must never fail the ingest itself.
+ */
+export async function logUpload(event: UploadLogEvent): Promise<void> {
+  try {
+    await Data.create(COLLECTIONS.uploadLog, event, `upload ${event.kind} ${event.positionDate}`);
+  } catch (err) {
+    console.error('upload_log write failed (ingest unaffected)', err);
+  }
+}
+
+/** Every upload event on file, newest first. */
+export async function listUploadEvents(): Promise<UploadLogEvent[]> {
+  const rows = await getAll(COLLECTIONS.uploadLog);
+  return rows
+    .map((r) => r.data as UploadLogEvent)
+    .filter((e) => e?.at && e?.kind && e?.positionDate)
+    .sort((a, b) => String(b.at).localeCompare(String(a.at)));
 }
 
 // ---------------------------------------------------------------------------
