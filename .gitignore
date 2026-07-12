@@ -1,5 +1,6 @@
 node_modules/   
 .env
+dist/
 dist-v2/
 .DS_Store
 .lua/
@@ -7,3 +8,5 @@ Sucafina/
 sucafina/
 file-types/
 .playwright-mcp/
+.vercel
+.env*
