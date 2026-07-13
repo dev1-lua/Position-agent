@@ -136,14 +136,22 @@ export async function getSnapshot(positionDate?: string): Promise<{ id: string; 
   return { id: computed?.id ?? inputs[0].id, data };
 }
 
-/** Delete a stored snapshot (computed doc + input docs, duplicates included). Returns false if none existed. */
-export async function deleteSnapshot(positionDate: string): Promise<boolean> {
+/**
+ * Delete a stored snapshot: computed doc + input docs (duplicates included)
+ * AND the date's manual pot inputs — desk decision 2026-07-13: deleting a
+ * date is a clean slate, a re-upload must never silently inherit old
+ * Kenyacof/KenyaZZ/Δ-Hedge pots. upload_log is NEVER touched (an audit trail
+ * that forgets deletions isn't one).
+ */
+export async function deleteSnapshot(positionDate: string): Promise<{ deleted: boolean; manualsRemoved: number }> {
+  const manuals = await getAll(COLLECTIONS.manualInputs, { positionDate });
   const docs = [
     ...(await getAll(COLLECTIONS.snapshots, { positionDate })).map((d) => ({ collection: COLLECTIONS.snapshots, id: d.id })),
     ...(await getAll(COLLECTIONS.snapshotInputs, { positionDate })).map((d) => ({ collection: COLLECTIONS.snapshotInputs, id: d.id })),
+    ...manuals.map((d) => ({ collection: COLLECTIONS.manualInputs, id: d.id })),
   ];
   for (const d of docs) await Data.delete(d.collection, d.id);
-  return docs.length > 0;
+  return { deleted: docs.length > 0, manualsRemoved: manuals.length };
 }
 
 /**

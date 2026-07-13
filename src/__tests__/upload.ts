@@ -445,7 +445,7 @@ const P = (marker: string) => ({ marker, rowCount: 1 });
   }
 
   // ---------- 12. delete-snapshot, then re-upload the same date ----------
-  section(12, 'delete-snapshot then re-upload — pendings purged, manual inputs survive');
+  section(12, 'delete-snapshot then re-upload — pendings AND manual pots purged (R3-F4, desk decision 2026-07-13), audit log survives');
   {
     resetDb();
     const D = '2099-01-12';
@@ -453,17 +453,16 @@ const P = (marker: string) => ({ marker, rowCount: 1 });
     await setManualInputs(D, DEMO_MANUAL_INPUTS);
     await upsert(COLLECTIONS.pendingBlends, { positionDate: D, saleCtr: 'S1' }, { positionDate: D, saleCtr: 'S1' });
     await upsert(COLLECTIONS.pendingBlends, { positionDate: D, saleCtr: 'S2' }, { positionDate: D, saleCtr: 'S2' });
+    await Data.create(COLLECTIONS.uploadLog, { at: '2026-07-13T00:00:00Z', kind: 'stock', positionDate: D, fileId: 'f1', rowCount: 1 });
     const deleted = await deleteSnapshot(D);
     const purged = await purgePendings(D);
-    eq('deleteSnapshot reported docs removed', deleted, true);
+    eq('deleteSnapshot reported docs removed', deleted.deleted, true);
+    eq('manual hedge-pot inputs deleted with the snapshot (clean slate)', deleted.manualsRemoved, 1);
     eq('pending confirmations purged with the snapshot', purged, 2);
     eq('snapshot fully gone', await getSnapshot(D), null);
     eq('input docs fully gone', dump(COLLECTIONS.snapshotInputs, { positionDate: D }).length, 0);
-    const manual = dump(COLLECTIONS.manualInputs, { positionDate: D });
-    if (manual.length === 1) {
-      ok('manual hedge-pot inputs SURVIVE delete-snapshot (current semantics)');
-      finding('delete-snapshot leaves manual_inputs for the deleted date in place — re-uploading that date silently inherits the old Kenyacof/Δ-Hedge pots; confirm with the desk whether that is intended (delete-snapshot tool does not touch COLLECTIONS.manualInputs)');
-    } else fail(`manual_inputs docs after delete: ${manual.length} (expected 1 — they are not covered by deleteSnapshot)`);
+    eq('manual_inputs fully gone — a re-upload cannot inherit old pots', dump(COLLECTIONS.manualInputs, { positionDate: D }).length, 0);
+    eq('upload_log untouched — the audit trail remembers deleted dates', dump(COLLECTIONS.uploadLog, { positionDate: D }).length, 1);
     await saveSnapshot(D, { stock: P('s2') });
     const snap = await getSnapshot(D);
     eq('re-upload starts the date fresh (only the new input present)', Object.keys(canon(snap?.data)).sort(), ['positionDate', 'stock'].sort());

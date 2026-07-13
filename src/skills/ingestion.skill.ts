@@ -274,13 +274,13 @@ class SeedReferenceData implements LuaTool {
 class DeleteSnapshot implements LuaTool {
   name = 'delete-snapshot';
   description =
-    'Permanently remove one stored position snapshot (a demo/test day or a bad upload) and its pending blend confirmations. Irreversible — only call after the trader has explicitly confirmed the exact date.';
+    'Permanently remove one stored position snapshot (a demo/test day or a bad upload), its pending blend confirmations AND its manual pot inputs (Kenyacof futs / KenyaZZ / Δ-Hedge — clean slate; re-enter them after a re-upload). Irreversible — only call after the trader has explicitly confirmed the exact date.';
   inputSchema = z.object({
     positionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe('The snapshot date to delete (confirm with the trader first)'),
   });
 
   async execute(input: { positionDate: string }) {
-    const deleted = await deleteSnapshot(input.positionDate);
+    const { deleted, manualsRemoved } = await deleteSnapshot(input.positionDate);
     // pending blend confirmations for that date are meaningless without it
     const pend = await Data.get(COLLECTIONS.pendingBlends, { positionDate: input.positionDate }, 1, 100);
     for (const p of pend?.data ?? []) if (p?.id) await Data.delete(COLLECTIONS.pendingBlends, p.id);
@@ -289,6 +289,10 @@ class DeleteSnapshot implements LuaTool {
       positionDate: input.positionDate,
       deleted,
       pendingBlendsRemoved: (pend?.data ?? []).length,
+      manualInputsRemoved: manualsRemoved,
+      ...(manualsRemoved > 0
+        ? { manualsNote: `${manualsRemoved} manual pot entry(ies) for ${input.positionDate} were DELETED with the snapshot — re-enter Kenyacof futs / KenyaZZ / Δ-Hedge via set-manual-inputs after re-uploading.` }
+        : {}),
       remainingSnapshots: remaining.map((r) => r.positionDate).sort(),
       ...(deleted ? {} : { note: 'No snapshot existed for that date — nothing was deleted.' }),
     };
