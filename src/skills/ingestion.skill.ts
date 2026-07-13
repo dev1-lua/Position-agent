@@ -5,7 +5,7 @@ import { processInventoryLocation, processWarehouseStatus, processMatrixData, gr
 import { computeStockCoverage } from '../lib/stockcoverage';
 import { citeLine } from '../lib/cite';
 import { xbsReportDate, dnpReportDate, resolvePositionDate } from '../lib/reportdate';
-import { COLLECTIONS, saveSnapshot, deleteSnapshot, clearDemoSnapshot, resolveFileId, listSnapshotSummaries, upsert, loadBatchMappings, inputDocExists, logUpload } from './store';
+import { COLLECTIONS, saveSnapshot, deleteSnapshot, clearDemoSnapshot, resolveFileId, listSnapshotSummaries, upsert, loadBatchMappings, inputDocExists, logUpload, refuseEmptyIngest } from './store';
 import {
   BLENDS_SEED,
   ASSUMPTIONS_SEED,
@@ -47,6 +47,7 @@ class IngestStockReport implements LuaTool {
     // the export's own date (Intake Date + Stock In Day(s), row-majority) always wins
     const dateRes = resolvePositionDate(xbsReportDate(rows), input.positionDate, 'XBS Current Stock export');
     const positionDate = dateRes.positionDate;
+    await refuseEmptyIngest('XBS Current Stock export', 'stock', rows.length, positionDate);
 
     const today = new Date(`${positionDate}T00:00:00Z`);
     const location = processInventoryLocation(rows, today);
@@ -125,6 +126,7 @@ class IngestDailyNetPosition implements LuaTool {
     // the export's own date (DatePos column, row-majority) always wins
     const dateRes = resolvePositionDate(dnpReportDate(dnp), input.positionDate, 'SOL DailyNetPosition export');
     const positionDate = dateRes.positionDate;
+    await refuseEmptyIngest('SOL DailyNetPosition export', 'dnp', dnp.length, positionDate);
     const clearedDemo = await clearDemoSnapshot(positionDate);
     const overwrote = await inputDocExists(positionDate, 'dnp');
     await saveSnapshot(positionDate, { dnp });
@@ -166,6 +168,7 @@ class IngestLogisticsReport implements LuaTool {
     const positionDate = dateRes.positionDate;
     const fileId = await resolveFileId(input.fileId);
     const sales = await source.getLogistics(fileId);
+    await refuseEmptyIngest('SOL ReportLogistic export', 'sales', sales.length, positionDate);
     const clearedDemo = await clearDemoSnapshot(positionDate);
     const overwrote = await inputDocExists(positionDate, 'sales');
     await saveSnapshot(positionDate, { sales });

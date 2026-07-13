@@ -77,6 +77,7 @@ import {
   clearDemoSnapshot,
   upsert,
   getAll,
+  refuseEmptyIngest,
 } from '../skills/store';
 import { runComputeChain } from '../skills/pipeline';
 import { xbsReportDate, dnpReportDate, resolvePositionDate } from '../lib/reportdate';
@@ -156,6 +157,7 @@ const logiTsv = (rows: Array<Record<string, string | number>>): string =>
 async function ingestStock(bytes: Uint8Array | Buffer, provided?: string) {
   const rows = parseXbsStock(bytes instanceof Buffer ? new Uint8Array(bytes) : bytes);
   const dateRes = resolvePositionDate(xbsReportDate(rows), provided, 'XBS Current Stock export');
+  await refuseEmptyIngest('XBS Current Stock export', 'stock', rows.length, dateRes.positionDate);
   await clearDemoSnapshot(dateRes.positionDate);
   await saveSnapshot(dateRes.positionDate, { stock: { rowCount: rows.length, postBags: {}, matrix: [], status: [], groups: [] } });
   return { ...dateRes, rows };
@@ -164,6 +166,7 @@ async function ingestStock(bytes: Uint8Array | Buffer, provided?: string) {
 async function ingestDnp(text: string | Buffer, provided?: string) {
   const dnp = parseDailyNetPosition(typeof text === 'string' ? text : decodeExportText(new Uint8Array(text)));
   const dateRes = resolvePositionDate(dnpReportDate(dnp), provided, 'SOL DailyNetPosition export');
+  await refuseEmptyIngest('SOL DailyNetPosition export', 'dnp', dnp.length, dateRes.positionDate);
   await clearDemoSnapshot(dateRes.positionDate);
   await saveSnapshot(dateRes.positionDate, { dnp });
   return { ...dateRes, dnp };
@@ -172,6 +175,7 @@ async function ingestDnp(text: string | Buffer, provided?: string) {
 async function ingestLogistics(text: string | Buffer, provided?: string) {
   const dateRes = resolvePositionDate({ date: null, agree: 0, total: 0 }, provided, 'SOL ReportLogistic export');
   const sales = aggregateSales(parseLogisticsReport(typeof text === 'string' ? text : decodeExportText(new Uint8Array(text))));
+  await refuseEmptyIngest('SOL ReportLogistic export', 'sales', sales.length, dateRes.positionDate);
   await clearDemoSnapshot(dateRes.positionDate);
   await saveSnapshot(dateRes.positionDate, { sales });
   return { ...dateRes, sales };
@@ -391,10 +395,20 @@ const P = (marker: string) => ({ marker, rowCount: 1 });
     await expectThrows('empty DNP text refuses', () => ingestDnp(''), /carries no derivable report date/);
     await expectThrows('header-only DNP refuses', () => ingestDnp(DNP_HEADER), /carries no derivable report date/);
     eq('nothing persisted by any refusal', dump(COLLECTIONS.snapshotInputs).length, 0);
-    // logistics is date-blind, so an empty file + a provided date slips through
-    const res = await ingestLogistics('', '2099-01-10');
-    eq('empty logistics with a date stores zero sales', res.sales.length, 0);
-    finding('an EMPTY ReportLogistic upload with a positionDate ingests 0 sales without protest — a corrupt/empty re-upload would silently replace a good sales book with nothing (no zero-row guard in ingest-logistics-report)');
+    // logistics is date-blind — an empty file + a provided date must still refuse (R3-F1)
+    await expectThrows('empty logistics with a date refuses (zero-row guard)', () => ingestLogistics('', '2099-01-10'), /0 data rows/);
+    // a provided date also bypasses the XBS/DNP date-derivation refusal — the guard must catch those too
+    await expectThrows('header-only XBS with a provided date refuses', () => ingestStock(xbsCsv([]), '2099-01-10'), /0 data rows/);
+    await expectThrows('header-only DNP with a provided date refuses', () => ingestDnp(DNP_HEADER, '2099-01-10'), /0 data rows/);
+    eq('zero-row refusals persisted nothing', dump(COLLECTIONS.snapshotInputs, { positionDate: '2099-01-10' }).length, 0);
+    // and the guard names the wipe hazard when a good book already exists for the date
+    await saveSnapshot('2099-01-10', { sales: [P('good-sale')] });
+    await expectThrows(
+      'empty re-upload over an existing sales book names the hazard',
+      () => ingestLogistics('', '2099-01-10'),
+      /already exists for this date/
+    );
+    eq('existing sales book untouched by the refusal', (await getSnapshot('2099-01-10'))?.data.sales, [P('good-sale')]);
   }
 
   // ---------- 11. Malformed / wrong export fed to the wrong tool ----------

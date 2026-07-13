@@ -214,6 +214,22 @@ export async function inputDocExists(positionDate: string, kind: string): Promis
 }
 
 /**
+ * Refuse an export that parsed to zero data rows — an empty/corrupt
+ * (re-)upload must never wipe a good book. Call after parsing + date
+ * resolution and BEFORE any write, so a refusal persists nothing and logs no
+ * upload event.
+ */
+export async function refuseEmptyIngest(exportLabel: string, kind: 'stock' | 'dnp' | 'sales', rowCount: number, positionDate: string): Promise<void> {
+  if (rowCount > 0) return;
+  const existing = await inputDocExists(positionDate, kind);
+  throw new Error(
+    `${exportLabel} parsed to 0 data rows — refusing to ingest an empty ${kind} book for ${positionDate}` +
+      (existing ? ` (a ${kind} upload already exists for this date and would have been wiped)` : '') +
+      `. Check the file is the right export; if the desk genuinely means to clear this date, use delete-snapshot instead.`
+  );
+}
+
+/**
  * Append one upload event to the audit trail. Always Data.create — a
  * re-upload adds a second event instead of replacing the first, and
  * delete-snapshot never touches this collection (an audit trail that forgets
