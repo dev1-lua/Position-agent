@@ -47,6 +47,24 @@ type FeedState =
   | { status: 'error'; error: string }
   | { status: 'ready'; feed: DashboardFeed };
 
+/**
+ * A 200 response that parses as JSON is still not necessarily the feed — a
+ * misconfigured proxy target can hand back any object. Rendering such a
+ * payload crashes every uploads component at once (white screen), so gate on
+ * the three top-level fields and fall into the visible error state instead.
+ */
+function isDashboardFeed(json: unknown): json is DashboardFeed {
+  const feed = json as DashboardFeed | null;
+  return (
+    !!feed &&
+    typeof feed === 'object' &&
+    typeof feed.today?.positionDate === 'string' &&
+    !!feed.today.slots &&
+    Array.isArray(feed.dates) &&
+    Array.isArray(feed.events)
+  );
+}
+
 export function useFeed(): FeedState & { reload: () => void } {
   const [state, setState] = useState<FeedState>({ status: 'loading' });
 
@@ -64,7 +82,10 @@ export function useFeed(): FeedState & { reload: () => void } {
           throw new Error('The upload feed is not reachable from this environment.');
         }
         if (!res.ok || json?.error) throw new Error(String(json?.error ?? `feed returned HTTP ${res.status}`));
-        setState({ status: 'ready', feed: json as DashboardFeed });
+        if (!isDashboardFeed(json)) {
+          throw new Error('The feed endpoint answered with an unexpected payload — check FEED_WEBHOOK_URL on Vercel.');
+        }
+        setState({ status: 'ready', feed: json });
       } catch (err) {
         setState({ status: 'error', error: err instanceof Error ? err.message : 'feed unreachable' });
       }
