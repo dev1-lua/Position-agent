@@ -3,6 +3,7 @@ import { AssignmentMemory } from '../lib/blends';
 import { Blend, Sale } from '../lib/types';
 import { AssumptionEntry } from '../lib/stockcounter';
 import { UploadLogEvent } from '../lib/feed';
+import { nairobiToday } from '../lib/reportdate';
 import {
   BLENDS_SEED,
   ASSUMPTIONS_SEED,
@@ -388,5 +389,5 @@ export async function resolveFileId(fileId?: string): Promise<string> {
 
 /** Today's date in Nairobi, YYYY-MM-DD — the default position date. */
 export function defaultPositionDate(): string {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Nairobi' }).format(new Date());
+  return nairobiToday();
 }

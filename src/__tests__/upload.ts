@@ -304,7 +304,9 @@ const P = (marker: string) => ({ marker, rowCount: 1 });
       '2099-01-07'
     );
     eq('dateSource', res.dateSource, 'trader-provided (no date derivable from the export rows)');
-    eq('no warnings', res.warnings, []);
+    // the disposable 2099 date correctly trips the R3-F2 future-date warning — it must be the ONLY one
+    if (res.warnings.length === 1 && /in the FUTURE/.test(res.warnings[0])) ok('only the future-date warning (disposable 2099 date)');
+    else fail(`unexpected warnings: ${JSON.stringify(res.warnings)}`);
     eq('sale stored under the provided date', ((await getSnapshot('2099-01-07'))?.data.sales ?? []).length, 1);
   }
 
@@ -378,13 +380,23 @@ const P = (marker: string) => ({ marker, rowCount: 1 });
   }
 
   // ---------- 9. Future-dated export ----------
-  section(9, 'Future-dated export — characterize (no sanity guard exists)');
+  section(9, 'Future-dated export — accepted but WARNED, never blocked (R3-F2)');
   {
     resetDb();
+    // through the ingest mirror (real wall clock — 2027-01-01 stays future until 2027)
     const res = await ingestDnp(dnpTsv([['HEDGEABLE', 10, -5, '01-01-2027']]));
-    eq('future date accepted verbatim', res.positionDate, '2027-01-01');
-    eq('no warning emitted', res.warnings, []);
-    finding('a future-dated export (positionDate 2027-01-01 vs today 2026-07-13) ingests silently — no sanity check; staleness logic treats it as current (age<1) so no banner will ever flag it');
+    eq('future date accepted verbatim (warn, not block)', res.positionDate, '2027-01-01');
+    if (res.warnings.some((w: string) => /in the FUTURE/.test(w))) ok('future-date warning emitted on ingest');
+    else fail(`no future-date warning emitted: ${JSON.stringify(res.warnings)}`);
+    // deterministic: both resolution paths, pinned `today`
+    const derived = resolvePositionDate({ date: '2026-07-20', agree: 3, total: 3 }, undefined, 'SOL DailyNetPosition export', '2026-07-13');
+    if (derived.warnings.some((w) => /2026-07-20 is in the FUTURE/.test(w))) ok('derived-date path warns against a pinned today');
+    else fail(`derived-date path missing warning: ${JSON.stringify(derived.warnings)}`);
+    const providedOnly = resolvePositionDate({ date: null, agree: 0, total: 0 }, '2026-07-20', 'SOL ReportLogistic export', '2026-07-13');
+    if (providedOnly.warnings.some((w) => /2026-07-20 is in the FUTURE/.test(w))) ok('provided-date path warns against a pinned today');
+    else fail(`provided-date path missing warning: ${JSON.stringify(providedOnly.warnings)}`);
+    const past = resolvePositionDate({ date: '2026-07-10', agree: 3, total: 3 }, undefined, 'SOL DailyNetPosition export', '2026-07-13');
+    eq('past dates stay warning-free', past.warnings, []);
   }
 
   // ---------- 10. Empty files ----------
