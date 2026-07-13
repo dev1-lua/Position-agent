@@ -66,6 +66,23 @@ export async function upsert(collection: string, filter: any, data: Record<strin
   return Data.create(collection, { ...filter, ...data }, searchText);
 }
 
+/**
+ * Upsert the current pending blends for a date, then DELETE pending_blends
+ * docs for sales no longer pending (departed on a re-upload) — otherwise the
+ * collection keeps ghost confirmations forever. confirm-blend's per-sale
+ * delete and delete-snapshot's whole-date purge stay separate.
+ */
+export async function reconcilePendingBlends(positionDate: string, pending: Array<Record<string, any>>): Promise<void> {
+  for (const p of pending) {
+    await upsert(COLLECTIONS.pendingBlends, { positionDate: p.positionDate, saleCtr: p.saleCtr }, p, `pending blend ${p.saleCtr} ${p.client}`);
+  }
+  const keep = new Set(pending.map((p) => p.saleCtr));
+  const docs = await getAll(COLLECTIONS.pendingBlends, { positionDate });
+  for (const doc of docs) {
+    if (doc?.id && !keep.has(doc.data?.saleCtr)) await Data.delete(COLLECTIONS.pendingBlends, doc.id);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Snapshots
 // ---------------------------------------------------------------------------

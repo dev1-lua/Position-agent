@@ -16,7 +16,7 @@ import {
   COLLECTIONS,
   getSnapshot,
   saveSnapshot,
-  upsert,
+  reconcilePendingBlends,
   getAll,
   loadBlendRecipes,
   loadAssignmentMemory,
@@ -120,9 +120,7 @@ export async function runComputeChain(positionDate?: string, opts: { tool: strin
       });
     }
   }
-  for (const p of pending) {
-    await upsert(COLLECTIONS.pendingBlends, { positionDate: p.positionDate, saleCtr: p.saleCtr }, p, `pending blend ${p.saleCtr} ${p.client}`);
-  }
+  await reconcilePendingBlends(d.positionDate, pending);
 
   // 2. forward-sales matrix (pending sales excluded until confirmed)
   const fs = computeForwardSales(assigned, blends, { useAssigned: true, memory, ambiguousKeys });

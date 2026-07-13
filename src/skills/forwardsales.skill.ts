@@ -12,7 +12,7 @@ import {
   loadBlendRecipes,
   loadAssignmentMemory,
   persistAssignment,
-  upsert,
+  reconcilePendingBlends,
 } from './store';
 
 /**
@@ -61,14 +61,7 @@ class AssignBlends implements LuaTool {
     }
 
     await saveSnapshot(snap.data.positionDate, { sales: assigned, pendingBlends: pending });
-    for (const p of pending) {
-      await upsert(
-        COLLECTIONS.pendingBlends,
-        { positionDate: p.positionDate, saleCtr: p.saleCtr },
-        p,
-        `pending blend ${p.saleCtr} ${p.client}`
-      );
-    }
+    await reconcilePendingBlends(snap.data.positionDate, pending);
     return {
       positionDate: snap.data.positionDate,
       autoAssigned: assigned.filter((s) => s.blendNo != null).length,

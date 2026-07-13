@@ -494,11 +494,7 @@ const P = (marker: string) => ({ marker, rowCount: 1 });
     eq('snapshot pendingBlends key reflects the new book', snapPending, ['QA-Y']);
     eq('compute result reports only the live pending sale', res2.blendAssignment.pendingConfirmation.map((p: any) => p.saleCtr), ['QA-Y']);
     const round2 = dump(COLLECTIONS.pendingBlends, { positionDate: D }).map((d) => d.data.saleCtr).sort();
-    if (round2.length === 1) ok('pending_blends collection refreshed (stale doc removed)');
-    else {
-      ok(`characterized: pending_blends collection still holds ${JSON.stringify(round2)}`);
-      finding('re-uploading a sales book leaves STALE pending_blends docs for sales no longer in it (QA-X survives in the collection after the re-upload) — pipeline.ts upserts current pendings but never deletes departed ones; only confirm-blend (one sale) and delete-snapshot (whole date) remove docs. A trader listing pending confirmations via the collection would see ghosts.');
-    }
+    eq('pending_blends collection refreshed — departed QA-X deleted (R3-F3)', round2, ['QA-Y']);
   }
 
   // ---------- 15. Legacy duplicate docs for the same key ----------
