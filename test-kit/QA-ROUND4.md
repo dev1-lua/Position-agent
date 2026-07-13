@@ -41,19 +41,28 @@ Thread `qa4-f3-1783900281` turn 1: net **+6,968 bags / 418.08 MT** (tool: +6,967
 `pipeline.ts` emits the caveat `Net position sums shorts over the horizon months only; months outside it (e.g. 2026/10+) appear in shortsByMonth but are NOT netted.` The example is hardcoded, but on the 2026-07-10 snapshot the horizon runs THROUGH 2026/10 — only 2026/11 is outside. In thread `qa4-f2b-…` the model paraphrased the caveat into a factually wrong sentence ("2026/10 and beyond … aren't included") even though 2026/10's −432 bags ARE netted. The same-thread exact-grade answer and the net-position answer got it right, so this is a coin-flip hazard, not a systematic one.
 **Owner:** lua-skill-builder. **Action:** build the caveat from the ACTUAL out-of-horizon months present in shortsByMonth (e.g. "months outside it (2026/11) …") instead of the hardcoded example. — **FIXED THIS ROUND** (see §4).
 
-## 4. Round-3 findings — fix status
+## 4. Round-3 findings — ALL FIXED (each characterization test in `src/__tests__/upload.ts` flipped to a hard assertion; harness now passes with 0 findings)
 
-(Filled in as Work Item A lands; each fix flips its characterization test in `src/__tests__/upload.ts` to a hard assertion.)
+| Finding | Fix | Commit | Verified |
+|---|---|---|---|
+| R3-F1 empty ReportLogistic wipes sales book | `refuseEmptyIngest` (store.ts) in all 3 ingest tools — refuses before any write, names the wipe hazard when a book exists; provided-date bypass for XBS/DNP also covered | 3e8fdf7 | harness §10 (the pre-fix run showed the wipe live: good book → `[]`) |
+| R3-F3 ghost pending_blends after re-upload | `reconcilePendingBlends` (store.ts): upsert current set, delete departed (positionDate, saleCtr) docs; both call sites switched; confirm-blend + delete-snapshot untouched | a5f3e15 | harness §14 |
+| R3-F2 future-dated exports silent | future-date warning (never a block) in `resolvePositionDate`, both resolution paths; `nairobiToday()` moved to reportdate.ts | 8f9f16b | harness §9 (both paths, pinned today) |
+| R3-F4 delete-snapshot keeps manuals | desk decision: DELETE manuals too; `deleteSnapshot` returns `{deleted, manualsRemoved}`, tool discloses and points to set-manual-inputs; upload_log NEVER touched | 734fd0b | harness §12 + LIVE sandbox (`qa4-sbx-f4-…`: pot set on 2099-01-15, delete reported "including the 1 manual pot entry") |
+| R3-F5 duplicate inputs resolve by insertion order | `getSnapshot` sorts input docs by updatedAt before assembly (mergeDocs semantics) | 6006cdd | harness §15 |
+| R4-F1 hardcoded horizon-caveat example | `horizonNote(horizon, byMonth)` names the ACTUAL out-of-horizon months; all query-position branches + compute caveat + skill description | e7babda | LIVE sandbox (`qa4-sbx-hn-…`: answer names exactly 2026/11, no more 2026/10 confusion) |
 
-| Finding | Fix | Status |
-|---|---|---|
-| R3-F1 empty ReportLogistic wipes sales book | zero-row refusal in all 3 ingest tools | pending |
-| R3-F3 ghost pending_blends after re-upload | reconcilePendingBlends (upsert + delete departed) | pending |
-| R3-F2 future-dated exports silent | future-date warning in resolvePositionDate | pending |
-| R3-F4 delete-snapshot keeps manuals | desk decided: DELETE manuals too (upload_log untouched) | pending |
-| R3-F5 duplicate inputs resolve by insertion order | sort by updatedAt in getSnapshot | pending |
-| R4-F1 hardcoded horizon-caveat example | caveat names actual out-of-horizon months | pending |
+Verification at close: `lua compile --ci` green (32 primitives, no yaml drift); parity 18/18; upload 17 sections / **0 findings**; feed 22/22; log scan after the sandbox session 0 error/warn. R3-F1/F2/F3 are harness-verified only (driving them live needs crafted empty/future-dated uploads through chat — not fabricated against the shared store on purpose); R3-F4 and R4-F1 verified live in sandbox.
 
 ## 5. Ship status
 
-v12 remains the promoted production version throughout this round. The R3/R4 fixes stop at verified-in-sandbox; push → version create → promote (v13) is done BY THE USER by hand.
+v12 remains the promoted production version throughout this round. The R3/R4 fixes stop at verified-in-sandbox per the desk's instruction; push → version create → promote (v13) is done BY THE USER by hand:
+
+```
+lua push --ci --force
+lua version create
+lua version promote <v13>
+lua sync --check        # must exit CLEAN
+```
+
+Post-promote smoke: re-run "What's my exposure to POST 16 FAQ?" in a fresh `-e production` thread — expect the exact-grade tool input, the dynamic horizon note naming 2026/11, and the stale banner.
