@@ -13,6 +13,7 @@ function activeNavItem(pathname: string) {
 export function Header() {
   const active = activeNavItem(useLocation().pathname);
   const ActiveIcon = active.icon;
+  const badge = 'badge' in active ? active.badge : undefined;
 
   return (
     <header className="flex h-11 shrink-0 items-center justify-between gap-4 border-b border-border px-3">
@@ -21,6 +22,11 @@ export function Header() {
           <ActiveIcon className="size-3.5" stroke={1.6} />
         </span>
         <h1 className="truncate text-sm font-medium">{active.label}</h1>
+        {badge && (
+          <span className="shrink-0 rounded-sm border border-amber-200 bg-amber-50 px-1.5 py-px text-2xs font-medium text-amber-700">
+            {badge}
+          </span>
+        )}
       </div>
       <p className="hidden truncate text-xs text-muted-foreground/70 sm:block">{active.tagline}</p>
     </header>

@@ -33,6 +33,7 @@ export const NAV_ITEMS = [
     path: '/uploads',
     icon: IconDatabaseImport,
     tagline: 'What got uploaded when — the 3 desk exports, tracked per day',
+    badge: 'Under construction',
   },
   {
     label: 'Dashboard',
@@ -40,7 +41,7 @@ export const NAV_ITEMS = [
     icon: IconChartHistogram,
     tagline: 'Position trends, charts and the morning digest',
   },
-] as const satisfies ReadonlyArray<{ label: string; path: string; icon: Icon; tagline: string }>;
+] as const satisfies ReadonlyArray<{ label: string; path: string; icon: Icon; tagline: string; badge?: string }>;
 
 function getInitialCollapsed(): boolean {
   try {
