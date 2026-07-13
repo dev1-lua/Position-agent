@@ -63,7 +63,7 @@ export function HistoryGrid({ dates }: { dates: FeedDateRow[] }) {
               ))}
               <th className="px-3 py-2 font-medium">Computed</th>
               {/* snapshot updatedAt = last WRITE (ingest, recompute or manual pot) — not upload time */}
-              <th className="px-3 py-2 font-medium">Last modified</th>
+              <th className="px-3 py-2 font-medium">Last used</th>
             </tr>
           </thead>
           <motion.tbody variants={stagger} initial="hidden" animate="visible">
