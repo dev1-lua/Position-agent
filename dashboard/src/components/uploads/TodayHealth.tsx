@@ -87,7 +87,7 @@ export function TodayHealth({ today }: { today: DashboardFeed['today'] }) {
   return (
     <section>
       <div className="flex items-baseline gap-2">
-        <h2 className="text-sm font-medium">Today's data</h2>
+        <h2 className="text-sm font-medium">Data Overview</h2>
         <span className="text-xs text-muted-foreground/70">{formatDay(today.positionDate)}</span>
       </div>
       <motion.div variants={stagger} initial="hidden" animate="visible" className="mt-2 flex flex-col gap-2 sm:flex-row">
