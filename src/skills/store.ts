@@ -127,6 +127,9 @@ export async function getSnapshot(positionDate?: string): Promise<{ id: string; 
   if (!computed && inputs.length === 0) return null;
   const data: Snapshot = { positionDate, ...(computed?.data ?? {}) };
   let updatedAt = String(computed?.data?.updatedAt ?? '');
+  // oldest→newest so the newest payload wins per kind when legacy duplicate
+  // input docs exist — same semantics as mergeDocs for computed docs
+  inputs.sort((a, b) => String(a.data?.updatedAt ?? '').localeCompare(String(b.data?.updatedAt ?? '')));
   for (const row of inputs) {
     // input docs are authoritative over legacy embedded stock/dnp/sales keys
     data[row.data.kind] = row.data.payload;

@@ -525,11 +525,7 @@ const P = (marker: string) => ({ marker, rowCount: 1 });
     await Data.create(COLLECTIONS.snapshotInputs, { positionDate: D, kind: 'sales', payload: [P('NEWER')], updatedAt: '2026-07-02T00:00:00Z' });
     await Data.create(COLLECTIONS.snapshotInputs, { positionDate: D, kind: 'sales', payload: [P('OLDER')], updatedAt: '2026-07-01T00:00:00Z' });
     const assembled = (await getSnapshot(D))?.data.sales;
-    if (JSON.stringify(assembled) === JSON.stringify([P('NEWER')])) ok('duplicate input docs resolve to the newest payload');
-    else {
-      ok(`characterized: duplicate input docs resolve by INSERTION order (got ${assembled?.[0]?.marker})`);
-      finding('duplicate snapshot_inputs docs for one (positionDate, kind) resolve by collection insertion order, NOT updatedAt — getSnapshot (store.ts:109-113) assigns data[kind] per input doc in getAll order, unlike mergeDocs which sorts computed docs by updatedAt. If a pre-fix race left duplicates, which payload wins is storage-order luck.');
-    }
+    eq('duplicate input docs resolve to the NEWEST payload by updatedAt, not insertion order (R3-F5)', assembled, [P('NEWER')]);
   }
 
   // ---------- 16. Unicode / special characters ----------
