@@ -4,7 +4,7 @@ import { IconAlertTriangle, IconChevronDown } from '@tabler/icons-react';
 
 import { cn } from '@/lib/cn';
 import type { DashboardFeed, SlotKind } from '@/lib/useFeed';
-import { KIND_FILE, KIND_LABEL, KIND_ORDER, StatusDot, formatDay, formatTime, rise, stagger } from './shared';
+import { KIND_FILE, KIND_LABEL, KIND_ORDER, StatusDot, formatDay, rise, stagger } from './shared';
 
 const STATUS_WORD = { fresh: 'Fresh', stale: 'Stale', missing: 'Missing' } as const;
 
@@ -41,10 +41,11 @@ function SlotCard({ kind, slot }: { kind: SlotKind; slot: DashboardFeed['today']
       <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground" title={KIND_FILE[kind]}>
         {statusLine(slot)}
       </p>
-      <p className="mt-0.5 text-xs text-muted-foreground/70">
-        {slot.at ? `Uploaded ${formatTime(slot.at)}` : '—'}
-        {slot.rowCount != null && ` · ${slot.rowCount.toLocaleString()} rows`}
-      </p>
+      {/* No ingest wall-clock here — "3 days old" is position-date staleness and the
+          upload timestamp reads as contradicting it; that lives in History → Last update. */}
+      {slot.rowCount != null && (
+        <p className="mt-0.5 text-xs text-muted-foreground/70">{slot.rowCount.toLocaleString()} rows</p>
+      )}
       {warnings.length > 0 && (
         <div className="mt-2 border-t border-border pt-2">
           <button
