@@ -1,7 +1,7 @@
 import { LuaSkill, LuaTool } from 'lua-cli';
 import { z } from 'zod';
 import { normGrade, POST_GRADES_SUMMARY } from '../lib/grades';
-import { monthTotals, explainGradeContributions } from '../lib/shorts';
+import { monthTotals, explainGradeContributions, horizonNote } from '../lib/shorts';
 import { resolveOfferQuery } from '../lib/netposition';
 import { bagsToMt, round } from '../lib/units';
 import { computePricing, distinctContractsForGrades, PriceDimension } from '../lib/pricing';
@@ -79,8 +79,6 @@ class QueryPosition implements LuaTool {
     const stale = staleNotice(d.positionDate);
     if (!d.net) return { ...(stale ? { staleNotice: stale } : {}), freshness, note: 'Net position not computed yet — run the compute chain first.' };
     const matrix: Record<string, Record<string, number>> = d.forwardSales?.matrix ?? {};
-    const horizonNote =
-      'Net position sums shorts over the horizon months only; months outside it (e.g. 2026/10+) appear in shortsByMonth but are NOT netted.';
 
     if (input.grade) {
       const key = findGradeKey(d.net.byGrade, input.grade);
@@ -101,7 +99,7 @@ class QueryPosition implements LuaTool {
             ? { [input.month]: round(monthRow[input.month] || 0) }
             : Object.fromEntries(Object.entries(monthRow).map(([m, v]) => [m, round(v as number)])),
           horizon: d.net.horizon,
-          notes: [horizonNote],
+          notes: [horizonNote(d.net.horizon, monthRow)],
           cite: cite(
             this.name,
             d,
@@ -139,7 +137,7 @@ class QueryPosition implements LuaTool {
         horizon: d.net.horizon,
         notes: [
           `"${offer.offer}" is an offer roll-up, not a single grade: ${offer.members.map(([g, w]) => `${g} ×${w}`).join(' + ')}.`,
-          horizonNote,
+          horizonNote(d.net.horizon, weightedByMonth),
         ],
         cite: cite(
           this.name,
@@ -169,7 +167,7 @@ class QueryPosition implements LuaTool {
         totalShortsMt: round(bagsToMt(totalBags)),
         ...(known.includes(input.month) ? {} : { note: `No shorts in ${input.month}. Months with shorts: ${known.join(', ')}.` }),
         horizon: d.net.horizon,
-        notes: [horizonNote],
+        notes: [horizonNote(d.net.horizon, monthTotals(matrix))],
         cite: cite(
           this.name,
           d,
@@ -213,7 +211,7 @@ class QueryPosition implements LuaTool {
         byGrade: d.net.byGrade,
         hedgeLines: hedge,
       }),
-      notes: [horizonNote],
+      notes: [horizonNote(d.net.horizon, byMonth)],
       cite: cite(
         this.name,
         d,
@@ -670,7 +668,7 @@ export const querySkill = new LuaSkill({
   name: 'position-query',
   description: 'Answer position questions and what-ifs from the computed snapshots.',
   context: `Answering questions about the position.
-- query-position for "what's my net position", "how short am I on AB FAQ", "shorts by month for grinders". Always mention the position date and any pending blend confirmations. Filters: grade alone → that grade's block incl. its shorts-by-month row; month alone → shorts by grade for that delivery month; both → the single grade-month cell; neither → full position incl. a shortsByMonth total ladder. grade also accepts OFFER names (TOP, PLUS, AA FAQ, AB FAQ, ABC FAQ, GRINDER 14+, GRINDER 13-) and returns the weighted roll-up with its member grades — say it's a roll-up, not a single grade. Months outside the netting horizon (e.g. 2026/10+) show in shortsByMonth but are NOT in net figures — mention that when they carry volume. Full-position results carry \`insights\` — code-computed observations; relay the ones that matter, numbers verbatim.
+- query-position for "what's my net position", "how short am I on AB FAQ", "shorts by month for grinders". Always mention the position date and any pending blend confirmations. Filters: grade alone → that grade's block incl. its shorts-by-month row; month alone → shorts by grade for that delivery month; both → the single grade-month cell; neither → full position incl. a shortsByMonth total ladder. grade also accepts OFFER names (TOP, PLUS, AA FAQ, AB FAQ, ABC FAQ, GRINDER 14+, GRINDER 13-) and returns the weighted roll-up with its member grades — say it's a roll-up, not a single grade. Months outside the netting horizon show in shortsByMonth but are NOT in net figures — the result's notes name exactly which months those are; relay them verbatim, never guess or extend the list. Full-position results carry \`insights\` — code-computed observations; relay the ones that matter, numbers verbatim.
 - what-if for "can I sell N bags of X for month M" — report netAfter and, if it goes short, the first month it happens. Never turn this into trade advice; state the numbers.
 - price-analytics for "at what price level am I short", "average differential on grinders", "how much is fixed vs to-be-fixed". "Price level" on this desk = differential vs the NY KC futures in USc/lb. ALWAYS present the contract differential and the FOB-equivalent side by side — neither is the headline. State the fixed vs price-to-be-fixed split and any excluded (unpriced) sales. Every bucket carries its own fixed/ptbf split — for "how much of my grinder book / August book re-rates if NY moves", quote that bucket's ptbf volume and share (price-to-be-fixed = futures leg open = re-rates with NY; fixed volume does not). It covers the unallocated shorts book only: no purchase cost basis, no P&L or mark-to-market (no market prices exist in the data), no price history — say so when asked.
 - client-exposure for "who am I most short to", "my exposure to Nestle", "what does client X buy". "Exposure to X" is a client question ONLY when X is a counterparty name; when X looks like a grade/offer or is unrecognized, try query-position first — its miss reply lists the valid grades and offers. Volumes are forward commitments by counterparty; combine with price-analytics (dimension=client) when they also want the price level. Filters: client, month (one delivery month), soldGrade ("who buys grinders") — when filtered, say the ranking covers that slice only.

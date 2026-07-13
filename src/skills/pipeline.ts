@@ -1,6 +1,6 @@
 import { Sale, StockRow } from '../lib/types';
 import { matchBlend, globallyAmbiguousKeys, assignmentKey } from '../lib/blends';
-import { computeForwardSales, sumOverMonths, monthTotals } from '../lib/shorts';
+import { computeForwardSales, sumOverMonths, monthTotals, horizonNote } from '../lib/shorts';
 import { computeNetPosition, computeOffers } from '../lib/netposition';
 import { computePositionInsights } from '../lib/insights';
 import { computeFutsSpread, futuresPotBySFixDte, FutsManualInputs } from '../lib/futsspread';
@@ -220,9 +220,7 @@ export async function runComputeChain(positionDate?: string, opts: { tool: strin
       hedgeLines: hedge,
     }),
     caveats: [
-      ...(outsideHorizon
-        ? ['Net position sums shorts over the horizon months only; months outside it (e.g. 2026/10+) appear in shortsByMonth but are NOT netted.']
-        : []),
+      ...(outsideHorizon ? [horizonNote(horizon, byMonth)] : []),
       ...(pending.length
         ? [`${pending.length} sale(s) need a blend confirmation and are EXCLUDED from every figure until confirmed — ask the trader (confirm-blend), then re-run.`]
         : []),

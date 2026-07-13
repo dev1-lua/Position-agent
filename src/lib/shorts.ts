@@ -107,6 +107,21 @@ export function monthTotals(matrix: Record<string, Record<string, number>>): Rec
   return Object.fromEntries(Object.entries(out).sort(([a], [b]) => a.localeCompare(b)));
 }
 
+/**
+ * Horizon caveat naming the ACTUAL out-of-horizon months carrying volume.
+ * R4-F1 (prod 2026-07-13): a hardcoded "(e.g. 2026/10+)" example misled the
+ * model into claiming an in-horizon month wasn't netted — name the real
+ * months instead, never an example.
+ */
+export function horizonNote(horizon: string[], byMonth: Record<string, number>): string {
+  const outside = Object.keys(byMonth)
+    .filter((mo) => byMonth[mo] !== 0 && !horizon.includes(mo))
+    .sort();
+  return outside.length
+    ? `Net position sums shorts over the horizon months only; ${outside.join(', ')} ${outside.length === 1 ? 'appears' : 'appear'} in shortsByMonth but ${outside.length === 1 ? 'is' : 'are'} NOT netted (outside the horizon).`
+    : 'Net position sums shorts over the horizon months only; every month carrying shorts is inside the horizon and IS netted.';
+}
+
 /** Sum a forward-sales matrix over a specific set of delivery months → grade → bags. */
 export function sumOverMonths(
   matrix: Record<string, Record<string, number>>,
